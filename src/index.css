@@ -1,0 +1,270 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   VAELRO DESIGN SYSTEM
+   Brand palette only — all Tailwind default colors are wiped below.
+--------------------------------------------------------------------------- */
+
+@theme {
+  --color-*: initial;
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Cream — primary background scale (base: #F5F0E8) */
+  --color-cream-50: #fdfcfa;
+  --color-cream-100: #f5f0e8;
+  --color-cream-200: #ede5d8;
+  --color-cream-300: #e0d5c7;
+  --color-cream-400: #cdbca7;
+  --color-cream-500: #b5a089;
+  --color-cream-600: #98836c;
+  --color-cream-700: #7b6955;
+  --color-cream-800: #5d4f41;
+  --color-cream-900: #40362d;
+  --color-cream-950: #241e19;
+
+  /* Peach — surface / card scale (base: #F0DFD0) */
+  --color-peach-50: #fbf7f2;
+  --color-peach-100: #f0dfd0;
+  --color-peach-200: #e6cdb6;
+  --color-peach-300: #dbba9c;
+  --color-peach-400: #cfa582;
+  --color-peach-500: #c08f68;
+  --color-peach-600: #a97650;
+  --color-peach-700: #8b5f40;
+  --color-peach-800: #6c4a32;
+  --color-peach-900: #4e3524;
+  --color-peach-950: #332217;
+
+  /* Orange — accent / CTA scale (base: #D4743B) */
+  --color-orange-50: #fbf3ec;
+  --color-orange-100: #f8e7d8;
+  --color-orange-200: #f0ccac;
+  --color-orange-300: #e7ae7f;
+  --color-orange-400: #de9158;
+  --color-orange-500: #d4743b;
+  --color-orange-600: #bc5f2c;
+  --color-orange-700: #9a4c24;
+  --color-orange-800: #773a1d;
+  --color-orange-900: #542a16;
+  --color-orange-950: #381b0e;
+
+  /* Ink — dark sections & text scale (base: #1A1A1A) */
+  --color-ink-50: #f6f5f4;
+  --color-ink-100: #e8e6e3;
+  --color-ink-200: #d1cdc8;
+  --color-ink-300: #aba59e;
+  --color-ink-400: #7f7972;
+  --color-ink-500: #5c5750;
+  --color-ink-600: #4a4a4a;
+  --color-ink-700: #333130;
+  --color-ink-800: #262424;
+  --color-ink-900: #1a1a1a;
+  --color-ink-950: #0d0d0c;
+
+  /* Semantic tokens */
+  --color-muted: #8a8078;
+
+  /* Typography */
+  --font-serif: "Libre Baskerville", Georgia, "Times New Roman", serif;
+  --font-sans: "Source Sans 3 Variable", "Source Sans 3", ui-sans-serif,
+    system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+
+  /* Fluid type scale — 1.333 (perfect fourth) from 16px base */
+  --text-display: clamp(2.25rem, 1rem + 5.4vw, 5rem);
+  --text-display--line-height: 1.06;
+  --text-display--letter-spacing: -0.025em;
+  --text-title: clamp(1.9rem, 1.1rem + 3.4vw, 3.375rem);
+  --text-title--line-height: 1.12;
+  --text-title--letter-spacing: -0.02em;
+  --text-heading: clamp(1.4rem, 1.05rem + 1.5vw, 2rem);
+  --text-heading--line-height: 1.25;
+  --text-heading--letter-spacing: -0.01em;
+  --text-lead: clamp(1.125rem, 1rem + 0.5vw, 1.333rem);
+  --text-lead--line-height: 1.55;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------------------------------------------------------------------------
+   Self-hosted fonts
+--------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: "Libre Baskerville";
+  src: url("/fonts/libre-baskerville-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Libre Baskerville";
+  src: url("/fonts/libre-baskerville-latin-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Sans 3 Variable";
+  src: url("/fonts/source-sans-3-latin-wght-normal.woff2")
+    format("woff2-variations");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+--------------------------------------------------------------------------- */
+
+@layer base {
+  html {
+    background-color: var(--color-cream-100);
+  }
+
+  body {
+    background-color: var(--color-cream-100);
+    color: var(--color-ink-900);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background-color: var(--color-orange-500);
+    color: var(--color-cream-50);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-orange-500);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Lenis recommended styles */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Components & utilities
+--------------------------------------------------------------------------- */
+
+@layer components {
+  .container-site {
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .container-site {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  .skip-link {
+    position: fixed;
+    top: -100%;
+    left: 1rem;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    background: var(--color-ink-900);
+    color: var(--color-cream-100);
+    border-radius: 0.375rem;
+    font-weight: 600;
+    transition: top 150ms ease;
+  }
+  .skip-link:focus-visible {
+    top: 1rem;
+  }
+
+  /* Nav link underline: clip-path width transition */
+  .nav-link {
+    position: relative;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 2px;
+    background: currentColor;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 300ms var(--ease-out-expo);
+  }
+  .nav-link:hover::after,
+  .nav-link[aria-current="page"]::after {
+    clip-path: inset(0 0 0 0);
+  }
+
+  /* Grain / noise overlay for dark sections (pure CSS, no image asset) */
+  .bg-noise::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 240px 240px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Marquee — pure CSS transform animation (not JS-driven)
+--------------------------------------------------------------------------- */
+
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.marquee-track-left {
+  animation: marquee-left 35s linear infinite;
+}
+
+.marquee-track-right {
+  animation: marquee-right 38s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track-left,
+  .marquee-track-right {
+    animation: none;
+  }
+}

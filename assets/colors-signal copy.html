@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Vaelro orange — signal family</title>
+<link rel="stylesheet" href="_card.css" />
+<style>
+  body { padding: 24px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .swatch {
+    height: 180px;
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .swatch.dark { color: #1d120c; }
+  .swatch.dark .role { color: rgba(29,18,12,0.65); }
+  .name {
+    font-family: var(--vaelro-sans);
+    font-size: 13.5px;
+    font-weight: 600;
+  }
+  .role {
+    font-family: var(--vaelro-mono);
+    font-size: 9.5px;
+    color: rgba(0,0,0,0.55);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    font-weight: 400;
+    display: block;
+  }
+  .hex {
+    font-family: var(--vaelro-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    align-self: flex-start;
+  }
+  .gradient {
+    grid-column: span 4;
+    height: 70px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, #ffc58f 0%, #ff7a18 56%, #ff5200 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #1d120c;
+  }
+  .gradient .lbl {
+    font-family: var(--vaelro-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .gradient .stops { font-family: var(--vaelro-mono); font-size: 11px; opacity: 0.7; }
+</style>
+</head>
+<body>
+  <div class="grid">
+    <div class="swatch dark" style="background:#ffc58f;">
+      <span class="hex">#FFC58F</span>
+      <span class="name">Soft Amber<span class="role">Pale accents</span></span>
+    </div>
+    <div class="swatch dark" style="background:#ffa048;">
+      <span class="hex">#FFA048</span>
+      <span class="name">Glow<span class="role">Hover · highlights</span></span>
+    </div>
+    <div class="swatch dark" style="background:#ff7a18;">
+      <span class="hex">#FF7A18</span>
+      <span class="name">Signal<span class="role">Primary action</span></span>
+    </div>
+    <div class="swatch dark" style="background:#ff5200;">
+      <span class="hex">#FF5200</span>
+      <span class="name">Burnt<span class="role">Pressed · deep</span></span>
+    </div>
+    <div class="gradient">
+      <span class="lbl">--vaelro-gradient</span>
+      <span class="stops">#FFC58F → #FF7A18 → #FF5200</span>
+    </div>
+  </div>
+</body>
+</html>

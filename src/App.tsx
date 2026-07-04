@@ -90,7 +90,9 @@ function AnimatedRoutes() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    // basename follows Vite's base: "/" locally and on Netlify,
+    // "/vaelro-website/" for the GitHub Pages deploy
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <LenisProvider>
         <a href="#main" className="skip-link">
           Skip to content

@@ -201,6 +201,8 @@ interface OrbProps {
   isOpen: boolean;
   /** Half-separation of the hemispheres when fully open. */
   splitDistance: number;
+  /** Single-orb layouts: inactive orbs are fully hidden and non-interactive. */
+  hidden: boolean;
   reducedMotion: boolean;
   frameState: FrameState;
   onSelect: () => void;
@@ -221,6 +223,7 @@ export default function Orb({
   isActive,
   isOpen,
   splitDistance,
+  hidden,
   reducedMotion,
   frameState,
   onSelect,
@@ -234,6 +237,7 @@ export default function Orb({
 
   const split = useRef({ x: 0, v: 0 });
   const scaleSpring = useRef({ x: targetScale, v: 0 });
+  const initialized = useRef(false);
   const posVel = useMemo(() => new THREE.Vector3(), []);
   const accel = useMemo(() => new THREE.Vector3(), []);
   const crack = useRef(0);
@@ -389,6 +393,16 @@ export default function Orb({
     const dt = Math.min(delta, 1 / 30);
     const s = split.current;
 
+    // The group transform is owned by the springs, never by JSX props:
+    // prop-driven position/scale would snap orbs to their new slots the
+    // moment `active` changes, killing the transition animation.
+    if (!initialized.current) {
+      group.position.copy(target);
+      group.scale.setScalar(targetScale);
+      scaleSpring.current.x = targetScale;
+      initialized.current = true;
+    }
+
     // ---- Phase logic: crack first, then split; rejoin, then seal ------
     if (isOpen) {
       crack.current = Math.min(1, crack.current + dt / CRACK_S);
@@ -439,8 +453,10 @@ export default function Orb({
     group.scale.setScalar(
       Math.max(0.001, scaleSpring.current.x) * (1 + open * 0.08),
     );
-    // Orbs shrunk away by the single-orb layout are fully hidden
-    group.visible = group.scale.x > 0.015;
+    // Orbs shrunk away by the single-orb layout are fully hidden once the
+    // shrink-out settles (the brief shrink itself stays visible so
+    // transitions read as one orb leaving while the next arrives)
+    group.visible = group.scale.x > 0.015 && (!hidden || group.scale.x > 0.02);
 
     // Hemispheres separate and tilt: top back, bottom forward
     top.position.y = splitDistance * s.x;
@@ -487,13 +503,13 @@ export default function Orb({
   return (
     <group
       ref={groupRef}
-      position={target}
-      scale={targetScale}
       onClick={(e) => {
+        if (hidden) return;
         e.stopPropagation();
         onSelect();
       }}
       onPointerOver={(e) => {
+        if (hidden) return;
         e.stopPropagation();
         setHovered(true);
       }}

@@ -259,6 +259,7 @@ export default function OrbCarousel({
               isActive={slot === 0}
               isOpen={slot === 0 && open}
               splitDistance={splitDistance}
+              hidden={singleOrb && slot !== 0}
               reducedMotion={reducedMotion}
               frameState={frameState.current}
               onSelect={() => onOrbClick(i)}

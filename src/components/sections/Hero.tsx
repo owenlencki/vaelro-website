@@ -322,6 +322,11 @@ export default function Hero({ start }: HeroProps) {
               delay: open && !reducedMotion ? 0.35 : 0,
               ease: "easeOut",
             }}
+            className={
+              mode === "desktop"
+                ? "rounded-[12px] bg-[rgba(10,10,10,0.75)] px-6 py-4 backdrop-blur-[8px]"
+                : ""
+            }
           >
             <motion.div
               key={active}

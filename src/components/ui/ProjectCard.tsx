@@ -19,9 +19,13 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
         href: project.url,
         target: "_blank",
         rel: "noopener noreferrer",
-        "aria-label": `${project.title} — view live project`,
+        "aria-label": `${project.title}: view live site`,
       }
     : {};
+
+  const builtByVaelro = project.category === "Built by Vaelro";
+  const inDevelopment = project.metrics?.includes("In development") ?? false;
+  const metrics = project.metrics?.filter((m) => m !== "In development") ?? [];
 
   return (
     <Root
@@ -66,23 +70,38 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
           </div>
         )}
 
-        {/* Hover overlay */}
-        <div className="absolute inset-0 flex items-end bg-gradient-to-t from-ink-900/80 via-ink-900/20 to-transparent p-5 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-          <span className="font-semibold text-cream-100">
-            {project.url ? "View Project →" : "Case Study"}
-          </span>
-        </div>
+        {/* Hover overlay, only for cards that link somewhere */}
+        {project.url && (
+          <div className="absolute inset-0 flex items-end bg-gradient-to-t from-ink-900/80 via-ink-900/20 to-transparent p-5 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <span className="font-semibold text-cream-100">
+              View live site →
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Body */}
       <div className="flex grow flex-col p-6 md:p-7">
         <div className="flex items-center justify-between gap-3">
-          <span className="rounded-full border border-orange-300 bg-orange-50 px-3 py-0.5 font-mono text-[0.65rem] tracking-[0.12em] text-orange-700 uppercase">
-            {project.category}
-          </span>
-          {project.metrics && (
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              className={`rounded-full px-3 py-0.5 font-mono text-[0.65rem] tracking-[0.12em] uppercase ${
+                builtByVaelro
+                  ? "bg-ink-900 text-cream-100"
+                  : "border border-orange-300 bg-orange-50 text-orange-700"
+              }`}
+            >
+              {project.category}
+            </span>
+            {inDevelopment && (
+              <span className="rounded-full border border-cream-300 bg-cream-100 px-3 py-0.5 font-mono text-[0.65rem] tracking-[0.12em] text-ink-600 uppercase">
+                In development
+              </span>
+            )}
+          </div>
+          {metrics.length > 0 && (
             <span className="hidden truncate font-mono text-[0.65rem] text-muted sm:block">
-              {project.metrics.join(" · ")}
+              {metrics.join(" · ")}
             </span>
           )}
         </div>
@@ -99,16 +118,22 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
           {project.description}
         </p>
 
-        <div className="mt-5 flex flex-wrap gap-2">
-          {project.techStack.map((tech) => (
-            <span
-              key={tech}
-              className="rounded-full border border-cream-300 bg-cream-100 px-3 py-1 font-mono text-xs text-ink-600"
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
+        {project.testimonial && (
+          <figure className="mt-5 border-t border-cream-300 pt-4">
+            <blockquote className="font-serif italic leading-relaxed text-ink-900">
+              “{project.testimonial.quote}”
+            </blockquote>
+            <figcaption className="mt-2 text-sm text-muted">
+              {project.testimonial.name}, {project.testimonial.role}
+            </figcaption>
+          </figure>
+        )}
+
+        {project.url && (
+          <span className="nav-link mt-5 inline-flex items-center gap-1 self-start font-semibold text-orange-600 group-hover:text-orange-700">
+            View live site <span aria-hidden="true">→</span>
+          </span>
+        )}
       </div>
     </Root>
   );

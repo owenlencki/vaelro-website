@@ -1,13 +1,33 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  lazy,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+  type TouchEvent,
+} from "react";
+import {
+  motion,
+  useInView,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import SplitText from "../ui/SplitText";
 import MagneticButton from "../ui/MagneticButton";
+import { BOOKING_URL } from "../../lib/booking";
 import { useLenisContext } from "../../hooks/useLenis";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
+import {
+  ORB_COUNT,
+  SERVICES,
+  type OverlayNodes,
+} from "../3d/services";
 
 // Three.js loads in its own chunk so hero text paints first (LCP)
-const ParticleNetwork = lazy(() => import("../3d/ParticleNetwork"));
+const OrbCarousel = lazy(() => import("../3d/OrbCarousel"));
+
+const CYCLE_MS = 5000;
+const RESUME_MS = 8000;
 
 interface HeroProps {
   /** False while the preloader is covering the page. */
@@ -35,7 +55,102 @@ export default function Hero({ start }: HeroProps) {
   const reducedMotion = usePrefersReducedMotion();
   const { scrollTo } = useLenisContext();
 
-  // Hero content parallaxes up and fades as you scroll into the marquee
+  // ---- Orb carousel state ------------------------------------------------
+  const [active, setActive] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const pauseTimer = useRef<number | undefined>(undefined);
+  const touchX = useRef<number | null>(null);
+  const inView = useInView(ref, { amount: 0.3 });
+  const overlayNodes = useRef<OverlayNodes>({
+    labels: new Array(ORB_COUNT).fill(null),
+    ring: null,
+    desc: null,
+  });
+
+  const cycling = start && inView && !paused;
+
+  // ---- Orb transition sequencer -------------------------------------
+  // Moving between orbs closes the current one with its own reveal
+  // mechanic first, re-slots the orbs, then opens the next one.
+  const seqTimers = useRef<number[]>([]);
+  const clearSeq = () => {
+    seqTimers.current.forEach((t) => window.clearTimeout(t));
+    seqTimers.current = [];
+  };
+  const later = (fn: () => void, ms: number) =>
+    seqTimers.current.push(window.setTimeout(fn, ms));
+
+  const CLOSE_MS = reducedMotion ? 50 : 420; // spring close settles
+  const MOVE_MS = reducedMotion ? 50 : 650; // orbit re-arrangement
+
+  function goTo(next: number, openAfter: boolean) {
+    clearSeq();
+    const move = () => {
+      setActive(next);
+      if (openAfter) later(() => setOpen(true), MOVE_MS);
+    };
+    if (open) {
+      setOpen(false);
+      later(move, CLOSE_MS);
+    } else {
+      move();
+    }
+  }
+
+  // Auto-cycle: close the current orb, advance, open the next. The timer
+  // restarts on any state change, so it waits for the full open state.
+  useEffect(() => {
+    if (!cycling) return;
+    const timer = window.setTimeout(() => {
+      goTo((active + 1) % ORB_COUNT, true);
+    }, CYCLE_MS);
+    return () => window.clearTimeout(timer);
+  }, [cycling, active, open]);
+
+  useEffect(
+    () => () => {
+      window.clearTimeout(pauseTimer.current);
+      clearSeq();
+    },
+    [],
+  );
+
+  /** Wrap user interactions: pause the auto-cycle, resume after 8s idle. */
+  function interact(action: () => void) {
+    setPaused(true);
+    window.clearTimeout(pauseTimer.current);
+    pauseTimer.current = window.setTimeout(
+      () => setPaused(false),
+      RESUME_MS,
+    );
+    action();
+  }
+
+  const selectOrb = (i: number) =>
+    interact(() => {
+      if (i === active) {
+        clearSeq();
+        setOpen((o) => !o);
+      } else {
+        goTo(i, false);
+      }
+    });
+
+  const step = (dir: 1 | -1) =>
+    interact(() => goTo((active + dir + ORB_COUNT) % ORB_COUNT, false));
+
+  function onTouchStart(e: TouchEvent) {
+    touchX.current = e.touches[0].clientX;
+  }
+  function onTouchEnd(e: TouchEvent) {
+    if (touchX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    touchX.current = null;
+    if (Math.abs(dx) > 55) step(dx < 0 ? 1 : -1);
+  }
+
+  // ---- Hero content scroll parallax (unchanged) ---------------------------
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -52,13 +167,22 @@ export default function Hero({ start }: HeroProps) {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-svh items-center overflow-hidden bg-ink-900"
+      className="group relative flex min-h-svh items-center overflow-hidden bg-ink-900 max-md:min-h-[calc(100svh+140px)] max-md:items-start"
       aria-label="Intro"
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
     >
-      {/* Layer 1 — 3D constellation */}
+      {/* Layer 1: interactive orb carousel in a particle field */}
       <div className="absolute inset-0 z-0">
         <Suspense fallback={null}>
-          <ParticleNetwork isMobile={isMobile} reducedMotion={reducedMotion} />
+          <OrbCarousel
+            active={active}
+            open={open}
+            isMobile={isMobile}
+            reducedMotion={reducedMotion}
+            onOrbClick={selectOrb}
+            overlay={overlayNodes}
+          />
         </Suspense>
       </div>
       {/* Soft vignette so text stays readable over bright clusters */}
@@ -67,16 +191,176 @@ export default function Hero({ start }: HeroProps) {
         aria-hidden="true"
       />
 
-      {/* Layer 2 — HTML content */}
+      {/* Orb overlay: labels, description, progress ring, dots, arrows.
+          Positions of labels/ring/desc are written imperatively by the 3D
+          scene's projector, so they track the orbs at 60fps. */}
+      <div className="pointer-events-none absolute inset-0 z-[5]">
+        {/* Orb labels (desktop only; mobile is a single-orb carousel) */}
+        {SERVICES.map((service, i) => (
+          <button
+            key={service.id}
+            ref={(el) => {
+              overlayNodes.current.labels[i] = el;
+            }}
+            type="button"
+            onClick={() => selectOrb(i)}
+            className={`invisible absolute top-0 left-0 min-h-9 px-3 font-mono tracking-[0.18em] uppercase transition-[color,opacity] duration-300 pointer-events-auto max-md:hidden ${
+              i === active
+                ? "text-xs text-cream-100"
+                : "text-[0.65rem] text-cream-100/45 hover:text-cream-100/80"
+            } ${
+              // The description title replaces the active label while open
+              i === active && open ? "!pointer-events-none opacity-0" : ""
+            }`}
+          >
+            {service.name}
+          </button>
+        ))}
+
+        {/* Cycle progress ring around the active orb */}
+        <div
+          ref={(el) => {
+            overlayNodes.current.ring = el;
+          }}
+          className="invisible absolute top-0 left-0"
+          aria-hidden="true"
+        >
+          {cycling && !reducedMotion && (
+            <svg
+              className="h-full w-full -rotate-90"
+              viewBox="0 0 100 100"
+              fill="none"
+            >
+              <circle
+                cx="50"
+                cy="50"
+                r="48"
+                stroke="rgba(245,240,232,0.1)"
+                strokeWidth="1.5"
+              />
+              <motion.circle
+                key={`${active}-${open}`}
+                cx="50"
+                cy="50"
+                r="48"
+                pathLength="1"
+                stroke="rgba(212,116,59,0.75)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeDasharray="1"
+                initial={{ strokeDashoffset: 1 }}
+                animate={{ strokeDashoffset: 0 }}
+                transition={{ duration: CYCLE_MS / 1000, ease: "linear" }}
+              />
+            </svg>
+          )}
+        </div>
+
+        {/* Description stack: plain text below the orb arrangement (no card,
+            no box), with the nav dots underneath. Projector-positioned on
+            desktop; CSS-anchored bottom-center on mobile. */}
+        <div
+          ref={(el) => {
+            overlayNodes.current.desc = el;
+          }}
+          className="invisible absolute top-0 left-0 w-[min(300px,84vw)] text-center max-md:top-auto max-md:bottom-3 max-md:left-1/2 max-md:-translate-x-1/2"
+        >
+          {/* Always mounted: fades up in sync with the orb's split, fades
+              down before the next orb opens. The inner block remounts per
+              service. Avoids AnimatePresence exit coordination, which
+              wedges under rapid cycle interruptions. */}
+          <motion.div
+            initial={false}
+            animate={{
+              opacity: open ? 1 : 0,
+              y: reducedMotion ? 0 : open ? 0 : 12,
+            }}
+            transition={{
+              duration: reducedMotion ? 0.15 : 0.3,
+              delay: open && !reducedMotion ? 0.1 : 0,
+              ease: "easeOut",
+            }}
+          >
+            <motion.div
+              key={active}
+              initial={reducedMotion ? false : { opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, delay: 0.08 }}
+            >
+              <h3 className="font-serif text-[16px] font-bold text-white">
+                {SERVICES[active].title}
+              </h3>
+              <p className="mx-auto mt-1.5 max-w-[280px] text-[12px] leading-relaxed text-white/55">
+                {SERVICES[active].desc}
+              </p>
+              <button
+                type="button"
+                tabIndex={open ? 0 : -1}
+                onClick={() => scrollTo("#services", { offset: -88 })}
+                className={`mt-2 inline-flex min-h-8 items-center font-mono text-[10px] tracking-[0.15em] text-orange-400 uppercase transition-colors duration-200 hover:text-orange-300 ${
+                  open ? "pointer-events-auto" : "pointer-events-none"
+                }`}
+              >
+                Learn more ↓
+              </button>
+            </motion.div>
+          </motion.div>
+
+          {/* Nav dots, below the text area */}
+          <div className="pointer-events-auto mt-1 flex items-center justify-center">
+            {SERVICES.map((service, i) => (
+              <button
+                key={service.id}
+                type="button"
+                aria-label={`Show ${service.name}`}
+                aria-current={i === active}
+                onClick={() => selectOrb(i)}
+                className="flex h-10 w-7 items-center justify-center"
+              >
+                <span
+                  className={`block h-2 rounded-full transition-all duration-300 ${
+                    i === active
+                      ? "w-5 bg-orange-500"
+                      : "w-2 bg-cream-100/30 hover:bg-cream-100/60"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Arrows on the sides of the orb area (desktop, subtle) */}
+        <button
+          type="button"
+          aria-label="Previous service"
+          onClick={() => step(-1)}
+          className="pointer-events-auto absolute top-1/2 left-[53%] hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-cream-100/15 text-cream-100/60 opacity-0 transition-[opacity,color,border-color] duration-300 group-hover:opacity-100 hover:border-cream-100/40 hover:text-white focus-visible:opacity-100 md:flex"
+        >
+          <span aria-hidden="true">←</span>
+        </button>
+        <button
+          type="button"
+          aria-label="Next service"
+          onClick={() => step(1)}
+          className="pointer-events-auto absolute top-1/2 right-[2%] hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-cream-100/15 text-cream-100/60 opacity-0 transition-[opacity,color,border-color] duration-300 group-hover:opacity-100 hover:border-cream-100/40 hover:text-white focus-visible:opacity-100 md:flex"
+        >
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+
+      {/* Layer 2: HTML content. pointer-events-none lets clicks reach the
+          orbs; the CTA row re-enables them for its buttons. */}
       <motion.div
-        className="container-site relative z-10 pt-24 pb-20 md:pt-28"
-        style={reducedMotion ? undefined : { y: contentY, opacity: contentOpacity }}
+        className="container-site pointer-events-none relative z-10 pt-24 pb-20 md:pt-28"
+        style={
+          reducedMotion ? undefined : { y: contentY, opacity: contentOpacity }
+        }
       >
         <motion.p
           className="mb-6 font-mono text-xs tracking-[0.2em] text-orange-300 uppercase md:text-sm"
           {...fadeUp(0.2)}
         >
-          AI-Powered Agency · Waupaca, WI
+          Web & Automation Agency · Waupaca, WI
         </motion.p>
 
         <h1 className="max-w-4xl font-serif text-display font-bold text-cream-100 [text-shadow:0_2px_24px_rgba(13,13,12,0.5)]">
@@ -97,15 +381,17 @@ export default function Hero({ start }: HeroProps) {
           more time, more customers, and less chaos.
         </motion.p>
 
-        <div className="mt-10 flex flex-wrap items-center gap-6">
+        <div className="pointer-events-auto mt-10 flex flex-wrap items-center gap-6">
           <motion.div {...fadeUp(1.3)}>
             <MagneticButton>
-              <Link
-                to="/contact"
+              <a
+                href={BOOKING_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex min-h-12 items-center rounded-full bg-orange-500 px-8 py-3.5 text-base font-bold text-white shadow-[0_8px_30px_rgba(212,116,59,0.35)] transition-colors duration-200 hover:bg-orange-600"
               >
                 Book a Free Consultation
-              </Link>
+              </a>
             </MagneticButton>
           </motion.div>
 

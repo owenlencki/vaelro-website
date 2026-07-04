@@ -4,11 +4,13 @@
 // needed. Leave `image` as an empty string for a designed placeholder card.
 // ---------------------------------------------------------------------------
 
-import maverickImg from "../assets/portfolio/maverick.jpg";
-import harvestFestImg from "../assets/portfolio/harvest-fest.jpg";
-import workflowImg from "../assets/portfolio/workflow.jpg";
+import waypointImg from "../assets/portfolio/waypoint-knowledge-hub.jpg";
+import maverickImg from "../assets/portfolio/maverick-dashboard.jpg";
+import harvestFestImg from "../assets/portfolio/harvest-fest-site.jpg";
+import udoniSalanImg from "../assets/portfolio/udoni-salan-email.jpg";
+import meridianImg from "../assets/portfolio/meridian-dashboard.jpg";
 
-export type ProjectCategory = "Website" | "Product" | "Automation" | "AI System";
+export type ProjectCategory = "Client Work" | "Built by Vaelro";
 
 export interface Project {
   id: string;
@@ -17,79 +19,81 @@ export interface Project {
   description: string;
   metrics?: string[];
   techStack: string[];
-  /** Path to a screenshot/mockup. Empty string renders a designed placeholder. */
-  image: string;
-  /** Link to the live project, if public. */
+  image?: string;
   url?: string;
   featured: boolean;
+  testimonial?: {
+    quote: string;
+    name: string;
+    role: string;
+  } | null;
 }
 
 export const projects: Project[] = [
   {
-    id: "maverick",
-    title: "Maverick — CK Flight Tracker",
-    category: "Product",
+    id: "waypoint",
+    title: "Waypoint Financial Solutions",
+    category: "Client Work",
     description:
-      "A full flight school management platform built for CK Aviation. Student scheduling, flight logging, instructor management, and progress tracking — replacing spreadsheets and paper logs with a real system.",
-    metrics: ["Live in production", "Next.js + Supabase"],
-    techStack: ["Next.js 15", "Supabase", "Prisma", "Tailwind", "shadcn/ui"],
+      "A 13-person financial advisory firm was losing hours every week to manual document prep, client tracking, and meeting logistics. We built five custom tools that automate distribution info generation, RMD tracking, prospect meeting prep, client milestones, and conference capture.",
+    metrics: ["5 production tools", "13-person firm"],
+    techStack: ["n8n", "Anthropic API", "Google Workspace"],
+    image: waypointImg,
+    featured: true,
+    testimonial: null,
+  },
+  {
+    id: "maverick",
+    title: "Maverick",
+    category: "Built by Vaelro",
+    description:
+      "Flight schools run on spreadsheets and paper logs. We built a full management platform for student scheduling, flight logging, instructor tracking, and progress monitoring. Live in production.",
+    metrics: ["Live in production", "Full-stack platform"],
+    techStack: ["Next.js", "Supabase", "Prisma", "Tailwind"],
     image: maverickImg,
     url: "https://ck-flight-tracker.netlify.app",
     featured: true,
-  },
-  {
-    id: "meridian",
-    title: "Meridian — Property Performance Platform",
-    category: "Product",
-    description:
-      "A performance dashboard for small landlords to track property financials, maintenance, and tenant data in one place. Built to replace the spreadsheet chaos most independent landlords operate in.",
-    metrics: ["In active development"],
-    techStack: ["React", "TypeScript", "Tailwind"],
-    image: "",
-    featured: true,
-  },
-  {
-    id: "waypoint",
-    title: "Waypoint Financial Solutions — AI Operations Suite",
-    category: "Automation",
-    description:
-      "Five custom AI-powered tools built for a 13-person financial advisory firm: automated distribution info generation, RMD tracking, prospect meeting prep, client milestone tracking, and conference capture. Replaced hours of weekly manual work.",
-    metrics: ["5 production tools", "13-person firm"],
-    techStack: ["n8n", "Anthropic API", "Google Workspace"],
-    image: workflowImg,
-    featured: true,
+    testimonial: null,
   },
   {
     id: "harvest-fest",
-    title: "715 Harvest Fest — Event Platform",
-    category: "Website",
+    title: "715 Harvest Fest",
+    category: "Client Work",
     description:
-      "A complete event website and vendor application system for Waupaca's 715 Harvest Fest. Online vendor registration, event information, and sponsor showcase — all managed through a headless CMS.",
-    metrics: ["Launched and live", "Vendor management system"],
+      "Waupaca's 715 Harvest Fest needed a way for vendors to apply online and for organizers to track applications and event logistics. We built a complete event platform with an integrated vendor application and tracking system, plus the full marketing site.",
+    metrics: ["Live event platform", "Vendor management system"],
     techStack: ["React", "Sanity CMS", "Netlify"],
     image: harvestFestImg,
-    featured: false,
+    url: "https://715harvestfest.com",
+    featured: true,
+    testimonial: null,
   },
   {
-    id: "united-country",
-    title: "United Country Real Estate — AI Email System",
-    category: "Automation",
+    id: "udoni-salan",
+    title: "Udoni & Salan Real Estate",
+    category: "Client Work",
     description:
-      "AI-powered listing email generator that writes property descriptions in the agent's voice, plus an automated agent onboarding system and listing intake workflow. Built to save hours per listing.",
-    metrics: ["AI email generation", "Automated onboarding"],
+      "A real estate team was managing new listing intake on paper and manually importing data into their systems. We built a digital intake form that automatically routes listing information exactly where it needs to go, an AI email generator that writes property descriptions in the agent's voice, and an automated onboarding system for new agents.",
+    metrics: [
+      "AI email generation",
+      "Automated onboarding",
+      "Digital intake system",
+    ],
     techStack: ["n8n", "Anthropic API", "Google Apps Script", "Notion"],
-    image: "",
+    image: udoniSalanImg,
     featured: false,
+    testimonial: null,
   },
   {
-    id: "icc",
-    title: "Indian Crossing Casino — Web Platform",
-    category: "Website",
+    id: "meridian",
+    title: "Meridian",
+    category: "Built by Vaelro",
     description:
-      "Custom event management website with a branded CMS dashboard for a Wisconsin casino. Real-time content management for events, weddings, dining, and promotions — no developer needed for updates.",
-    metrics: ["Custom CMS dashboard", "Real-time content"],
-    techStack: ["React", "Vite", "Sanity CMS", "TypeScript", "Tailwind"],
-    image: "",
+      "Small landlords manage their properties in spreadsheets and shoeboxes. We built a performance dashboard that tracks property financials, maintenance schedules, and tenant data in one place. Currently in development.",
+    metrics: ["In development"],
+    techStack: ["React", "TypeScript", "Tailwind"],
+    image: meridianImg,
     featured: false,
+    testimonial: null,
   },
 ];

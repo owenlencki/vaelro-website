@@ -1,6 +1,6 @@
 # Vaelro Website
 
-Marketing site for [vaelro.co](https://vaelro.co) — a two-person AI automation
+Marketing site for [vaelro.co](https://vaelro.co), a two-person AI automation
 and web agency in Waupaca, WI.
 
 React 19 · Vite · TypeScript · Tailwind CSS v4 · React Three Fiber · Framer
@@ -17,16 +17,16 @@ npm run preview  # serve the production build locally
 
 ## Editing content
 
-- **Portfolio projects** — edit [`src/data/projects.ts`](src/data/projects.ts).
+- **Portfolio projects**: edit [`src/data/projects.ts`](src/data/projects.ts).
   Add an object to the array; leave `image` empty for a designed placeholder
   card. No component changes needed.
-- **Testimonials** — edit
+- **Testimonials**: edit
   [`src/data/testimonials.ts`](src/data/testimonials.ts). Set
   `testimonialsArePlaceholders` to `false` once real reviews are in to hide
   the placeholder footnote.
-- **Booking URL** — replace the `PLACEHOLDER` Google Calendar appointment URL
+- **Booking URL**: replace the `PLACEHOLDER` Google Calendar appointment URL
   in [`src/components/sections/BookingEmbed.tsx`](src/components/sections/BookingEmbed.tsx).
-- **Contact form** — currently logs to the console. Wire the submit handler in
+- **Contact form**: currently logs to the console. Wire the submit handler in
   [`src/components/sections/ContactForm.tsx`](src/components/sections/ContactForm.tsx)
   to the n8n webhook.
 

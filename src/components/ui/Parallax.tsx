@@ -5,7 +5,7 @@ import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 
 interface ParallaxProps {
   children: ReactNode;
-  /** Offset multiplier — higher = more movement. */
+  /** Offset multiplier; higher = more movement. */
   speed?: number;
   className?: string;
 }

@@ -8,9 +8,8 @@ import { projects, type ProjectCategory } from "../../data/projects";
 const FILTERS: Array<{ label: string; categories: ProjectCategory[] | null }> =
   [
     { label: "All", categories: null },
-    { label: "Websites", categories: ["Website"] },
-    { label: "Products", categories: ["Product"] },
-    { label: "Automation", categories: ["Automation", "AI System"] },
+    { label: "Client Work", categories: ["Client Work"] },
+    { label: "Built by Vaelro", categories: ["Built by Vaelro"] },
   ];
 
 export default function Portfolio() {
@@ -34,7 +33,7 @@ export default function Portfolio() {
         </h2>
         <Reveal delay={0.2}>
           <p className="mt-5 max-w-xl text-lead text-ink-600">
-            Products, platforms, websites, and AI systems — built and running.
+            Products, platforms, websites, and AI systems, built and running.
           </p>
         </Reveal>
 

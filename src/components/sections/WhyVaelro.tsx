@@ -35,21 +35,19 @@ const BLOCKS: Array<{
     number: "01",
     heading: (
       <>
-        You <Highlight>own everything</Highlight>.
+        <Highlight>No lock-in</Highlight>. Ever.
       </>
     ),
-    body: "Your domain, your code, your hosting, your data. No lock-in. No hostage games. Ever.",
+    body: "Everything we build is yours. Your domain, your code, your data. If you ever want to move on, you take it all with you. No hostage games, no transfer fees.",
   },
   {
     number: "02",
-    heading: <>Built to last.</>,
-    body: (
+    heading: (
       <>
-        Our sites load in <Highlight>under 2 seconds</Highlight>, cost dollars
-        per month to host, and don't need constant security patches. No
-        WordPress. No Wix.
+        Built on <Highlight>modern infrastructure</Highlight>.
       </>
     ),
+    body: "Our sites load in under 2 seconds and cost a few dollars a month to host. No constant security patches, no plugin updates breaking things overnight.",
   },
   {
     number: "03",
@@ -67,7 +65,7 @@ const BLOCKS: Array<{
         We <Highlight>don't disappear</Highlight>.
       </>
     ),
-    body: "Monthly support that keeps your systems running and improving. We're your tech team, not a one-and-done vendor.",
+    body: "We're not a one-and-done vendor. We stay on as your technology partner, keeping your systems running and improving month after month. Your growth is our growth.",
   },
 ];
 

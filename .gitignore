@@ -13,3 +13,6 @@ dist
 
 # Logs
 npm-debug.log*
+
+# TypeScript incremental build info
+tsconfig.tsbuildinfo

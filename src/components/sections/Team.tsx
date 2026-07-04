@@ -12,14 +12,14 @@ const TEAM = [
     role: "Co-founder",
     photo: owenImg,
     alt: "Owen Lencki speaking at an event",
-    bio: "Sales, strategy, client relationships, and website builds. College sophomore and D3 athlete at UW-Stevens Point who started Vaelro because local businesses deserve technology that actually works for them.",
+    bio: "Owen grew up in the Waupaca area, and he started Vaelro after watching local businesses wrestle with outdated websites and hours of manual work that software should be handling. He's a college sophomore and D3 athlete at UW-Stevens Point, and he brings that same discipline to client work. At Vaelro he leads client relationships, sales, strategy, and website builds. When you work with us, Owen is the one picking up the phone.",
   },
   {
     name: "Liam Bloedow",
     role: "Co-founder",
     photo: liamImg,
     alt: "Liam Bloedow explaining a system at a whiteboard",
-    bio: "Automation architect and infrastructure lead. Builds the n8n workflows, manages deployments, and makes the systems run. Currently working with Higgsfield AI on next-generation video content.",
+    bio: "Liam is the automation and infrastructure lead, which is a technical way of saying he makes everything actually work. He builds the n8n workflows, manages deployments, and handles the architecture behind every system we ship. He's currently working with Higgsfield AI on next-generation video content. If it's running in production, Liam is the reason it keeps running.",
   },
 ];
 
@@ -46,7 +46,7 @@ export default function Team() {
           {TEAM.map((member, i) => (
             <div key={member.name}>
               {/* Masked photo reveal + parallax. The observed wrapper stays
-                  unclipped — a fully clip-pathed element never intersects,
+                  unclipped; a fully clip-pathed element never intersects,
                   so whileInView on the mask itself would deadlock. */}
               <motion.div
                 initial="hidden"

@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// TESTIMONIAL DATA — placeholder content for now.
+// TESTIMONIAL DATA: placeholder content for now.
 // Drop real client quotes in here as they come in; the section renders
 // whatever is in this array with zero design changes. Replace `name` with the
 // real person's name and `business` with their business name.
@@ -19,7 +19,7 @@ export const testimonialsArePlaceholders = true;
 export const testimonials: Testimonial[] = [
   {
     quote:
-      "They rebuilt our whole web presence and set up systems we didn't know were possible. Everything just works now — and when we need something, they answer.",
+      "They rebuilt our whole web presence and set up systems we didn't know were possible. Everything just works now, and when we need something, they answer.",
     name: "Client Name",
     business: "Local Business · Waupaca, WI",
     rating: 5,

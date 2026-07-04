@@ -1,10 +1,6 @@
 import Reveal from "../ui/Reveal";
 import MagneticButton from "../ui/MagneticButton";
-
-// Owen: replace PLACEHOLDER with the real Google Calendar appointment
-// schedule URL once it's set up. Everything else stays as-is.
-const BOOKING_URL =
-  "https://calendar.google.com/calendar/appointments/schedules/PLACEHOLDER";
+import { BOOKING_URL } from "../../lib/booking";
 
 /** Primary conversion moment: Google Calendar appointment scheduling. */
 export default function BookingEmbed() {

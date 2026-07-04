@@ -31,7 +31,7 @@ export function useLenisContext() {
 
 /**
  * Initializes Lenis smooth scroll for the whole app. Disabled entirely when
- * the user prefers reduced motion — native scrolling takes over.
+ * the user prefers reduced motion; native scrolling takes over.
  */
 export function LenisProvider({ children }: { children: ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);

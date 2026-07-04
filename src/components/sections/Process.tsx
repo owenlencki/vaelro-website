@@ -9,7 +9,7 @@ const STEPS = [
     number: "1",
     title: "Discovery",
     tagline: "You talk. We listen.",
-    body: "A 30-minute conversation about your business, pain points, and what's costing you time. No pitch — just questions.",
+    body: "A 30-minute conversation about your business, pain points, and what's costing you time. No pitch, just questions.",
   },
   {
     number: "2",
@@ -50,7 +50,7 @@ export default function Process() {
         </h2>
 
         <div ref={trackRef} className="relative mt-16 md:mt-20">
-          {/* Connecting line — draws on scroll (left rail on mobile, center on md+) */}
+          {/* Connecting line, draws on scroll (left rail on mobile, center on md+) */}
           <svg
             className="absolute top-0 left-[27px] h-full w-[3px] md:left-1/2 md:-translate-x-1/2"
             viewBox="0 0 3 100"

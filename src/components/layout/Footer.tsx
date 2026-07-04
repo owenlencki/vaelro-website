@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Reveal from "../ui/Reveal";
-import logoIcon from "../../assets/logos/logo-icon.png";
+import logoCream from "../../assets/logos/logo-horizontal-cream.png";
 
 export default function Footer() {
   return (
@@ -10,13 +10,17 @@ export default function Footer() {
           <div className="flex flex-col items-start justify-between gap-10 md:flex-row md:items-center">
             <Link
               to="/"
-              className="flex min-h-11 items-center gap-3"
-              aria-label="Vaelro — home"
+              className="flex min-h-11 items-center"
+              aria-label="Vaelro home"
             >
-              <img src={logoIcon} alt="" width="40" height="40" loading="lazy" />
-              <span className="font-serif text-xl font-bold tracking-[0.12em]">
-                VAELRO
-              </span>
+              <img
+                src={logoCream}
+                alt="Vaelro"
+                width="791"
+                height="200"
+                loading="lazy"
+                className="h-10 w-auto"
+              />
             </Link>
 
             <div className="flex flex-col gap-3 text-[0.95rem] sm:flex-row sm:items-center sm:gap-8">
@@ -38,8 +42,14 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="mt-10 border-t border-cream-100/10 pt-6 text-sm text-cream-100/50">
-            © 2026 Vaelro LLC
+          <div className="mt-10 flex flex-col gap-3 border-t border-cream-100/10 pt-6 text-sm text-cream-100/50 sm:flex-row sm:items-center sm:justify-between">
+            <span>© 2026 Vaelro LLC. All rights reserved.</span>
+            <a
+              href="#"
+              className="nav-link inline-flex min-h-11 items-center text-cream-100/50 hover:text-cream-100"
+            >
+              Privacy Policy
+            </a>
           </div>
         </Reveal>
       </div>

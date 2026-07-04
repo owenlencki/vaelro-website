@@ -8,7 +8,9 @@ import {
 } from "framer-motion";
 import { useLenisContext } from "../../hooks/useLenis";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
-import logoIcon from "../../assets/logos/logo-icon.png";
+import { BOOKING_URL } from "../../lib/booking";
+import logoCream from "../../assets/logos/logo-horizontal-cream.png";
+import logoDark from "../../assets/logos/logo-horizontal-dark.png";
 import type { MouseEvent } from "react";
 
 const NAV_OFFSET = -88;
@@ -87,20 +89,27 @@ export default function Navbar() {
           aria-label="Main"
           className="container-site flex h-16 items-center justify-between gap-4 md:h-20"
         >
-          {/* Wordmark */}
+          {/* Logo lockup. Both variants render so the scroll transition
+              swaps instantly with no refetch. */}
           <Link
             to="/"
-            className="flex min-h-11 items-center gap-2.5"
-            aria-label="Vaelro — home"
+            className="flex min-h-11 items-center"
+            aria-label="Vaelro home"
           >
-            <img src={logoIcon} alt="" width="34" height="34" />
-            <span
-              className={`font-serif text-lg font-bold tracking-[0.12em] ${
-                transparent ? "text-cream-100" : "text-ink-900"
-              }`}
-            >
-              VAELRO
-            </span>
+            <img
+              src={logoCream}
+              alt="Vaelro"
+              width="791"
+              height="200"
+              className={`h-9 w-auto ${transparent ? "" : "hidden"}`}
+            />
+            <img
+              src={logoDark}
+              alt="Vaelro"
+              width="791"
+              height="200"
+              className={`h-9 w-auto ${transparent ? "hidden" : ""}`}
+            />
           </Link>
 
           {/* Desktop links */}
@@ -128,13 +137,15 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* CTA — always visible, including on mobile outside the menu */}
-            <Link
-              to="/contact"
+            {/* CTA: always visible, including on mobile outside the menu */}
+            <a
+              href={BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex min-h-11 items-center rounded-full bg-orange-500 px-5 text-[0.95rem] font-bold text-white transition-colors duration-200 hover:bg-orange-600"
             >
               Book a Call
-            </Link>
+            </a>
 
             {/* Hamburger (mobile) */}
             <button

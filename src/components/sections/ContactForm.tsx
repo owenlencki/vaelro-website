@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import Reveal from "../ui/Reveal";
 
 /**
- * Backup contact form. Currently logs to the console —
+ * Backup contact form. Currently logs to the console.
  * Owen: wire the submit handler to the n8n webhook when it's ready.
  */
 export default function ContactForm() {
@@ -43,7 +43,7 @@ export default function ContactForm() {
                 role="status"
               >
                 <p className="font-serif text-xl font-bold text-ink-900">
-                  Message sent — thanks!
+                  Message sent. Thanks!
                 </p>
                 <p className="mt-2 text-ink-600">
                   We typically respond within 24 hours.

@@ -28,7 +28,7 @@ export default function ContactPage() {
           </h1>
           <Reveal delay={0.3}>
             <p className="mx-auto mt-6 max-w-xl text-lead text-ink-600">
-              Book a free 30-minute consultation. No pitch — just a
+              Book a free 30-minute consultation. No pitch, just a
               conversation about where we can help.
             </p>
           </Reveal>

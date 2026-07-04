@@ -8,27 +8,21 @@ interface Service {
   label: string;
   title: string;
   body: string;
-  techLabel: string;
-  tech: string[];
   dark?: boolean;
 }
 
 const SERVICES: Service[] = [
   {
     number: "01",
-    label: "Custom Websites",
+    label: "Websites",
     title: "Websites That Actually Work",
-    body: "Not templates. Not WordPress. Custom-built on modern infrastructure that loads in under 2 seconds, never gets hacked, and turns visitors into customers. You own everything — code, domain, hosting, data.",
-    techLabel: "Tech",
-    tech: ["React", "Tailwind", "Headless CMS", "Cloudflare"],
+    body: "Not templates. Not WordPress. Custom-built sites on modern infrastructure that load fast, look great on every device, and turn visitors into customers. No lock-in. Everything we build is yours.",
   },
   {
     number: "02",
-    label: "AI Automation",
+    label: "Workflow Automation",
     title: "Stop Doing the Same Thing Twice",
     body: "We build workflows that handle follow-ups, scheduling, document processing, data entry, and the repetitive work your team wastes hours on every week. Custom-built, not off-the-shelf.",
-    techLabel: "Tech",
-    tech: ["n8n", "Custom Workflows", "CRM Integration", "Anthropic AI"],
     dark: true,
   },
   {
@@ -36,8 +30,6 @@ const SERVICES: Service[] = [
     label: "AI Strategy & Consulting",
     title: "Know Exactly Where AI Fits",
     body: "Not sure where to start? We audit your operations, map where AI saves real time and money, and build a concrete roadmap. No buzzwords. No hype. Just a plan that pays for itself.",
-    techLabel: "Deliverables",
-    tech: ["AI Audit", "Implementation Roadmap", "ROI Analysis"],
   },
 ];
 
@@ -105,34 +97,6 @@ export default function Services() {
               >
                 {service.body}
               </p>
-
-              <div
-                className={`mt-8 border-t pt-5 ${
-                  service.dark ? "border-cream-100/15" : "border-cream-300"
-                }`}
-              >
-                <span
-                  className={`font-mono text-[0.65rem] tracking-[0.15em] uppercase ${
-                    service.dark ? "text-cream-100/50" : "text-muted"
-                  }`}
-                >
-                  {service.techLabel}
-                </span>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {service.tech.map((t) => (
-                    <span
-                      key={t}
-                      className={`rounded-full border px-3 py-1 font-mono text-xs ${
-                        service.dark
-                          ? "border-cream-100/20 text-cream-100/80"
-                          : "border-cream-300 bg-cream-100 text-ink-600"
-                      }`}
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
             </motion.article>
           ))}
         </motion.div>

@@ -16,13 +16,13 @@ export default function AboutPage() {
             About Vaelro
           </p>
           <h1 className="max-w-3xl font-serif text-display font-bold text-ink-900">
-            <SplitText text="Two people. Real systems. No fluff." />
+            <SplitText text="We started Vaelro because local businesses deserve better technology." />
           </h1>
           <Reveal delay={0.3}>
             <p className="mt-6 max-w-2xl text-lead text-ink-600">
-              Vaelro is a two-person AI automation and web agency based in
+              Vaelro is a two-person web and automation agency based in
               Waupaca, Wisconsin. We build websites and systems for local
-              businesses that want technology working for them — not against
+              businesses that want technology working for them, not against
               them.
             </p>
           </Reveal>

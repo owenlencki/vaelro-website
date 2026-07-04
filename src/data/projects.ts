@@ -47,12 +47,10 @@ export const projects: Project[] = [
     title: "Maverick",
     category: "Built by Vaelro",
     description:
-      "Flight schools run on spreadsheets and paper logs. We built a full management platform for student scheduling, flight logging, instructor tracking, and progress monitoring. Live in production.",
-    metrics: ["Live in production", "Full-stack platform"],
+      "Flight schools run on spreadsheets and paper logs. We built a full management platform for student scheduling, flight logging, instructor tracking, and progress monitoring.",
     techStack: ["Next.js", "Supabase", "Prisma", "Tailwind"],
     image: maverickImg,
-    url: "https://ck-flight-tracker.netlify.app",
-    featured: true,
+    featured: false,
     testimonial: null,
   },
   {
@@ -89,8 +87,7 @@ export const projects: Project[] = [
     title: "Meridian",
     category: "Built by Vaelro",
     description:
-      "Small landlords manage their properties in spreadsheets and shoeboxes. We built a performance dashboard that tracks property financials, maintenance schedules, and tenant data in one place. Currently in development.",
-    metrics: ["In development"],
+      "Small landlords manage their properties in spreadsheets and shoeboxes. We built a performance dashboard that tracks property financials, maintenance schedules, and tenant data in one place.",
     techStack: ["React", "TypeScript", "Tailwind"],
     image: meridianImg,
     featured: false,

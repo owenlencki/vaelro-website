@@ -148,13 +148,23 @@ function OverlayProjector({
           ring.style.transform = `translate(-50%, -50%) translate(${cx}px, ${cy}px)`;
           ring.style.visibility = "visible";
         }
+
+        // Description: inside the split on desktop (centered on the orb),
+        // below the orb on mobile.
+        const desc = nodes.desc;
+        if (desc) {
+          desc.style.transform = isMobile
+            ? `translate(-50%, 0) translate(${cx}px, ${cy + rPx + 30}px)`
+            : `translate(-50%, -50%) translate(${cx}px, ${cy}px)`;
+          desc.style.visibility = "visible";
+        }
       }
     }
 
-    // Description stack: anchored below the whole arrangement on desktop.
-    // On mobile it's CSS-positioned; only flip it visible.
-    const desc = nodes.desc;
-    if (desc) {
+    // Nav dots: below the whole arrangement on desktop. On mobile they're
+    // CSS-anchored; only flip them visible.
+    const dots = nodes.dots;
+    if (dots) {
       if (!isMobile) {
         const layout = getGroupLayout(size.width, size.height, isMobile);
         v.set(
@@ -164,9 +174,9 @@ function OverlayProjector({
         ).project(camera);
         const ax = (v.x * 0.5 + 0.5) * size.width;
         const ay = (-v.y * 0.5 + 0.5) * size.height;
-        desc.style.transform = `translate(-50%, 0) translate(${ax}px, ${ay}px)`;
+        dots.style.transform = `translate(-50%, 0) translate(${ax}px, ${ay}px)`;
       }
-      desc.style.visibility = "visible";
+      dots.style.visibility = "visible";
     }
   });
 

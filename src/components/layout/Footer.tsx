@@ -44,12 +44,12 @@ export default function Footer() {
 
           <div className="mt-10 flex flex-col gap-3 border-t border-cream-100/10 pt-6 text-sm text-cream-100/50 sm:flex-row sm:items-center sm:justify-between">
             <span>© 2026 Vaelro LLC. All rights reserved.</span>
-            <a
-              href="#"
+            <Link
+              to="/privacy"
               className="nav-link inline-flex min-h-11 items-center text-cream-100/50 hover:text-cream-100"
             >
               Privacy Policy
-            </a>
+            </Link>
           </div>
         </Reveal>
       </div>

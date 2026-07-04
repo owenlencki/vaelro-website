@@ -1,6 +1,7 @@
 import Reveal from "../ui/Reveal";
 import MagneticButton from "../ui/MagneticButton";
 import { BOOKING_URL } from "../../lib/booking";
+import { trackEvent } from "../../lib/analytics";
 
 /** Primary conversion moment: Google Calendar appointment scheduling. */
 export default function BookingEmbed() {
@@ -23,6 +24,9 @@ export default function BookingEmbed() {
                   href={BOOKING_URL}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() =>
+                    trackEvent("booking_click", { location: "contact_page" })
+                  }
                   className="inline-flex min-h-14 items-center rounded-full bg-orange-500 px-10 py-4 text-lg font-bold text-white shadow-[0_10px_40px_rgba(212,116,59,0.35)] transition-colors duration-200 hover:bg-orange-600"
                 >
                   Book a Free Consultation

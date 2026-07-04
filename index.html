@@ -12,6 +12,20 @@
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
+    <!-- Google Analytics (GA4) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-P80CTL6MX2"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-P80CTL6MX2");
+    </script>
+
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://vaelro.co" />
@@ -21,6 +35,9 @@
       content="Custom websites and workflow automation for small businesses in Waupaca, Wisconsin. Local service, modern tech, no lock-in. Book a free consultation."
     />
     <meta property="og:image" content="https://vaelro.co/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Vaelro. Web & Automation Agency in Waupaca, WI." />
     <meta property="og:site_name" content="Vaelro" />
 
     <!-- Twitter Card -->
@@ -69,6 +86,13 @@
     </script>
   </head>
   <body>
+    <!-- Hidden mirror of the React contact form so Netlify's build bot
+         registers it. Field names must match the live form. -->
+    <form name="contact" data-netlify="true" hidden>
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <textarea name="message"></textarea>
+    </form>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

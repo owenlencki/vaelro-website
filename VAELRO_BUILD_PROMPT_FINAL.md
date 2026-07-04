@@ -1,4 +1,4 @@
-# VAELRO.CO — FULL WEBSITE BUILD
+# VAELRO.CO - FULL WEBSITE BUILD
 
 ## FABLE 5 INSTRUCTIONS
 
@@ -19,19 +19,19 @@ You have ample context. Do not suggest a new session.
 ## MISSION
 
 Build the Vaelro agency website from scratch. Three-page site with React Router:
-- **Home** (`/`) — the impressive scroll experience: 3D hero, services, portfolio, social proof, CTA
-- **About** (`/about`) — team, story, process, differentiators
-- **Contact** (`/contact`) — Google Calendar booking, contact form, info
+- **Home** (`/`) - the impressive scroll experience: 3D hero, services, portfolio, social proof, CTA
+- **About** (`/about`) - team, story, process, differentiators
+- **Contact** (`/contact`) - Google Calendar booking, contact form, info
 
 This is the portfolio and primary sales tool for a two-person AI automation and web agency based in Waupaca, Wisconsin.
 
 This site must accomplish two things simultaneously:
-1. **Impress instantly.** The scroll experience, motion design, and interactivity must make anyone — business owner, designer, developer — think "these people clearly know what they're doing." This is the site that proves Vaelro's capability without saying it.
+1. **Impress instantly.** The scroll experience, motion design, and interactivity must make anyone - business owner, designer, developer - think "these people clearly know what they're doing." This is the site that proves Vaelro's capability without saying it.
 2. **Convert local business owners.** The copy and structure must speak clearly to a non-technical small business owner in rural Wisconsin who needs a website or wants to stop doing everything manually. Premium execution, accessible language.
 
 Every CTA on the site ("Book a Free Consultation") links to `/contact`.
 
-Design north stars: Basement Studio, Locomotive, Linear.app, Vercel.com — that tier of craft adapted for a local agency. NOT a template. NOT a generic SaaS landing page. A statement piece.
+Design north stars: Basement Studio, Locomotive, Linear.app, Vercel.com - that tier of craft adapted for a local agency. NOT a template. NOT a generic SaaS landing page. A statement piece.
 
 ---
 
@@ -85,8 +85,8 @@ IMPORTANT: This cream + orange + serif palette is the most common AI-generated d
 
 ### Typography
 ```
-Headings:  Libre Baskerville (serif) — bold, letter-spacing: -0.02em to -0.03em on large sizes
-Body:      Source Sans 3 or DM Sans (NOT Inter — Inter is the #1 AI/template tell)
+Headings:  Libre Baskerville (serif) - bold, letter-spacing: -0.02em to -0.03em on large sizes
+Body:      Source Sans 3 or DM Sans (NOT Inter - Inter is the #1 AI/template tell)
 Mono:      JetBrains Mono (sparingly, for tech references)
 ```
 
@@ -95,23 +95,23 @@ Self-host all fonts. `font-display: swap`. Preload the heading and body fonts.
 Type scale: 1.333 (perfect fourth) from 16px base, using `clamp()` for fluid sizing. Hero headlines 56–80px desktop, 32–40px mobile.
 
 ### Spacing
-8px base grid. Section padding: `py-24` (96px) desktop / `py-12` (48px) mobile. Container max: 1200px. Generous whitespace — this should breathe.
+8px base grid. Section padding: `py-24` (96px) desktop / `py-12` (48px) mobile. Container max: 1200px. Generous whitespace - this should breathe.
 
 ---
 
 ## BRAND ASSETS
 
 Scan the `/assets` folder and its subfolders for all image files. Use them:
-- **`/assets/logos/`** — logo variations for nav, preloader, favicon
-- **`/assets/team/`** — real team photos of Owen and Liam for the Team section
-- **`/assets/backgrounds/`** — texture files for section backgrounds if useful
-- **`/assets/portfolio/`** — project screenshots for portfolio cards (use as-is or as placeholders)
+- **`/assets/logos/`** - logo variations for nav, preloader, favicon
+- **`/assets/team/`** - real team photos of Owen and Liam for the Team section
+- **`/assets/backgrounds/`** - texture files for section backgrounds if useful
+- **`/assets/portfolio/`** - project screenshots for portfolio cards (use as-is or as placeholders)
 
-**Reference files (in `/assets` root, for visual context only — do not import these into the build):**
-- `Vaelro-Website-redesign.html` — a prior design mockup from Claude Design. Look at it for visual direction if helpful, but this build spec takes precedence on all design decisions.
-- `Vaelro-brand-kit-preview.png` — brand reference sheet
-- `colors-signature-copy.html` — color palette reference
-- `project-mockups-not-for-use.png` — mockup reference, not for production
+**Reference files (in `/assets` root, for visual context only - do not import these into the build):**
+- `Vaelro-Website-redesign.html` - a prior design mockup from Claude Design. Look at it for visual direction if helpful, but this build spec takes precedence on all design decisions.
+- `Vaelro-brand-kit-preview.png` - brand reference sheet
+- `colors-signature-copy.html` - color palette reference
+- `project-mockups-not-for-use.png` - mockup reference, not for production
 
 These reference files can stay in the folder. They won't be imported into the build. Just use them for visual context if they help inform design decisions.
 
@@ -136,7 +136,7 @@ Build all sections below. Sections marked [HOME], [ABOUT], or [CONTACT] go on th
 
 ### [HOME] SECTION: PRELOADER
 
-Brief (1.5–2s) page intro. Dark (#1A1A1A) full-screen overlay. Vaelro wordmark or logo animates in (letter-by-letter stagger, scale-up, draw-on, or clip-path reveal — pick what looks best with the available logo asset). Overlay slides up or splits to reveal hero. Use `AnimatePresence` to unmount after completion. Skip on return visits via `sessionStorage`.
+Brief (1.5–2s) page intro. Dark (#1A1A1A) full-screen overlay. Vaelro wordmark or logo animates in (letter-by-letter stagger, scale-up, draw-on, or clip-path reveal - pick what looks best with the available logo asset). Overlay slides up or splits to reveal hero. Use `AnimatePresence` to unmount after completion. Skip on return visits via `sessionStorage`.
 
 ---
 
@@ -146,10 +146,10 @@ Minimal sticky header. Starts transparent on the Home page hero, transitions to 
 
 **5 nav items:**
 - Vaelro logo/wordmark (left, links to `/`)
-- **Services** — if on Home page, smooth-scrolls to the services section. If on another page, navigates to `/#services`
-- **Work** — same pattern, scrolls to or links to `/#portfolio`
-- **About** — links to `/about`
-- **Contact** — links to `/contact`
+- **Services** - if on Home page, smooth-scrolls to the services section. If on another page, navigates to `/#services`
+- **Work** - same pattern, scrolls to or links to `/#portfolio`
+- **About** - links to `/about`
+- **Contact** - links to `/contact`
 - CTA button: "Book a Call" (right, accent orange, links to `/contact`)
 - Scroll progress bar: thin accent-orange line at viewport top, width scales with `scrollYProgress`
 
@@ -159,18 +159,18 @@ Nav link hover: subtle underline animation (clip-path width transition).
 
 ---
 
-### [HOME] HERO — 3D INTERACTIVE CONSTELLATION
+### [HOME] HERO - 3D INTERACTIVE CONSTELLATION
 
 The hero has TWO layers: a full-viewport React Three Fiber `<Canvas>` as the background, and HTML content overlaid on top. This is the signature moment of the entire site.
 
-**Layer 1 — 3D Canvas (background):**
+**Layer 1 - 3D Canvas (background):**
 
 An interactive particle constellation rendered with React Three Fiber. Real 3D depth, not a flat animation.
 
 **Particle Network Spec:**
 - 250-350 particles (THREE.Points or instanced meshes) floating in a 3D volume
 - Each particle is a small glowing sphere with emissive material
-- Color: warm palette — mix of cream (#F5F0E8 at ~30% opacity), soft orange (#D4743B at ~30% opacity), and white
+- Color: warm palette - mix of cream (#F5F0E8 at ~30% opacity), soft orange (#D4743B at ~30% opacity), and white
 - Size: vary between 1-4px, with a few larger "anchor" nodes at 6-8px
 - Position: randomly distributed (x: -8 to 8, y: -5 to 5, z: -6 to 2)
 - Movement: slow continuous drift, each particle with a unique velocity vector (barely perceptible)
@@ -182,7 +182,7 @@ An interactive particle constellation rendered with React Three Fiber. Real 3D d
 - Line color: cream/white at low opacity (~0.15)
 - Recalculate connections each frame (or every 2-3 frames for performance)
 
-**Mouse Interaction (desktop only — disable on touch):**
+**Mouse Interaction (desktop only - disable on touch):**
 - Track mouse position, convert to 3D coordinates
 - Particles gently push away from cursor (repulsion effect, ~2 unit radius)
 - Spring-like return: particles slowly drift back after mouse moves away
@@ -192,7 +192,7 @@ An interactive particle constellation rendered with React Three Fiber. Real 3D d
 - `<EffectComposer>` from @react-three/postprocessing
 - `<Bloom>`: luminanceThreshold ~0.4, intensity ~0.6, radius ~0.8 (soft warm glow)
 - `<ToneMapping>` to control brightness
-- Optional very subtle `<ChromaticAberration>` (offset ~0.0005) — remove if gimmicky
+- Optional very subtle `<ChromaticAberration>` (offset ~0.0005) - remove if gimmicky
 
 **Camera:** Perspective, fov ~60, z: 5.5. No OrbitControls. User does NOT manually orbit.
 
@@ -203,9 +203,9 @@ An interactive particle constellation rendered with React Three Fiber. Real 3D d
 - Canvas sits BEHIND HTML content (absolute positioned, z-index: 0; content z-index: 1)
 - `gl={{ antialias: true, alpha: true }}`
 
-**Layer 2 — HTML Hero Content (overlaid on canvas):**
+**Layer 2 - HTML Hero Content (overlaid on canvas):**
 - Eyebrow: "AI-Powered Agency · Waupaca, WI"
-- Headline: bold, 8 words max — "We Build the Systems That Run Your Business" or something better. Word-by-word reveal animation (Framer Motion SplitText).
+- Headline: bold, 8 words max - "We Build the Systems That Run Your Business" or something better. Word-by-word reveal animation (Framer Motion SplitText).
 - Subheadline: one specific sentence about what Vaelro does for whom
 - Primary CTA: "Book a Free Consultation" (accent orange button)
 - Secondary CTA: "See Our Work ↓" (text link, scrolls to portfolio)
@@ -217,7 +217,7 @@ An interactive particle constellation rendered with React Three Fiber. Real 3D d
 2. Headline reveals word-by-word (y: '100%' → '0%', stagger 0.08s, 0.5s delay)
 3. Subheadline fades up (y: 20→0, opacity 0→1)
 4. CTAs fade up last (stagger 0.1s)
-5. 3D scene is already running — particles drifting, connections drawing
+5. 3D scene is already running - particles drifting, connections drawing
 6. On scroll: hero content parallaxes up and fades, transitioning to marquee
 
 ---
@@ -229,25 +229,25 @@ Horizontal text ticker on dark (#1A1A1A) background. Creates energy and visual t
 Text items (repeating, separated by styled dots):
 "Websites That Convert · AI Automation · Clean Systems · More Time Back · Local Service · Modern Tech · ..."
 
-Two rows moving in opposite directions. CSS `transform: translateX()` — NOT JS-driven. ~35s cycle. Gradient fade at edges. Cream text on dark.
+Two rows moving in opposite directions. CSS `transform: translateX()` - NOT JS-driven. ~35s cycle. Gradient fade at edges. Cream text on dark.
 
 ---
 
-### [HOME] SERVICES — "What We Build"
+### [HOME] SERVICES - "What We Build"
 
 Three service offerings. Clean cards or panels with scroll-triggered reveal animations.
 
-**Service 1 — Custom Websites**
+**Service 1 - Custom Websites**
 "Websites That Actually Work"
-Not templates. Not WordPress. Custom-built on modern infrastructure that loads in under 2 seconds, never gets hacked, and turns visitors into customers. You own everything — code, domain, hosting, data.
+Not templates. Not WordPress. Custom-built on modern infrastructure that loads in under 2 seconds, never gets hacked, and turns visitors into customers. You own everything - code, domain, hosting, data.
 Tech: React · Tailwind · Headless CMS · Cloudflare
 
-**Service 2 — AI Automation**
+**Service 2 - AI Automation**
 "Stop Doing the Same Thing Twice"
 We build workflows that handle follow-ups, scheduling, document processing, data entry, and the repetitive work your team wastes hours on every week. Custom-built, not off-the-shelf.
 Tech: n8n · Custom Workflows · CRM Integration · Anthropic AI
 
-**Service 3 — AI Strategy & Consulting**
+**Service 3 - AI Strategy & Consulting**
 "Know Exactly Where AI Fits"
 Not sure where to start? We audit your operations, map where AI saves real time and money, and build a concrete roadmap. No buzzwords. No hype. Just a plan that pays for itself.
 Deliverables: AI Audit · Implementation Roadmap · ROI Analysis
@@ -256,11 +256,11 @@ Deliverables: AI Audit · Implementation Roadmap · ROI Analysis
 
 ---
 
-### [HOME] PORTFOLIO — "Our Work"
+### [HOME] PORTFOLIO - "Our Work"
 
 **THIS IS THE MOST IMPORTANT SECTION FOR CREDIBILITY. BUILD IT CAREFULLY.**
 
-**Architecture: Data-driven.** All projects defined in a single array/object in a data file (`src/data/projects.ts`). Each project has: `id`, `title`, `category` (tag: "Website" | "Product" | "Automation" | "AI System"), `description` (2-3 sentences), `metrics` (optional array of stat strings), `techStack` (array of tech names), `image` (path to screenshot/mockup — placeholder if not available), `url` (optional, link to live project), `featured` (boolean). Adding a new project = adding an object to the array. No component changes needed.
+**Architecture: Data-driven.** All projects defined in a single array/object in a data file (`src/data/projects.ts`). Each project has: `id`, `title`, `category` (tag: "Website" | "Product" | "Automation" | "AI System"), `description` (2-3 sentences), `metrics` (optional array of stat strings), `techStack` (array of tech names), `image` (path to screenshot/mockup - placeholder if not available), `url` (optional, link to live project), `featured` (boolean). Adding a new project = adding an object to the array. No component changes needed.
 
 **Projects to include (populate the data file with these):**
 
@@ -269,9 +269,9 @@ Deliverables: AI Audit · Implementation Roadmap · ROI Analysis
 export const projects = [
   {
     id: "maverick",
-    title: "Maverick — CK Flight Tracker",
+    title: "Maverick - CK Flight Tracker",
     category: "Product",
-    description: "A full flight school management platform built for CK Aviation. Student scheduling, flight logging, instructor management, and progress tracking — replacing spreadsheets and paper logs with a real system.",
+    description: "A full flight school management platform built for CK Aviation. Student scheduling, flight logging, instructor management, and progress tracking - replacing spreadsheets and paper logs with a real system.",
     metrics: ["Live in production", "Next.js + Supabase"],
     techStack: ["Next.js 15", "Supabase", "Prisma", "Tailwind", "shadcn/ui"],
     image: "", // placeholder
@@ -280,7 +280,7 @@ export const projects = [
   },
   {
     id: "meridian",
-    title: "Meridian — Property Performance Platform",
+    title: "Meridian - Property Performance Platform",
     category: "Product",
     description: "A performance dashboard for small landlords to track property financials, maintenance, and tenant data in one place. Built to replace the spreadsheet chaos most independent landlords operate in.",
     metrics: ["In active development"],
@@ -290,7 +290,7 @@ export const projects = [
   },
   {
     id: "waypoint",
-    title: "Waypoint Financial Solutions — AI Operations Suite",
+    title: "Waypoint Financial Solutions - AI Operations Suite",
     category: "Automation",
     description: "Five custom AI-powered tools built for a 13-person financial advisory firm: automated distribution info generation, RMD tracking, prospect meeting prep, client milestone tracking, and conference capture. Replaced hours of weekly manual work.",
     metrics: ["5 production tools", "13-person firm"],
@@ -300,9 +300,9 @@ export const projects = [
   },
   {
     id: "harvest-fest",
-    title: "715 Harvest Fest — Event Platform",
+    title: "715 Harvest Fest - Event Platform",
     category: "Website",
-    description: "A complete event website and vendor application system for Waupaca's 715 Harvest Fest. Online vendor registration, event information, and sponsor showcase — all managed through a headless CMS.",
+    description: "A complete event website and vendor application system for Waupaca's 715 Harvest Fest. Online vendor registration, event information, and sponsor showcase - all managed through a headless CMS.",
     metrics: ["Launched and live", "Vendor management system"],
     techStack: ["React", "Sanity CMS", "Netlify"],
     image: "", // placeholder
@@ -310,7 +310,7 @@ export const projects = [
   },
   {
     id: "united-country",
-    title: "United Country Real Estate — AI Email System",
+    title: "United Country Real Estate - AI Email System",
     category: "Automation",
     description: "AI-powered listing email generator that writes property descriptions in the agent's voice, plus an automated agent onboarding system and listing intake workflow. Built to save hours per listing.",
     metrics: ["AI email generation", "Automated onboarding"],
@@ -320,9 +320,9 @@ export const projects = [
   },
   {
     id: "icc",
-    title: "Indian Crossing Casino — Web Platform",
+    title: "Indian Crossing Casino - Web Platform",
     category: "Website",
-    description: "Custom event management website with a branded CMS dashboard for a Wisconsin casino. Real-time content management for events, weddings, dining, and promotions — no developer needed for updates.",
+    description: "Custom event management website with a branded CMS dashboard for a Wisconsin casino. Real-time content management for events, weddings, dining, and promotions - no developer needed for updates.",
     metrics: ["Custom CMS dashboard", "Real-time content"],
     techStack: ["React", "Vite", "Sanity CMS", "TypeScript", "Tailwind"],
     image: "", // placeholder
@@ -341,23 +341,23 @@ export const projects = [
 - Card hover: image scales 1→1.05, shadow deepens, slight lift
 
 **Section heading:** "What We've Built" or "Our Work"
-**Subheading:** "Products, platforms, websites, and AI systems — built and running."
+**Subheading:** "Products, platforms, websites, and AI systems - built and running."
 
 ---
 
-### [ABOUT] PROCESS — "How It Works"
+### [ABOUT] PROCESS - "How It Works"
 
 3 steps, clean and simple. Demystifies working with Vaelro.
 
-**Step 1 — Discovery**
+**Step 1 - Discovery**
 "You talk. We listen."
-A 30-minute conversation about your business, pain points, and what's costing you time. No pitch — just questions.
+A 30-minute conversation about your business, pain points, and what's costing you time. No pitch - just questions.
 
-**Step 2 — Build**
+**Step 2 - Build**
 "We design and build."
 Custom website, automation system, or both. You see progress, give feedback, and approve before anything goes live.
 
-**Step 3 — Launch & Support**
+**Step 3 - Launch & Support**
 "We deploy and stay."
 We launch, train your team, and stay on as your tech partner. Monthly support keeps everything running and improving.
 
@@ -369,7 +369,7 @@ We launch, train your team, and stay on as your tech partner. Monthly support ke
 
 ---
 
-### [ABOUT] DIFFERENTIATORS — "Why Vaelro"
+### [ABOUT] DIFFERENTIATORS - "Why Vaelro"
 
 Dark section (#1A1A1A background, cream text). Creates visual weight.
 
@@ -382,8 +382,8 @@ Dark section (#1A1A1A background, cream text). Creates visual weight.
 
 **Animation:**
 - Each statement fades and slides in on scroll (stagger)
-- Key phrases ("own everything", "under 2 seconds", "10 minutes away", "don't disappear") get a highlight/underline animation that draws on as the block enters viewport — use a `<span>` with an animated background-size or a pseudo-element width transition
-- Subtle grain/noise texture overlay on the dark background (CSS, not an image — something like a repeating SVG noise pattern at low opacity)
+- Key phrases ("own everything", "under 2 seconds", "10 minutes away", "don't disappear") get a highlight/underline animation that draws on as the block enters viewport - use a `<span>` with an animated background-size or a pseudo-element width transition
+- Subtle grain/noise texture overlay on the dark background (CSS, not an image - something like a repeating SVG noise pattern at low opacity)
 
 ---
 
@@ -391,7 +391,7 @@ Dark section (#1A1A1A background, cream text). Creates visual weight.
 
 Light section. Client trust signals + stats.
 
-**Client names** (display as a styled row/bar — use text if logos aren't available):
+**Client names** (display as a styled row/bar - use text if logos aren't available):
 Waypoint Financial Solutions · Indian Crossing Casino · 715 Harvest Fest · United Country Real Estate · CK Aviation · Huck & Finn
 
 **Stats (animated counters):**
@@ -404,10 +404,10 @@ Waypoint Financial Solutions · Indian Crossing Casino · 715 Harvest Fest · Un
 **Testimonials / Reviews section:**
 Build this as a data-driven section (testimonials array in a data file, like the portfolio). For now, populate with 2-3 placeholder cards that look designed, not broken:
 - Each card: quote text, person name, business name, optional star rating
-- Placeholder content: use generic but believable quotes like "Vaelro transformed how we handle our digital presence" — OR use a clean "Reviews coming soon — we're just getting started" treatment if Owen prefers
+- Placeholder content: use generic but believable quotes like "Vaelro transformed how we handle our digital presence" - OR use a clean "Reviews coming soon - we're just getting started" treatment if Owen prefers
 - Structure must support real testimonials being dropped in later with zero design changes
 - Include Google review stars/rating display if available (link to Google Business Profile)
-- The section should look intentional even with placeholder content — designed, not empty
+- The section should look intentional even with placeholder content - designed, not empty
 
 **Animation:**
 - Client bar fades in on scroll
@@ -416,14 +416,14 @@ Build this as a data-driven section (testimonials array in a data file, like the
 
 ---
 
-### [ABOUT] TEAM — "Who's Behind This"
+### [ABOUT] TEAM - "Who's Behind This"
 
 Real humans. This is the trust-builder for local business.
 
-**Owen Lencki** — Co-founder
+**Owen Lencki** - Co-founder
 Sales, strategy, client relationships, and website builds. College sophomore and D3 athlete at UW-Stevens Point who started Vaelro because local businesses deserve technology that actually works for them.
 
-**Liam Bloedow** — Co-founder
+**Liam Bloedow** - Co-founder
 Automation architect and infrastructure lead. Builds the n8n workflows, manages deployments, and makes the systems run. Currently working with Higgsfield AI on next-generation video content.
 
 Tone: confident and human, not corporate. These are two guys who are genuinely good at this.
@@ -435,11 +435,11 @@ Tone: confident and human, not corporate. These are two guys who are genuinely g
 
 ---
 
-### [HOME] CTA — "Let's Build Something"
+### [HOME] CTA - "Let's Build Something"
 
 Dark section. The conversion moment.
 
-- Headline: "Ready to stop doing everything manually?" (or something better — write it to convert)
+- Headline: "Ready to stop doing everything manually?" (or something better - write it to convert)
 - Subtext: "Book a free 30-minute consultation. We'll map out exactly where your business can save time and get more customers."
 - CTA button: "Book Your Free Consultation" (large, prominent, accent orange)
 - Below: "hello@vaelro.co · Waupaca, WI"
@@ -455,25 +455,25 @@ Dark section. The conversion moment.
 
 The conversion destination. Every "Book a Free Consultation" CTA across the site links here.
 
-**Section 1 — Page Header**
+**Section 1 - Page Header**
 - Headline: "Let's talk about your business"
-- Subtext: "Book a free 30-minute consultation. No pitch — just a conversation about where we can help."
+- Subtext: "Book a free 30-minute consultation. No pitch - just a conversation about where we can help."
 
-**Section 2 — Booking**
+**Section 2 - Booking**
 - A prominent "Book a Free Consultation" button linking to Google Calendar's appointment scheduling page
 - URL placeholder for now: `https://calendar.google.com/calendar/appointments/schedules/PLACEHOLDER`
 - Owen will set up the Google Calendar appointment schedule and replace the URL
 - The booking opens Google's built-in scheduling page (auto-attaches Google Meet, handles availability)
-- Style the button as the primary CTA — large, accent orange, centered, unmissable
+- Style the button as the primary CTA - large, accent orange, centered, unmissable
 - Below the button: "Pick a time that works for you. You'll get a Google Meet link automatically."
 
-**Section 3 — Contact Form (backup)**
+**Section 3 - Contact Form (backup)**
 - Simple 3-field form: Name, Email, Message
 - Submit button: "Send Message"
 - Form action: frontend form that logs to console for now. Owen will wire to n8n webhook later.
 - Note above or below: "Prefer to book directly? Use the button above."
 
-**Section 4 — Contact Info**
+**Section 4 - Contact Info**
 - Email: hello@vaelro.co
 - Location: Waupaca, WI
 - Instagram: @vaelro.co
@@ -493,11 +493,11 @@ Minimal. Clean.
 - Instagram: @vaelro.co
 - "© 2026 Vaelro LLC"
 
-**Animation:** Fade-in on scroll. Consider a "reveal" effect where the footer sits behind the CTA section (CTA scrolls up to expose footer — negative margin or fixed positioning trick).
+**Animation:** Fade-in on scroll. Consider a "reveal" effect where the footer sits behind the CTA section (CTA scrolls up to expose footer - negative margin or fixed positioning trick).
 
 ---
 
-## ANIMATION SYSTEM — REUSABLE COMPONENTS
+## ANIMATION SYSTEM - REUSABLE COMPONENTS
 
 Build these as shared components in `src/components/ui/`:
 
@@ -552,7 +552,7 @@ ALL animations MUST respect `prefers-reduced-motion`:
 Use Framer Motion's built-in `useReducedMotion()` hook. Create a context provider if needed.
 
 ### Performance
-- Only animate `transform` and `opacity` — never layout properties
+- Only animate `transform` and `opacity` - never layout properties
 - `will-change: transform` only on actively animating elements
 - All scroll listeners via `requestAnimationFrame`
 - Target 60fps on mid-range mobile
@@ -564,8 +564,8 @@ Use Framer Motion's built-in `useReducedMotion()` hook. Create a context provide
 
 ## SEO
 
-- `<title>`: "Vaelro — AI-Powered Websites & Automation | Waupaca, WI"
-- `<meta name="description">`: "Custom websites and AI automation for small businesses. Modern tech, local service, complete ownership. Free consultation — Waupaca, WI."
+- `<title>`: "Vaelro - AI-Powered Websites & Automation | Waupaca, WI"
+- `<meta name="description">`: "Custom websites and AI automation for small businesses. Modern tech, local service, complete ownership. Free consultation - Waupaca, WI."
 - One `<h1>` (hero headline), `<h2>` per section
 - LocalBusiness JSON-LD (type: ProfessionalService) with Waupaca address, sameAs Instagram
 - Open Graph + Twitter Card meta tags
@@ -617,9 +617,9 @@ The domain stays registered at Wix (paid through Apr 2027). Just change DNS:
 4. Netlify auto-provisions SSL via Let's Encrypt
 
 **Wix cleanup after site is live:**
-- Cancel the "Premium plan (Core)" subscription — that's the hosting you're replacing
-- KEEP the "2 business email users @vaelro.co" subscription — that's your Google Workspace email
-- KEEP the "Domain vaelro.co" subscription — that's your domain registration (paid through Apr 2027)
+- Cancel the "Premium plan (Core)" subscription - that's the hosting you're replacing
+- KEEP the "2 business email users @vaelro.co" subscription - that's your Google Workspace email
+- KEEP the "Domain vaelro.co" subscription - that's your domain registration (paid through Apr 2027)
 
 ---
 
@@ -636,7 +636,7 @@ src/
 │   └── ContactPage.tsx               (assembles Contact sections)
 ├── components/
 │   ├── 3d/
-│   │   ├── ParticleNetwork.tsx       (3D hero scene — Home only)
+│   │   ├── ParticleNetwork.tsx       (3D hero scene - Home only)
 │   │   ├── PostProcessing.tsx
 │   │   └── useMousePosition.ts
 │   ├── layout/
@@ -687,7 +687,7 @@ assets/
 ## WHAT SUCCESS LOOKS LIKE
 
 1. Someone opens the site and within the first 2 seconds thinks "this is different"
-2. The 3D particle constellation in the hero makes them pause — that's the moment
+2. The 3D particle constellation in the hero makes them pause - that's the moment
 3. The portfolio section proves Vaelro has actually built real things for real businesses
 4. A Waupaca business owner reads the copy and thinks "these guys get my problems"
 5. The path to booking a consultation is obvious from any point on the page
@@ -707,32 +707,32 @@ Before shipping, verify:
 - [ ] DPR capped at `[1, 1.5]`
 - [ ] Canvas has `alpha: true` so page background shows through if needed
 
-## CURRENT VAELRO.CO COPY (reference — improve upon this, don't copy it verbatim)
+## CURRENT VAELRO.CO COPY (reference - improve upon this, don't copy it verbatim)
 
-The current site uses this content. Use it as a starting point for the copy in each section. Improve, sharpen, and rewrite where it's weak — but keep the core messaging DNA.
+The current site uses this content. Use it as a starting point for the copy in each section. Improve, sharpen, and rewrite where it's weak - but keep the core messaging DNA.
 
 **Current headline:** "More Time. More Customers. Less Chaos."
 **Current subheadline:** "Modern Solutions for Local Businesses"
 **Current marquee text:** "Time · Clarity · Systems · Results"
-**Pricing note:** "Pricing varies by project — book a free consultation to get a custom quote"
+**Pricing note:** "Pricing varies by project - book a free consultation to get a custom quote"
 
 **Current services copy:**
 
 Custom Websites: "We build custom websites, made specifically for your business. We design and build sites that look professional, load fast, and turn visitors into paying customers."
 
-Workflow Automation: "Stop doing the same repetitive tasks every day. We build automations that handle your follow-ups, scheduling, data entry, and more — so you get those hours back."
+Workflow Automation: "Stop doing the same repetitive tasks every day. We build automations that handle your follow-ups, scheduling, data entry, and more - so you get those hours back."
 
 AI Strategy: "Not sure where AI fits in your business? We'll map out exactly where it can save you time and money, and give you a clear plan to act on it."
 
 **Current differentiators:**
-- "Websites built for conversion — Not just looks, designed to get you leads"
-- "Local focus — We work exclusively with small businesses like yours. Based in Waupaca, we understand small-city business."
-- "Hours back in your week — Automation that eliminates repetitive tasks"
+- "Websites built for conversion - Not just looks, designed to get you leads"
+- "Local focus - We work exclusively with small businesses like yours. Based in Waupaca, we understand small-city business."
+- "Hours back in your week - Automation that eliminates repetitive tasks"
 
 **Contact:** hello@vaelro.co · Waupaca, WI
 **Social:** @vaelro.co (Instagram)
 
-The new site should keep the "More Time. More Customers. Less Chaos." tagline if you can't beat it — it's concise and effective. But the headline in the hero can be different and more impactful for the 3D hero context.
+The new site should keep the "More Time. More Customers. Less Chaos." tagline if you can't beat it - it's concise and effective. But the headline in the hero can be different and more impactful for the 3D hero context.
 
 ---
 

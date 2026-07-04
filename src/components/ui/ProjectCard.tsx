@@ -24,8 +24,6 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
     : {};
 
   const builtByVaelro = project.category === "Built by Vaelro";
-  const inDevelopment = project.metrics?.includes("In development") ?? false;
-  const metrics = project.metrics?.filter((m) => m !== "In development") ?? [];
 
   return (
     <Root
@@ -83,25 +81,18 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
       {/* Body */}
       <div className="flex grow flex-col p-6 md:p-7">
         <div className="flex items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <span
-              className={`rounded-full px-3 py-0.5 font-mono text-[0.65rem] tracking-[0.12em] uppercase ${
-                builtByVaelro
-                  ? "bg-ink-900 text-cream-100"
-                  : "border border-orange-300 bg-orange-50 text-orange-700"
-              }`}
-            >
-              {project.category}
-            </span>
-            {inDevelopment && (
-              <span className="rounded-full border border-cream-300 bg-cream-100 px-3 py-0.5 font-mono text-[0.65rem] tracking-[0.12em] text-ink-600 uppercase">
-                In development
-              </span>
-            )}
-          </div>
-          {metrics.length > 0 && (
+          <span
+            className={`rounded-full px-3 py-0.5 font-mono text-[0.65rem] tracking-[0.12em] uppercase ${
+              builtByVaelro
+                ? "bg-ink-900 text-cream-100"
+                : "border border-orange-300 bg-orange-50 text-orange-700"
+            }`}
+          >
+            {project.category}
+          </span>
+          {project.metrics && project.metrics.length > 0 && (
             <span className="hidden truncate font-mono text-[0.65rem] text-muted sm:block">
-              {metrics.join(" · ")}
+              {project.metrics.join(" · ")}
             </span>
           )}
         </div>

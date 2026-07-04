@@ -1,24 +1,35 @@
 import { useState, type FormEvent } from "react";
 import Reveal from "../ui/Reveal";
+import { trackEvent } from "../../lib/analytics";
 
 /**
- * Backup contact form. Currently logs to the console.
- * Owen: wire the submit handler to the n8n webhook when it's ready.
+ * Backup contact form, wired to Netlify Forms. Submissions land in the
+ * Netlify dashboard (Forms tab). A hidden mirror of this form lives in
+ * index.html so Netlify's build bot can register it.
  */
 export default function ContactForm() {
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState(false);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setError(false);
     const formData = new FormData(e.currentTarget);
-    const payload = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      message: formData.get("message"),
-    };
-    // TODO(owen): POST this payload to the n8n webhook
-    console.log("Contact form submission:", payload);
-    setSent(true);
+    const body = new URLSearchParams();
+    formData.forEach((value, key) => body.append(key, value.toString()));
+
+    try {
+      const res = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: body.toString(),
+      });
+      if (!res.ok) throw new Error(`Form POST failed: ${res.status}`);
+      trackEvent("form_submission", { form: "contact" });
+      setSent(true);
+    } catch {
+      setError(true);
+    }
   }
 
   const inputClasses =
@@ -43,14 +54,18 @@ export default function ContactForm() {
                 role="status"
               >
                 <p className="font-serif text-xl font-bold text-ink-900">
-                  Message sent. Thanks!
-                </p>
-                <p className="mt-2 text-ink-600">
-                  We typically respond within 24 hours.
+                  Message sent. We typically respond within 24 hours.
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
+              <form
+                name="contact"
+                method="POST"
+                data-netlify="true"
+                onSubmit={handleSubmit}
+                className="mt-8 flex flex-col gap-5"
+              >
+                <input type="hidden" name="form-name" value="contact" />
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
                     <label
@@ -110,6 +125,12 @@ export default function ContactForm() {
                   >
                     Send Message
                   </button>
+                  {error && (
+                    <p className="mt-3 text-sm text-ink-600" role="alert">
+                      Something went wrong sending your message. Please email
+                      us directly at hello@vaelro.co.
+                    </p>
+                  )}
                 </div>
               </form>
             )}

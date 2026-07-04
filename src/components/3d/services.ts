@@ -52,4 +52,5 @@ export interface OverlayNodes {
   labels: Array<HTMLElement | null>;
   ring: HTMLElement | null;
   desc: HTMLElement | null;
+  dots: HTMLElement | null;
 }

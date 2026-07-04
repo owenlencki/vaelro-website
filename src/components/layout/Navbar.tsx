@@ -9,6 +9,7 @@ import {
 import { useLenisContext } from "../../hooks/useLenis";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 import { BOOKING_URL } from "../../lib/booking";
+import { trackEvent } from "../../lib/analytics";
 import logoCream from "../../assets/logos/logo-horizontal-cream.png";
 import logoDark from "../../assets/logos/logo-horizontal-dark.png";
 import type { MouseEvent } from "react";
@@ -142,6 +143,7 @@ export default function Navbar() {
               href={BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackEvent("booking_click", { location: "navbar" })}
               className="inline-flex min-h-11 items-center rounded-full bg-orange-500 px-5 text-[0.95rem] font-bold text-white transition-colors duration-200 hover:bg-orange-600"
             >
               Book a Call

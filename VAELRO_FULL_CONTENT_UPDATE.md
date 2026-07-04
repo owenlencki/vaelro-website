@@ -17,19 +17,19 @@ Reduce to ONE scrolling banner (remove the second row if there are two). Remove 
 
 **Section heading:** Keep "Three ways we give you your time back" and the subtext.
 
-**Service 01 — change label from "CUSTOM WEBSITES" to just "WEBSITES":**
+**Service 01 - change label from "CUSTOM WEBSITES" to just "WEBSITES":**
 - Keep title: "Websites That Actually Work"
 - Rewrite description: "Not templates. Not WordPress. Custom-built sites on modern infrastructure that load fast, look great on every device, and turn visitors into customers."
 - Remove the "never gets hacked" claim
 - Remove "You own everything: code, domain, hosting, data." Replace with: "No lock-in. Everything we build is yours."
 - Remove the TECH section entirely (React, Tailwind, Headless CMS, Cloudflare). Nobody visiting this site cares about the stack.
 
-**Service 02 — change label from "AI AUTOMATION" to "WORKFLOW AUTOMATION":**
+**Service 02 - change label from "AI AUTOMATION" to "WORKFLOW AUTOMATION":**
 - Keep title: "Stop Doing the Same Thing Twice" (this is great)
 - Keep the description as-is, it reads naturally. Just make sure there are no em dashes.
 - Remove the TECH section if there is one.
 
-**Service 03 — keep label "AI STRATEGY & CONSULTING":**
+**Service 03 - keep label "AI STRATEGY & CONSULTING":**
 - Keep title: "Know Exactly Where AI Fits"
 - Keep description, just polish for flow. Make sure it reads clean.
 - Remove DELIVERABLES or TECH section if there is one.
@@ -74,7 +74,7 @@ Keep the subtext paragraph: "Vaelro is a two-person AI automation and web agency
 ### Team bios
 The team photos are great, keep them. But expand each bio with more story. They should feel personal and real, not corporate.
 
-**Owen Lencki — Co-founder**
+**Owen Lencki - Co-founder**
 Expand beyond the current short bio. Include:
 - He's a college sophomore and D3 athlete at UW-Stevens Point
 - He started Vaelro because he saw local businesses struggling with outdated websites and wasting hours on manual work
@@ -82,13 +82,13 @@ Expand beyond the current short bio. Include:
 - He grew up in the Waupaca area (local connection matters)
 - Tone: confident but approachable, not corporate
 
-**Liam Bloedow — Co-founder**
+**Liam Bloedow - Co-founder**
 Expand similarly:
 - He's the automation and infrastructure lead
 - He builds the n8n workflows, manages deployments, and makes the backend systems run
 - He's currently working with Higgsfield AI on next-generation video content
 - He handles the technical architecture and makes sure everything actually works in production
-- Tone: same — real person, not a corporate bio
+- Tone: same - real person, not a corporate bio
 
 Write these as 3-4 sentence paragraphs, not bullet points. They should read like someone talking about themselves naturally.
 
@@ -119,7 +119,7 @@ Keep it simple as-is. Just make sure:
 
 ---
 
-## SEO — WAUPACA, WISCONSIN
+## SEO - WAUPACA, WISCONSIN
 
 Make sure these are in place across the site:
 - Meta title: "Vaelro | Web & Automation Agency in Waupaca, WI"

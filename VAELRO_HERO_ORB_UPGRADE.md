@@ -57,7 +57,7 @@ When closing (another orb clicked or same orb clicked again):
 3. Glow fades
 4. Scale returns to normal
 
-Use `useSpring` for the hemisphere separation — spring config: `{ tension: 120, friction: 14 }` for a satisfying snap.
+Use `useSpring` for the hemisphere separation - spring config: `{ tension: 120, friction: 14 }` for a satisfying snap.
 
 ### Particle field (keep and enhance)
 

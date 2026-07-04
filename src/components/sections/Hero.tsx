@@ -15,6 +15,7 @@ import {
 import SplitText from "../ui/SplitText";
 import MagneticButton from "../ui/MagneticButton";
 import { BOOKING_URL } from "../../lib/booking";
+import { trackEvent } from "../../lib/analytics";
 import { useLenisContext } from "../../hooks/useLenis";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 import {
@@ -66,6 +67,7 @@ export default function Hero({ start }: HeroProps) {
     labels: new Array(ORB_COUNT).fill(null),
     ring: null,
     desc: null,
+    dots: null,
   });
 
   const cycling = start && inView && !paused;
@@ -81,8 +83,10 @@ export default function Hero({ start }: HeroProps) {
   const later = (fn: () => void, ms: number) =>
     seqTimers.current.push(window.setTimeout(fn, ms));
 
-  const CLOSE_MS = reducedMotion ? 50 : 420; // spring close settles
-  const MOVE_MS = reducedMotion ? 50 : 650; // orbit re-arrangement
+  // Close: text fades (200ms) while halves rejoin (~450ms); the crack seals
+  // during the drift. Move: the orbit spring (t100/f16) settles in ~600ms.
+  const CLOSE_MS = reducedMotion ? 50 : 500;
+  const MOVE_MS = reducedMotion ? 50 : 600;
 
   function goTo(next: number, openAfter: boolean) {
     clearSeq();
@@ -150,6 +154,27 @@ export default function Hero({ start }: HeroProps) {
     if (Math.abs(dx) > 55) step(dx < 0 ? 1 : -1);
   }
 
+  // Arrow keys cycle the carousel while the hero is in view
+  const stepRef = useRef(step);
+  stepRef.current = step;
+  useEffect(() => {
+    if (!inView) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        typeof target.closest === "function" &&
+        target.closest("input, textarea, select")
+      ) {
+        return;
+      }
+      stepRef.current(e.key === "ArrowLeft" ? -1 : 1);
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [inView]);
+
   // ---- Hero content scroll parallax (unchanged) ---------------------------
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -167,7 +192,7 @@ export default function Hero({ start }: HeroProps) {
   return (
     <section
       ref={ref}
-      className="group relative flex min-h-svh items-center overflow-hidden bg-ink-900 max-md:min-h-[calc(100svh+140px)] max-md:items-start"
+      className="group relative flex min-h-svh items-center overflow-hidden bg-ink-900 max-md:min-h-[calc(100svh+160px)] max-md:items-start"
       aria-label="Intro"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
@@ -195,7 +220,8 @@ export default function Hero({ start }: HeroProps) {
           Positions of labels/ring/desc are written imperatively by the 3D
           scene's projector, so they track the orbs at 60fps. */}
       <div className="pointer-events-none absolute inset-0 z-[5]">
-        {/* Orb labels (desktop only; mobile is a single-orb carousel) */}
+        {/* Orb labels. On mobile only the active orb's label shows,
+            below the single centered orb. */}
         {SERVICES.map((service, i) => (
           <button
             key={service.id}
@@ -204,7 +230,9 @@ export default function Hero({ start }: HeroProps) {
             }}
             type="button"
             onClick={() => selectOrb(i)}
-            className={`invisible absolute top-0 left-0 min-h-9 px-3 font-mono tracking-[0.18em] uppercase transition-[color,opacity] duration-300 pointer-events-auto max-md:hidden ${
+            className={`invisible absolute top-0 left-0 min-h-9 px-3 font-mono tracking-[0.18em] uppercase transition-[color,opacity] duration-300 pointer-events-auto ${
+              i === active ? "" : "max-md:hidden"
+            } ${
               i === active
                 ? "text-xs text-cream-100"
                 : "text-[0.65rem] text-cream-100/45 hover:text-cream-100/80"
@@ -256,48 +284,54 @@ export default function Hero({ start }: HeroProps) {
           )}
         </div>
 
-        {/* Description stack: plain text below the orb arrangement (no card,
-            no box), with the nav dots underneath. Projector-positioned on
-            desktop; CSS-anchored bottom-center on mobile. */}
+        {/* Description: hidden inside the planet, revealed by the crack.
+            The projector centers it on the active orb (desktop, in the gap
+            between the split halves) or places it below the orb (mobile).
+            Fade-in waits for the 300ms crack phase so text appears as the
+            halves part; it fades out before they rejoin. */}
         <div
           ref={(el) => {
             overlayNodes.current.desc = el;
           }}
-          className="invisible absolute top-0 left-0 w-[min(300px,84vw)] text-center max-md:top-auto max-md:bottom-3 max-md:left-1/2 max-md:-translate-x-1/2"
+          className="invisible absolute top-0 left-0 w-[min(260px,84vw)] text-center"
         >
-          {/* Always mounted: fades up in sync with the orb's split, fades
-              down before the next orb opens. The inner block remounts per
-              service. Avoids AnimatePresence exit coordination, which
-              wedges under rapid cycle interruptions. */}
+          {/* Always mounted to avoid AnimatePresence exit coordination,
+              which wedges under rapid cycle interruptions. */}
           <motion.div
             initial={false}
             animate={{
               opacity: open ? 1 : 0,
-              y: reducedMotion ? 0 : open ? 0 : 12,
+              y: reducedMotion ? 0 : open ? 0 : 10,
             }}
             transition={{
-              duration: reducedMotion ? 0.15 : 0.3,
-              delay: open && !reducedMotion ? 0.1 : 0,
+              duration: reducedMotion ? 0.15 : open ? 0.3 : 0.2,
+              delay: open && !reducedMotion ? 0.35 : 0,
               ease: "easeOut",
             }}
+            className="[text-shadow:0_1px_14px_rgba(13,13,12,0.9)]"
           >
             <motion.div
               key={active}
-              initial={reducedMotion ? false : { opacity: 0, y: 6 }}
+              initial={reducedMotion ? false : { opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25, delay: 0.08 }}
+              transition={{ duration: 0.25, delay: 0.05 }}
             >
-              <h3 className="font-serif text-[16px] font-bold text-white">
+              <h3 className="font-serif text-[15px] font-bold text-white">
                 {SERVICES[active].title}
               </h3>
-              <p className="mx-auto mt-1.5 max-w-[280px] text-[12px] leading-relaxed text-white/55">
+              <p className="mx-auto mt-1 max-w-[240px] text-[11px] leading-relaxed text-white/55">
                 {SERVICES[active].desc}
               </p>
               <button
                 type="button"
                 tabIndex={open ? 0 : -1}
-                onClick={() => scrollTo("#services", { offset: -88 })}
-                className={`mt-2 inline-flex min-h-8 items-center font-mono text-[10px] tracking-[0.15em] text-orange-400 uppercase transition-colors duration-200 hover:text-orange-300 ${
+                onClick={() => {
+                  trackEvent("orb_learn_more", {
+                    service: SERVICES[active].name,
+                  });
+                  scrollTo("#services", { offset: -88 });
+                }}
+                className={`mt-1.5 inline-flex min-h-8 items-center font-mono text-[9px] tracking-[0.15em] text-orange-400 uppercase transition-colors duration-200 hover:text-orange-300 ${
                   open ? "pointer-events-auto" : "pointer-events-none"
                 }`}
               >
@@ -306,8 +340,8 @@ export default function Hero({ start }: HeroProps) {
             </motion.div>
           </motion.div>
 
-          {/* Nav dots, below the text area */}
-          <div className="pointer-events-auto mt-1 flex items-center justify-center">
+          {/* Mobile dots: part of the below-orb stack */}
+          <div className="pointer-events-auto mt-1 flex items-center justify-center md:hidden">
             {SERVICES.map((service, i) => (
               <button
                 key={service.id}
@@ -315,7 +349,7 @@ export default function Hero({ start }: HeroProps) {
                 aria-label={`Show ${service.name}`}
                 aria-current={i === active}
                 onClick={() => selectOrb(i)}
-                className="flex h-10 w-7 items-center justify-center"
+                className="flex h-9 w-7 items-center justify-center"
               >
                 <span
                   className={`block h-2 rounded-full transition-all duration-300 ${
@@ -327,6 +361,34 @@ export default function Hero({ start }: HeroProps) {
               </button>
             ))}
           </div>
+        </div>
+
+        {/* Nav dots, below the orb arrangement (desktop; the mobile dots
+            live in the description stack) */}
+        <div
+          ref={(el) => {
+            overlayNodes.current.dots = el;
+          }}
+          className="invisible absolute top-0 left-0 flex items-center justify-center pointer-events-auto max-md:hidden"
+        >
+          {SERVICES.map((service, i) => (
+            <button
+              key={service.id}
+              type="button"
+              aria-label={`Show ${service.name}`}
+              aria-current={i === active}
+              onClick={() => selectOrb(i)}
+              className="flex h-10 w-7 items-center justify-center"
+            >
+              <span
+                className={`block h-2 rounded-full transition-all duration-300 ${
+                  i === active
+                    ? "w-5 bg-orange-500"
+                    : "w-2 bg-cream-100/30 hover:bg-cream-100/60"
+                }`}
+              />
+            </button>
+          ))}
         </div>
 
         {/* Arrows on the sides of the orb area (desktop, subtle) */}
@@ -388,6 +450,7 @@ export default function Hero({ start }: HeroProps) {
                 href={BOOKING_URL}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackEvent("booking_click", { location: "hero" })}
                 className="inline-flex min-h-12 items-center rounded-full bg-orange-500 px-8 py-3.5 text-base font-bold text-white shadow-[0_8px_30px_rgba(212,116,59,0.35)] transition-colors duration-200 hover:bg-orange-600"
               >
                 Book a Free Consultation

@@ -13,6 +13,8 @@ import PageTransition from "./components/layout/PageTransition";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const NAV_OFFSET = -88;
 
@@ -66,10 +68,18 @@ function AnimatedRoutes() {
           }
         />
         <Route
+          path="/privacy"
+          element={
+            <PageTransition>
+              <PrivacyPage />
+            </PageTransition>
+          }
+        />
+        <Route
           path="*"
           element={
             <PageTransition>
-              <HomePage />
+              <NotFoundPage />
             </PageTransition>
           }
         />

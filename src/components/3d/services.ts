@@ -15,7 +15,7 @@ export const SERVICES: OrbService[] = [
     id: "websites",
     name: "Websites",
     title: "Custom websites",
-    desc: "Sites that load fast, convert visitors, and cost almost nothing to host. You own everything.",
+    desc: "Sites that load fast, convert visitors, and cost almost nothing to host. No lock-in. Everything we build is yours.",
     color: "#D4743B",
   },
   {

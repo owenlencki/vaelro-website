@@ -35,24 +35,38 @@ interface HeroProps {
   start: boolean;
 }
 
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(
-    () =>
+type LayoutMode = "desktop" | "portrait" | "mobile";
+
+/**
+ * mobile: under 768px or coarse pointer (single-orb carousel).
+ * portrait: desktop-width but tall/narrow window (aspect < 1.05), which has
+ * no room for the orbital arrangement beside the headline.
+ * desktop: everything else (full arrangement, text inside the split).
+ */
+function useLayoutMode(): LayoutMode {
+  const compute = (): LayoutMode => {
+    if (
       window.matchMedia("(pointer: coarse)").matches ||
-      window.innerWidth < 768,
-  );
+      window.innerWidth < 768
+    ) {
+      return "mobile";
+    }
+    return window.innerWidth / window.innerHeight < 1.05
+      ? "portrait"
+      : "desktop";
+  };
+  const [mode, setMode] = useState<LayoutMode>(compute);
   useEffect(() => {
-    const mql = window.matchMedia("(max-width: 767px), (pointer: coarse)");
-    const onChange = () => setIsMobile(mql.matches);
-    mql.addEventListener("change", onChange);
-    return () => mql.removeEventListener("change", onChange);
+    const onResize = () => setMode(compute());
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, []);
-  return isMobile;
+  return mode;
 }
 
 export default function Hero({ start }: HeroProps) {
   const ref = useRef<HTMLElement>(null);
-  const isMobile = useIsMobile();
+  const mode = useLayoutMode();
   const reducedMotion = usePrefersReducedMotion();
   const { scrollTo } = useLenisContext();
 
@@ -203,7 +217,7 @@ export default function Hero({ start }: HeroProps) {
           <OrbCarousel
             active={active}
             open={open}
-            isMobile={isMobile}
+            mode={mode}
             reducedMotion={reducedMotion}
             onOrbClick={selectOrb}
             overlay={overlayNodes}
@@ -231,7 +245,7 @@ export default function Hero({ start }: HeroProps) {
             type="button"
             onClick={() => selectOrb(i)}
             className={`invisible absolute top-0 left-0 min-h-9 px-3 font-mono tracking-[0.18em] uppercase transition-[color,opacity] duration-300 pointer-events-auto ${
-              i === active ? "" : "max-md:hidden"
+              mode !== "desktop" && i !== active ? "hidden" : ""
             } ${
               i === active
                 ? "text-xs text-cream-100"
@@ -308,7 +322,6 @@ export default function Hero({ start }: HeroProps) {
               delay: open && !reducedMotion ? 0.35 : 0,
               ease: "easeOut",
             }}
-            className="[text-shadow:0_1px_14px_rgba(13,13,12,0.9)]"
           >
             <motion.div
               key={active}
@@ -316,10 +329,10 @@ export default function Hero({ start }: HeroProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25, delay: 0.05 }}
             >
-              <h3 className="font-serif text-[15px] font-bold text-white">
+              <h3 className="font-serif text-[15px] font-bold text-white [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">
                 {SERVICES[active].title}
               </h3>
-              <p className="mx-auto mt-1 max-w-[240px] text-[11px] leading-relaxed text-white/55">
+              <p className="mx-auto mt-1 max-w-[240px] text-[11px] leading-relaxed text-white/55 [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">
                 {SERVICES[active].desc}
               </p>
               <button
@@ -331,7 +344,7 @@ export default function Hero({ start }: HeroProps) {
                   });
                   scrollTo("#services", { offset: -88 });
                 }}
-                className={`mt-1.5 inline-flex min-h-8 items-center font-mono text-[9px] tracking-[0.15em] text-orange-400 uppercase transition-colors duration-200 hover:text-orange-300 ${
+                className={`mt-1.5 inline-flex min-h-8 items-center font-mono text-[9px] tracking-[0.15em] text-orange-400 uppercase transition-colors duration-200 hover:text-orange-300 [text-shadow:0_2px_8px_rgba(0,0,0,0.6)] ${
                   open ? "pointer-events-auto" : "pointer-events-none"
                 }`}
               >

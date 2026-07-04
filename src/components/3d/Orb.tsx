@@ -59,7 +59,9 @@ const shellFragmentShader = /* glsl */ `
     col += vec3(1.0, 0.97, 0.92) * spec * (0.45 + 0.85 * uBrightness);
     if (!gl_FrontFacing) col += uColor * (0.2 + 1.5 * uGlow);
 
-    gl_FragColor = vec4(col, 1.0);
+    // Halves fade to ~40% opacity as the orb opens, so the dark background
+    // shows through and the description text reads clearly in the gap
+    gl_FragColor = vec4(col, 1.0 - 0.6 * uGlow);
   }
 `;
 
@@ -261,6 +263,7 @@ export default function Orb({
           uGlow: { value: 0 },
         },
         side: THREE.DoubleSide,
+        transparent: true,
       }),
     [color],
   );
@@ -436,6 +439,8 @@ export default function Orb({
     group.scale.setScalar(
       Math.max(0.001, scaleSpring.current.x) * (1 + open * 0.08),
     );
+    // Orbs shrunk away by the single-orb layout are fully hidden
+    group.visible = group.scale.x > 0.015;
 
     // Hemispheres separate and tilt: top back, bottom forward
     top.position.y = splitDistance * s.x;
@@ -516,8 +521,9 @@ export default function Orb({
         />
         <lineSegments geometry={bottomGeo} material={crackMaterial} />
       </mesh>
-      {/* Emissive core: the light source inside the split */}
-      <mesh ref={coreRef} material={coreMaterial}>
+      {/* Emissive core: the light source inside the split. Rendered after
+          the now-transparent shells so it stays bright in the gap. */}
+      <mesh ref={coreRef} material={coreMaterial} renderOrder={1}>
         <sphereGeometry args={[ORB_RADIUS * 0.5, 24, 16]} />
       </mesh>
       {/* Fragment shards that burst out as the split begins */}

@@ -75,6 +75,7 @@ export default function Hero({ start }: HeroProps) {
   const [open, setOpen] = useState(false);
   const [paused, setPaused] = useState(false);
   const [hasSwiped, setHasSwiped] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const pauseTimer = useRef<number | undefined>(undefined);
   const touchX = useRef<number | null>(null);
   const inView = useInView(ref, { amount: 0.3 });
@@ -137,6 +138,7 @@ export default function Hero({ start }: HeroProps) {
 
   /** Wrap user interactions: pause the auto-cycle, resume after 8s idle. */
   function interact(action: () => void) {
+    setHasInteracted(true);
     setPaused(true);
     window.clearTimeout(pauseTimer.current);
     pauseTimer.current = window.setTimeout(
@@ -210,7 +212,7 @@ export default function Hero({ start }: HeroProps) {
   return (
     <section
       ref={ref}
-      className="group relative flex min-h-svh items-center overflow-hidden bg-ink-900 max-md:min-h-[calc(100svh+190px)] max-md:items-start"
+      className="group relative flex min-h-svh items-center overflow-hidden bg-ink-900 max-md:min-h-[calc(100svh+215px)] max-md:items-start"
       aria-label="Intro"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
@@ -222,6 +224,7 @@ export default function Hero({ start }: HeroProps) {
             active={active}
             open={open}
             mode={mode}
+            pulse={mode === "mobile" && start && !hasInteracted}
             reducedMotion={reducedMotion}
             onOrbClick={selectOrb}
             overlay={overlayNodes}
@@ -247,8 +250,9 @@ export default function Hero({ start }: HeroProps) {
               overlayNodes.current.labels[i] = el;
             }}
             type="button"
+            aria-label={`Show ${service.name}`}
             onClick={() => selectOrb(i)}
-            className={`invisible absolute top-0 left-0 min-h-9 px-3 font-mono tracking-[0.18em] uppercase transition-[color,opacity] duration-300 pointer-events-auto ${
+            className={`invisible absolute top-0 left-0 min-h-9 px-3 text-center font-mono tracking-[0.18em] uppercase transition-[color,opacity] duration-300 pointer-events-auto ${
               mode !== "desktop" && i !== active ? "hidden" : ""
             } ${
               i === active
@@ -260,6 +264,12 @@ export default function Hero({ start }: HeroProps) {
             }`}
           >
             {service.name}
+            {/* One-time tap prompt under the active orb's label (mobile) */}
+            {mode === "mobile" && i === active && !hasInteracted && (
+              <span className="mt-1 block text-[9px] tracking-[0.2em] text-white/25 normal-case">
+                Tap to explore
+              </span>
+            )}
           </button>
         ))}
 
@@ -271,26 +281,27 @@ export default function Hero({ start }: HeroProps) {
           className="invisible absolute top-0 left-0"
           aria-hidden="true"
         >
-          {cycling && !reducedMotion && (
-            <svg
-              className="h-full w-full -rotate-90"
-              viewBox="0 0 100 100"
-              fill="none"
-            >
-              <circle
-                cx="50"
-                cy="50"
-                r="48"
-                stroke="rgba(245,240,232,0.1)"
-                strokeWidth="1.5"
-              />
+          <svg
+            className="h-full w-full -rotate-90"
+            viewBox="0 0 100 100"
+            fill="none"
+          >
+            <circle
+              cx="50"
+              cy="50"
+              r="48"
+              stroke="rgba(245,240,232,0.12)"
+              strokeWidth="1.5"
+            />
+            {/* Fills clockwise over the auto-cycle in the orb's accent */}
+            {cycling && !reducedMotion && (
               <motion.circle
                 key={`${active}-${open}`}
                 cx="50"
                 cy="50"
                 r="48"
                 pathLength="1"
-                stroke="rgba(212,116,59,0.75)"
+                stroke={`${SERVICES[active].color}99`}
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeDasharray="1"
@@ -298,8 +309,8 @@ export default function Hero({ start }: HeroProps) {
                 animate={{ strokeDashoffset: 0 }}
                 transition={{ duration: CYCLE_MS / 1000, ease: "linear" }}
               />
-            </svg>
-          )}
+            )}
+          </svg>
         </div>
 
         {/* Description: hidden inside the planet, revealed by the crack.
@@ -311,7 +322,7 @@ export default function Hero({ start }: HeroProps) {
           ref={(el) => {
             overlayNodes.current.desc = el;
           }}
-          className="invisible absolute top-0 left-0 w-[min(260px,84vw)] text-center"
+          className="invisible absolute top-0 left-0 w-[min(300px,88vw)] text-center md:w-[min(260px,84vw)]"
         >
           {/* Always mounted to avoid AnimatePresence exit coordination,
               which wedges under rapid cycle interruptions. */}
@@ -341,7 +352,7 @@ export default function Hero({ start }: HeroProps) {
               <h3 className="font-serif text-[15px] font-bold text-white [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">
                 {SERVICES[active].title}
               </h3>
-              <p className="mx-auto mt-1 max-w-[240px] text-[11px] leading-relaxed text-white/55 [text-shadow:0_2px_8px_rgba(0,0,0,0.6)]">
+              <p className="mx-auto mt-1 max-w-[280px] text-[11px] leading-relaxed text-white/55 [text-shadow:0_2px_8px_rgba(0,0,0,0.6)] md:max-w-[240px]">
                 {SERVICES[active].desc}
               </p>
               <button
@@ -353,7 +364,7 @@ export default function Hero({ start }: HeroProps) {
                   });
                   scrollTo("#services", { offset: -88 });
                 }}
-                className={`mt-1.5 inline-flex min-h-8 items-center font-mono text-[9px] tracking-[0.15em] text-orange-400 uppercase transition-colors duration-200 hover:text-orange-300 [text-shadow:0_2px_8px_rgba(0,0,0,0.6)] ${
+                className={`mt-1 inline-flex min-h-7 items-center font-mono text-[9px] md:mt-1.5 md:min-h-8 tracking-[0.15em] text-orange-400 uppercase transition-colors duration-200 hover:text-orange-300 [text-shadow:0_2px_8px_rgba(0,0,0,0.6)] ${
                   open ? "pointer-events-auto" : "pointer-events-none"
                 }`}
               >
@@ -364,7 +375,7 @@ export default function Hero({ start }: HeroProps) {
 
           {/* Mobile service tabs: replace the nav dots with the four
               service names so the carousel's contents are visible */}
-          <div className="pointer-events-auto mt-1.5 flex items-center justify-center md:hidden">
+          <div className="pointer-events-auto mt-1 flex items-center justify-center md:hidden">
             {SERVICES.map((service, i) => (
               <button
                 key={service.id}
@@ -386,7 +397,7 @@ export default function Hero({ start }: HeroProps) {
           {/* One-time swipe hint, dismissed after the first swipe */}
           <p
             aria-hidden="true"
-            className={`mt-0.5 font-mono text-[9px] tracking-[0.2em] text-white/25 uppercase transition-opacity duration-500 md:hidden ${
+            className={`font-mono text-[9px] tracking-[0.2em] text-white/25 uppercase transition-opacity duration-500 md:hidden ${
               hasSwiped ? "opacity-0" : ""
             }`}
           >
@@ -450,13 +461,13 @@ export default function Hero({ start }: HeroProps) {
         }
       >
         <motion.p
-          className="mb-6 font-mono text-xs tracking-[0.2em] text-orange-300 uppercase md:text-sm"
+          className="mb-6 font-mono text-xs tracking-[0.2em] text-orange-300 uppercase max-md:mb-3 md:text-sm"
           {...fadeUp(0.2)}
         >
           Web & Automation Agency · Waupaca, WI
         </motion.p>
 
-        <h1 className="max-w-4xl font-serif text-display font-bold text-cream-100 [text-shadow:0_2px_24px_rgba(13,13,12,0.5)]">
+        <h1 className="max-w-4xl font-serif text-display font-bold text-cream-100 [text-shadow:0_2px_24px_rgba(13,13,12,0.5)] max-md:text-[29px] max-md:leading-[1.2]">
           <SplitText
             text="We Build the Systems That Run Your Business"
             splitBy="word"
@@ -467,14 +478,14 @@ export default function Hero({ start }: HeroProps) {
         </h1>
 
         <motion.p
-          className="mt-6 max-w-xl text-lead text-cream-100/85"
+          className="mt-6 max-w-xl text-lead text-cream-100/85 max-md:mt-3 max-md:text-[15px]"
           {...fadeUp(1.1)}
         >
           Custom websites and AI automation for small businesses that want
           more time, more customers, and less chaos.
         </motion.p>
 
-        <div className="pointer-events-auto mt-10 flex flex-wrap items-center gap-6">
+        <div className="pointer-events-auto mt-10 flex flex-wrap items-center gap-6 max-md:mt-5 max-md:gap-4">
           <motion.div {...fadeUp(1.3)}>
             <MagneticButton>
               <a

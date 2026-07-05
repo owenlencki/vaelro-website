@@ -47,19 +47,19 @@ const SINGLE_SLOTS: Array<{
 ];
 
 // Mobile: one centered orb, with the next (slot 1) and previous (slot 3)
-// services peeking ~17px in from the screen edges at 30% opacity as a
+// services peeking ~28px in from the screen edges at ~45% opacity as a
 // carousel cue. Slot 2 (the opposite orb) stays hidden. The edge X depends
 // on the viewport, so it's computed from the same numbers the mobile
 // layout uses (group scale/z from getGroupLayout, hero height +190px).
 const PEEK_SCALE = 0.6;
-const PEEK_VISIBLE_PX = 17;
+const PEEK_VISIBLE_PX = 28;
 
 function buildMobileSlots(): Array<{
   position: [number, number, number];
   scale: number;
 }> {
   const groupScale = 0.75;
-  const heroH = window.innerHeight + 190;
+  const heroH = window.innerHeight + 215;
   const focal = heroH / 2 / Math.tan(Math.PI / 6); // px per world unit at dist 1
   const dist = 6 + 0.4 + 0.15 * groupScale; // camera z + group z + slot z
   const ppw = focal / dist;
@@ -88,7 +88,7 @@ export function getGroupLayout(
   mode: LayoutMode,
 ) {
   if (mode === "mobile") {
-    return { position: [0, -2.0, -0.4] as const, scale: 0.75 };
+    return { position: [0, -1.68, -0.4] as const, scale: 0.75 };
   }
   const aspect = width / height;
   if (mode === "portrait") {
@@ -195,7 +195,7 @@ function OverlayProjector({
           desc.style.transform =
             mode === "desktop"
               ? `translate(-50%, -50%) translate(${cx}px, ${cy}px)`
-              : `translate(-50%, 0) translate(${dx}px, ${cy + rPx + 28}px)`;
+              : `translate(-50%, 0) translate(${dx}px, ${cy + rPx + 16}px)`;
           desc.style.visibility = "visible";
         }
 
@@ -233,6 +233,8 @@ export interface OrbCarouselProps {
   active: number;
   open: boolean;
   mode: LayoutMode;
+  /** First-load tap prompt on the active orb (mobile). */
+  pulse: boolean;
   reducedMotion: boolean;
   /** Click on an orb (active orb toggles open, inactive becomes active). */
   onOrbClick: (index: number) => void;
@@ -247,6 +249,7 @@ export default function OrbCarousel({
   active,
   open,
   mode,
+  pulse,
   reducedMotion,
   onOrbClick,
   overlay,
@@ -297,6 +300,7 @@ export default function OrbCarousel({
                 singleOrb && (mode === "mobile" ? slot === 2 : slot !== 0)
               }
               peek={mode === "mobile" && (slot === 1 || slot === 3)}
+              pulse={pulse && slot === 0}
               reducedMotion={reducedMotion}
               frameState={frameState.current}
               onSelect={() => onOrbClick(i)}

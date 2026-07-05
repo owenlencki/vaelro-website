@@ -204,8 +204,10 @@ interface OrbProps {
   splitDistance: number;
   /** Single-orb layouts: inactive orbs are fully hidden and non-interactive. */
   hidden: boolean;
-  /** Mobile carousel cue: orb peeks in from a screen edge at ~30% opacity. */
+  /** Mobile carousel cue: orb peeks in from a screen edge at ~45% opacity. */
   peek: boolean;
+  /** First-load tap prompt: two gentle 1.0->1.03 scale pulses, then stops. */
+  pulse: boolean;
   reducedMotion: boolean;
   frameState: FrameState;
   onSelect: () => void;
@@ -228,6 +230,7 @@ export default function Orb({
   splitDistance,
   hidden,
   peek,
+  pulse,
   reducedMotion,
   frameState,
   onSelect,
@@ -247,7 +250,8 @@ export default function Orb({
   const crack = useRef(0);
   const wasSplitting = useRef(false);
   const brightness = useRef(isActive ? 1 : 0.3);
-  const masterAlpha = useRef(peek ? 0.3 : 1);
+  const masterAlpha = useRef(peek ? 0.45 : 1);
+  const pulseT = useRef(0);
   const worldPos = useMemo(() => new THREE.Vector3(), []);
 
   // Fragment burst state
@@ -431,7 +435,7 @@ export default function Orb({
       s.x = isOpen ? 1 : 0;
       s.v = 0;
       brightness.current = isActive ? 1 : 0.3;
-      masterAlpha.current = peek ? 0.3 : 1;
+      masterAlpha.current = peek ? 0.45 : 1;
     } else {
       // Orbit transition spring (tension 100, friction 16)
       accel
@@ -451,7 +455,7 @@ export default function Orb({
       brightness.current +=
         ((isActive ? 1 : 0.3) - brightness.current) * (1 - Math.exp(-3.5 * dt));
       masterAlpha.current +=
-        ((peek ? 0.3 : 1) - masterAlpha.current) * (1 - Math.exp(-3.5 * dt));
+        ((peek ? 0.45 : 1) - masterAlpha.current) * (1 - Math.exp(-3.5 * dt));
 
       // Split spring (tension 120, friction 14: slight overshoot)
       s.v += (-SPLIT_TENSION * (s.x - splitTarget) - SPLIT_FRICTION * s.v) * dt;
@@ -459,8 +463,17 @@ export default function Orb({
     }
 
     const open = THREE.MathUtils.clamp(s.x, 0, 1);
+    // First-load tap prompt: two 0.9s scale pulses, then hold at 1
+    let pulseMul = 1;
+    if (pulse && !reducedMotion && pulseT.current < 1.8) {
+      pulseT.current += dt;
+      if (pulseT.current < 1.8) {
+        pulseMul =
+          1 + 0.03 * Math.sin(Math.PI * ((pulseT.current % 0.9) / 0.9));
+      }
+    }
     group.scale.setScalar(
-      Math.max(0.001, scaleSpring.current.x) * (1 + open * 0.08),
+      Math.max(0.001, scaleSpring.current.x) * (1 + open * 0.08) * pulseMul,
     );
     // Orbs shrunk away by the single-orb layout are fully hidden once the
     // shrink-out settles (the brief shrink itself stays visible so

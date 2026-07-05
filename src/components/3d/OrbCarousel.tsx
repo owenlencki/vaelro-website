@@ -35,8 +35,7 @@ const SLOTS: Array<{ position: [number, number, number]; scale: number }> = [
 /** How the hero lays out: full orbital arrangement or a single orb. */
 export type LayoutMode = "desktop" | "portrait" | "mobile";
 
-// Single-orb slots (mobile + portrait desktop): one centered orb; inactive
-// orbs shrink away so cycling reads as one clean carousel.
+// Portrait desktop: one centered orb; inactive orbs shrink away entirely.
 const SINGLE_SLOTS: Array<{
   position: [number, number, number];
   scale: number;
@@ -46,6 +45,34 @@ const SINGLE_SLOTS: Array<{
   { position: [0, 0, -0.6], scale: 0.001 },
   { position: [0, 0, -0.6], scale: 0.001 },
 ];
+
+// Mobile: one centered orb, with the next (slot 1) and previous (slot 3)
+// services peeking ~17px in from the screen edges at 30% opacity as a
+// carousel cue. Slot 2 (the opposite orb) stays hidden. The edge X depends
+// on the viewport, so it's computed from the same numbers the mobile
+// layout uses (group scale/z from getGroupLayout, hero height +190px).
+const PEEK_SCALE = 0.6;
+const PEEK_VISIBLE_PX = 17;
+
+function buildMobileSlots(): Array<{
+  position: [number, number, number];
+  scale: number;
+}> {
+  const groupScale = 0.75;
+  const heroH = window.innerHeight + 190;
+  const focal = heroH / 2 / Math.tan(Math.PI / 6); // px per world unit at dist 1
+  const dist = 6 + 0.4 + 0.15 * groupScale; // camera z + group z + slot z
+  const ppw = focal / dist;
+  const rPx = ORB_RADIUS * PEEK_SCALE * groupScale * ppw;
+  const peekX =
+    (window.innerWidth / 2 + rPx - PEEK_VISIBLE_PX) / ppw / groupScale;
+  return [
+    { position: [0, 0, 0], scale: 0.8 },
+    { position: [peekX, 0.15, -0.15], scale: PEEK_SCALE },
+    { position: [0, 0, -0.6], scale: 0.001 },
+    { position: [-peekX, 0.15, -0.15], scale: PEEK_SCALE },
+  ];
+}
 
 // Group-local anchor for the description text block, below the arrangement
 const DESC_ANCHOR_Y = -0.85;
@@ -162,10 +189,13 @@ function OverlayProjector({
         // for readable text.
         const desc = nodes.desc;
         if (desc) {
+          // Mobile: horizontally locked to the screen center so the text
+          // and service tabs stay put while orbs travel during transitions
+          const dx = mode === "mobile" ? size.width / 2 : cx;
           desc.style.transform =
             mode === "desktop"
               ? `translate(-50%, -50%) translate(${cx}px, ${cy}px)`
-              : `translate(-50%, 0) translate(${cx}px, ${cy + rPx + 28}px)`;
+              : `translate(-50%, 0) translate(${dx}px, ${cy + rPx + 28}px)`;
           desc.style.visibility = "visible";
         }
 
@@ -233,7 +263,11 @@ export default function OrbCarousel({
     open: new Float32Array(ORB_COUNT),
   });
 
-  const slots = singleOrb ? SINGLE_SLOTS : SLOTS;
+  const slots = useMemo(
+    () =>
+      mode === "mobile" ? buildMobileSlots() : singleOrb ? SINGLE_SLOTS : SLOTS,
+    [mode, singleOrb],
+  );
   const slotTargets = useMemo(
     () => slots.map((slot) => new THREE.Vector3(...slot.position)),
     [slots],
@@ -259,7 +293,10 @@ export default function OrbCarousel({
               isActive={slot === 0}
               isOpen={slot === 0 && open}
               splitDistance={splitDistance}
-              hidden={singleOrb && slot !== 0}
+              hidden={
+                singleOrb && (mode === "mobile" ? slot === 2 : slot !== 0)
+              }
+              peek={mode === "mobile" && (slot === 1 || slot === 3)}
               reducedMotion={reducedMotion}
               frameState={frameState.current}
               onSelect={() => onOrbClick(i)}

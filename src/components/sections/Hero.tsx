@@ -74,6 +74,7 @@ export default function Hero({ start }: HeroProps) {
   const [active, setActive] = useState(0);
   const [open, setOpen] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [hasSwiped, setHasSwiped] = useState(false);
   const pauseTimer = useRef<number | undefined>(undefined);
   const touchX = useRef<number | null>(null);
   const inView = useInView(ref, { amount: 0.3 });
@@ -165,7 +166,10 @@ export default function Hero({ start }: HeroProps) {
     if (touchX.current === null) return;
     const dx = e.changedTouches[0].clientX - touchX.current;
     touchX.current = null;
-    if (Math.abs(dx) > 55) step(dx < 0 ? 1 : -1);
+    if (Math.abs(dx) > 55) {
+      setHasSwiped(true);
+      step(dx < 0 ? 1 : -1);
+    }
   }
 
   // Arrow keys cycle the carousel while the hero is in view
@@ -206,7 +210,7 @@ export default function Hero({ start }: HeroProps) {
   return (
     <section
       ref={ref}
-      className="group relative flex min-h-svh items-center overflow-hidden bg-ink-900 max-md:min-h-[calc(100svh+160px)] max-md:items-start"
+      className="group relative flex min-h-svh items-center overflow-hidden bg-ink-900 max-md:min-h-[calc(100svh+190px)] max-md:items-start"
       aria-label="Intro"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
@@ -358,8 +362,9 @@ export default function Hero({ start }: HeroProps) {
             </motion.div>
           </motion.div>
 
-          {/* Mobile dots: part of the below-orb stack */}
-          <div className="pointer-events-auto mt-1 flex items-center justify-center md:hidden">
+          {/* Mobile service tabs: replace the nav dots with the four
+              service names so the carousel's contents are visible */}
+          <div className="pointer-events-auto mt-1.5 flex items-center justify-center md:hidden">
             {SERVICES.map((service, i) => (
               <button
                 key={service.id}
@@ -367,18 +372,26 @@ export default function Hero({ start }: HeroProps) {
                 aria-label={`Show ${service.name}`}
                 aria-current={i === active}
                 onClick={() => selectOrb(i)}
-                className="flex h-9 w-7 items-center justify-center"
+                className={`min-h-9 px-1.5 text-[11px] whitespace-nowrap transition-[color,opacity] duration-300 ${
+                  i === active
+                    ? "font-bold text-white"
+                    : "text-white/40"
+                }`}
               >
-                <span
-                  className={`block h-2 rounded-full transition-all duration-300 ${
-                    i === active
-                      ? "w-5 bg-orange-500"
-                      : "w-2 bg-cream-100/30 hover:bg-cream-100/60"
-                  }`}
-                />
+                {service.name}
               </button>
             ))}
           </div>
+
+          {/* One-time swipe hint, dismissed after the first swipe */}
+          <p
+            aria-hidden="true"
+            className={`mt-0.5 font-mono text-[9px] tracking-[0.2em] text-white/25 uppercase transition-opacity duration-500 md:hidden ${
+              hasSwiped ? "opacity-0" : ""
+            }`}
+          >
+            Swipe to explore
+          </p>
         </div>
 
         {/* Nav dots, below the orb arrangement (desktop; the mobile dots

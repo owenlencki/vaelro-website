@@ -40,6 +40,7 @@ const shellFragmentShader = /* glsl */ `
   uniform vec3 uColor;
   uniform float uBrightness; // ~0.3 inactive -> 1.0 active
   uniform float uGlow;       // 0..1 open amount
+  uniform float uAlpha;      // master opacity (mobile edge-peek orbs ~0.3)
   varying vec3 vN;
   varying vec3 vV;
   void main() {
@@ -61,7 +62,7 @@ const shellFragmentShader = /* glsl */ `
 
     // Halves fade to ~40% opacity as the orb opens, so the dark background
     // shows through and the description text reads clearly in the gap
-    gl_FragColor = vec4(col, 1.0 - 0.6 * uGlow);
+    gl_FragColor = vec4(col, (1.0 - 0.6 * uGlow) * uAlpha);
   }
 `;
 
@@ -203,6 +204,8 @@ interface OrbProps {
   splitDistance: number;
   /** Single-orb layouts: inactive orbs are fully hidden and non-interactive. */
   hidden: boolean;
+  /** Mobile carousel cue: orb peeks in from a screen edge at ~30% opacity. */
+  peek: boolean;
   reducedMotion: boolean;
   frameState: FrameState;
   onSelect: () => void;
@@ -224,6 +227,7 @@ export default function Orb({
   isOpen,
   splitDistance,
   hidden,
+  peek,
   reducedMotion,
   frameState,
   onSelect,
@@ -243,6 +247,7 @@ export default function Orb({
   const crack = useRef(0);
   const wasSplitting = useRef(false);
   const brightness = useRef(isActive ? 1 : 0.3);
+  const masterAlpha = useRef(peek ? 0.3 : 1);
   const worldPos = useMemo(() => new THREE.Vector3(), []);
 
   // Fragment burst state
@@ -265,6 +270,7 @@ export default function Orb({
           uColor: { value: new THREE.Color(color) },
           uBrightness: { value: 0.3 },
           uGlow: { value: 0 },
+          uAlpha: { value: 1 },
         },
         side: THREE.DoubleSide,
         transparent: true,
@@ -425,6 +431,7 @@ export default function Orb({
       s.x = isOpen ? 1 : 0;
       s.v = 0;
       brightness.current = isActive ? 1 : 0.3;
+      masterAlpha.current = peek ? 0.3 : 1;
     } else {
       // Orbit transition spring (tension 100, friction 16)
       accel
@@ -443,6 +450,8 @@ export default function Orb({
       group.rotation.y += dt * 0.18;
       brightness.current +=
         ((isActive ? 1 : 0.3) - brightness.current) * (1 - Math.exp(-3.5 * dt));
+      masterAlpha.current +=
+        ((peek ? 0.3 : 1) - masterAlpha.current) * (1 - Math.exp(-3.5 * dt));
 
       // Split spring (tension 120, friction 14: slight overshoot)
       s.v += (-SPLIT_TENSION * (s.x - splitTarget) - SPLIT_FRICTION * s.v) * dt;
@@ -466,8 +475,9 @@ export default function Orb({
 
     shellMaterial.uniforms.uBrightness.value = brightness.current;
     shellMaterial.uniforms.uGlow.value = open;
+    shellMaterial.uniforms.uAlpha.value = masterAlpha.current;
     haloMaterial.uniforms.uIntensity.value =
-      0.3 + brightness.current * 0.55 + open * 0.5;
+      (0.3 + brightness.current * 0.55 + open * 0.5) * masterAlpha.current;
     crackMaterial.uniforms.uCrack.value = crack.current;
 
     // Fragment shards: fly out, decelerate, fade over 400ms

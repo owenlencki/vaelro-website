@@ -1,7 +1,7 @@
 import SplitText from "../components/ui/SplitText";
 import Reveal from "../components/ui/Reveal";
 import BookingEmbed from "../components/sections/BookingEmbed";
-import ContactForm from "../components/sections/ContactForm";
+import ContactFlow from "../components/sections/ContactFlow";
 
 const INFO = [
   { label: "Email", value: "hello@vaelro.co", href: "mailto:hello@vaelro.co" },
@@ -36,7 +36,7 @@ export default function ContactPage() {
       </section>
 
       <BookingEmbed />
-      <ContactForm />
+      <ContactFlow />
 
       {/* Contact info */}
       <section className="bg-peach-50 py-12 md:py-20" aria-label="Contact info">

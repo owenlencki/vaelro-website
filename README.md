@@ -26,14 +26,22 @@ npm run preview  # serve the production build locally
   the placeholder footnote.
 - **Booking URL**: replace the `PLACEHOLDER` Google Calendar appointment URL
   in [`src/components/sections/BookingEmbed.tsx`](src/components/sections/BookingEmbed.tsx).
-- **Contact form**: currently logs to the console. Wire the submit handler in
-  [`src/components/sections/ContactForm.tsx`](src/components/sections/ContactForm.tsx)
-  to the n8n webhook.
+- **Contact flow**: the multi-step conversational lead form lives in
+  [`src/components/sections/ContactFlow.tsx`](src/components/sections/ContactFlow.tsx).
+  It POSTs to a Google Apps Script Web App (source of truth:
+  [`backend/apps-script/Code.gs`](backend/apps-script/Code.gs)) which appends a
+  row to the "Vaelro Website Leads" Sheet and emails hello@vaelro.co. Set
+  `APPS_SCRIPT_URL` and `TURNSTILE_SITE_KEY` at the top of `ContactFlow.tsx`
+  (local dev uses Cloudflare's public Turnstile test key). Spam is blocked by a
+  honeypot field plus Cloudflare Turnstile, verified server-side in `Code.gs`
+  against the `TURNSTILE_SECRET` script property.
 
 ## Deploy (Netlify)
 
 Connect the GitHub repo in Netlify. `netlify.toml` already sets the build
 command (`npm run build`), publish directory (`dist`), and the SPA redirect.
+The contact flow submits directly to Apps Script, so no Netlify Forms
+configuration is required.
 
 Custom domain: add `vaelro.co` in Netlify Domain settings, then point DNS at
 Wix (CNAME `www` → the Netlify site, A records per Netlify's instructions).

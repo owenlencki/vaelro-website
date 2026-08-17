@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
-import MagneticButton from "../ui/MagneticButton";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 import { withBase } from "../../lib/paths";
 import { fanOrder, featuredProjects, type Project } from "../../data/projects";
@@ -225,7 +224,15 @@ export default function WorkFan() {
   const reducedMotion = usePrefersReducedMotion();
 
   return (
-    <section id="work" className="scroll-mt-24 bg-peach-50 py-12 md:py-24">
+    // The peach surface belongs to the fan. In strip mode the section uses
+    // the page background so the light sections meet with no tone seam
+    // above the strip on mobile.
+    <section
+      id="work"
+      className={`scroll-mt-24 py-12 md:py-24 ${
+        fanLayout ? "bg-peach-50" : "bg-cream-100"
+      }`}
+    >
       <div className="container-site">
         <p className="mb-4 font-mono text-xs tracking-[0.2em] text-orange-600 uppercase md:text-sm">
           Our Work
@@ -245,21 +252,13 @@ export default function WorkFan() {
           <Strip cards={featuredProjects} />
         )}
 
+        {/* No CTA button here: SocialProof directly below carries the
+            proof-to-action CTA, and two stacked buttons read badly on mobile. */}
         <Reveal delay={0.2}>
-          <div className="mt-10 flex flex-col items-center gap-6 text-center md:mt-14">
-            <p className="text-lead text-ink-600">
-              Real work for real businesses. Click any card to see what we
-              built and why.
-            </p>
-            <MagneticButton>
-              <Link
-                to="/contact"
-                className="inline-flex min-h-12 items-center rounded-full bg-orange-500 px-8 py-3.5 text-base font-bold text-white shadow-[0_8px_30px_rgba(212,116,59,0.35)] transition-colors duration-200 hover:bg-orange-600"
-              >
-                Book Your Free Consultation
-              </Link>
-            </MagneticButton>
-          </div>
+          <p className="mx-auto mt-10 max-w-xl text-center text-lead text-ink-600 md:mt-14">
+            Real work for real businesses. Click any card to see what we
+            built and why.
+          </p>
         </Reveal>
       </div>
     </section>

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import {
   BrowserRouter,
   Route,
@@ -15,6 +15,9 @@ import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import NotFoundPage from "./pages/NotFoundPage";
+
+// Lazy so Home's bundle doesn't grow with the case-study pages.
+const WorkDetailPage = lazy(() => import("./pages/WorkDetailPage"));
 
 const NAV_OFFSET = -88;
 
@@ -64,6 +67,16 @@ function AnimatedRoutes() {
           element={
             <PageTransition>
               <ContactPage />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/work/:slug"
+          element={
+            <PageTransition>
+              <Suspense fallback={null}>
+                <WorkDetailPage />
+              </Suspense>
             </PageTransition>
           }
         />

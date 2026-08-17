@@ -63,7 +63,7 @@ export default function Navbar() {
 
   const anchorLinks = [
     { label: "Services", id: "services" },
-    { label: "Work", id: "portfolio" },
+    { label: "Work", id: "work" },
   ];
   const pageLinks = [
     { label: "About", to: "/about" },

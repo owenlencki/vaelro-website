@@ -16,3 +16,9 @@ npm-debug.log*
 
 # TypeScript incremental build info
 tsconfig.tsbuildinfo
+
+# Local design reference screenshots (never commit)
+docs/design-refs/
+
+# Claude Code local tooling (launch config etc.), not repo content
+.claude/

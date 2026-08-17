@@ -4,7 +4,7 @@ import Preloader from "../components/layout/Preloader";
 import Hero from "../components/sections/Hero";
 import Marquee from "../components/sections/Marquee";
 import Services from "../components/sections/Services";
-import Portfolio from "../components/sections/Portfolio";
+import WorkFan from "../components/sections/WorkFan";
 import SocialProof from "../components/sections/SocialProof";
 import HomeCTA from "../components/sections/HomeCTA";
 
@@ -38,7 +38,7 @@ export default function HomePage() {
       <Hero start={!loading} />
       <Marquee />
       <Services />
-      <Portfolio />
+      <WorkFan />
       <SocialProof />
       <HomeCTA />
     </>

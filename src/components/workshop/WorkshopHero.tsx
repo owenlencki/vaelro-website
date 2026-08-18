@@ -4,6 +4,7 @@ import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
 import Portrait from "./Portrait";
 import RegisterCta from "./RegisterCta";
+import VenueLink from "./VenueLink";
 import { workshop } from "../../data/workshop";
 import type { SeriesPhase, WorkshopSession } from "../../data/workshop";
 import { formatDateRow, formatNextSessionLine } from "../../lib/workshop";
@@ -30,7 +31,7 @@ export default function WorkshopHero({
   const detailRow = [
     { text: `${hero.detailLead} · ${workshop.time}` },
     { text: formatDateRow(workshop.sessions), muted: phase === "complete" },
-    { text: hero.detailVenue },
+    { text: hero.detailVenue, mapped: true },
     { text: `${hero.detailFree} · Limited to ${workshop.capacity} businesses` },
   ];
 
@@ -87,7 +88,13 @@ export default function WorkshopHero({
                         /
                       </span>
                     )}
-                    {item.text}
+                    {item.mapped ? (
+                      <VenueLink className="underline decoration-cream-400 underline-offset-4 transition-colors duration-200 hover:text-orange-600 hover:decoration-orange-500">
+                        {item.text}
+                      </VenueLink>
+                    ) : (
+                      item.text
+                    )}
                   </span>
                 ))}
               </div>

@@ -148,18 +148,36 @@ check("end times keep the session's own offset across the DST change", () => {
 console.log("\nVenue-dependent FAQ");
 check("placeholder sentence holds while the address is empty", () => {
   const faq = workshop.faqs.find((f) => f.id === "where")!;
-  assert.match(resolveFaqAnswer(faq, workshop.venue), /before Session 1\.$/);
+  const answer = resolveFaqAnswer(faq, { address: "", parkingNote: "" });
+  assert.match(answer, /before Session 1\.$/);
 });
-check("address and parking note replace it once filled in", () => {
+check("the committed venue answers with its real address", () => {
+  const faq = workshop.faqs.find((f) => f.id === "where")!;
+  assert.equal(
+    resolveFaqAnswer(faq, workshop.venue),
+    "The Waupaca Area Chamber of Commerce in downtown Waupaca. 315 S Main St, Waupaca, WI 54981",
+  );
+});
+check("a parking note joins the address once it is filled in", () => {
   const faq = workshop.faqs.find((f) => f.id === "where")!;
   const answer = resolveFaqAnswer(faq, {
-    address: "123 Example St.",
+    address: workshop.venue.address,
     parkingNote: "Park in the north lot.",
   });
-  assert.equal(
-    answer,
-    "The Waupaca Business Center in Waupaca. 123 Example St. Park in the north lot.",
+  assert.match(answer, /54981 Park in the north lot\.$/);
+});
+check("the venue name the map link keys on is present in the answer", () => {
+  const faq = workshop.faqs.find((f) => f.id === "where")!;
+  assert.ok(
+    resolveFaqAnswer(faq, workshop.venue).includes(workshop.venue.name),
+    "VenueLink splits on venue.name; the answer must contain it verbatim",
   );
+});
+check("the closing detail line carries the venue name too", () => {
+  assert.ok(workshop.closing.detailLine.includes(workshop.venue.name));
+});
+check("venue has a map URL for the links to point at", () => {
+  assert.match(workshop.venue.mapUrl, /^https:\/\//);
 });
 
 console.log(

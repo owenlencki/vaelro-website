@@ -201,7 +201,7 @@ interface SchemaShape {
   partner: string;
   partnerUrl: string;
   capacity: number;
-  venue: { name: string; address: string; city: string };
+  venue: { name: string; address: string; city: string; mapUrl?: string };
   registration: { url: string };
   meta: { ogImage: string };
   sessions: WorkshopSession[];
@@ -224,6 +224,9 @@ export function buildEventGraph(data: SchemaShape): string {
     return match ? { "@type": "Person", name: match.name } : undefined;
   };
 
+  const street = data.venue.address.split(",")[0].trim();
+  const postalCode = data.venue.address.match(/\b\d{5}\b/)?.[0] ?? "";
+
   const graph = data.sessions.map((session) => ({
     "@type": "Event",
     name: `${data.title}: Session ${session.number}, ${session.title}`,
@@ -235,11 +238,16 @@ export function buildEventGraph(data: SchemaShape): string {
     location: {
       "@type": "Place",
       name: data.venue.name,
+      ...(data.venue.mapUrl ? { hasMap: data.venue.mapUrl } : {}),
       address: {
         "@type": "PostalAddress",
-        ...(data.venue.address ? { streetAddress: data.venue.address } : {}),
+        // venue.address is one display string ("315 S Main St, Waupaca, WI
+        // 54981"); locality, region, and postal code are their own fields
+        // here, so only the street part belongs in streetAddress.
+        ...(street ? { streetAddress: street } : {}),
         addressLocality: "Waupaca",
         addressRegion: "WI",
+        ...(postalCode ? { postalCode } : {}),
         addressCountry: "US",
       },
     },

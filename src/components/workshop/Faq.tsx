@@ -2,6 +2,7 @@ import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
 import { workshop } from "../../data/workshop";
 import { resolveFaqAnswer } from "../../lib/workshop";
+import VenueLink from "./VenueLink";
 
 /** Plain stacked question and answer on hairlines. No accordion by design. */
 export default function Faq() {
@@ -26,7 +27,10 @@ export default function Faq() {
                   {faq.question}
                 </dt>
                 <dd className="mt-2 leading-relaxed text-ink-600">
-                  {resolveFaqAnswer(faq, workshop.venue)}
+                  <VenueLink
+                    text={resolveFaqAnswer(faq, workshop.venue)}
+                    className="nav-link font-semibold text-orange-600 hover:text-orange-700"
+                  />
                 </dd>
               </div>
             ))}

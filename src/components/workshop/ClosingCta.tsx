@@ -2,6 +2,7 @@ import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
 import MagneticButton from "../ui/MagneticButton";
 import RegisterCta from "./RegisterCta";
+import VenueLink from "./VenueLink";
 import { workshop } from "../../data/workshop";
 import type { SeriesPhase } from "../../data/workshop";
 
@@ -38,7 +39,10 @@ export default function ClosingCta({ phase }: ClosingCtaProps) {
 
             <Reveal delay={0.25}>
               <p className="mx-auto mt-5 max-w-2xl text-cream-100/80">
-                {detailLine}
+                <VenueLink
+                  text={detailLine}
+                  className="nav-link font-semibold text-orange-300 hover:text-orange-200"
+                />
               </p>
 
               {!wrapped && (

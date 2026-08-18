@@ -91,11 +91,13 @@ export const workshop = {
   },
 
   venue: {
-    name: "Waupaca Business Center",
-    detail: "at the Waupaca Recreation Center", // OWEN TO CONFIRM
-    address: "", // fill when confirmed; renders only when non-empty
+    name: "Waupaca Area Chamber of Commerce",
+    detail: "The Chamber office on South Main Street, downtown Waupaca",
+    address: "315 S Main St, Waupaca, WI 54981",
     city: "Waupaca, WI",
     parkingNote: "", // fill later; renders only when non-empty
+    /** Wherever the venue is named on the page, it links here. */
+    mapUrl: "https://maps.app.goo.gl/J9T2zYQgJiJR3hQK7",
   },
 
   time: "8:00 AM",
@@ -125,7 +127,7 @@ export const workshop = {
       "Led by Owen Lencki and Liam Bloedow, co-founders of Vaelro. Session 1 features guest speaker Casey Plunkett, CEO of Secure AI and a former IBM and Oracle executive.",
     /** Rendered as one plain mono row. Dates are derived from `sessions`. */
     detailLead: "Fridays",
-    detailVenue: "Waupaca Business Center",
+    detailVenue: "Chamber office, downtown Waupaca",
     detailFree: "Free",
     microcopyPending:
       "Registration is handled by the Waupaca Area Chamber of Commerce. If you don't see the series on their events calendar yet, email hello@vaelro.co and we'll send you the link the moment it's live.",
@@ -189,7 +191,7 @@ export const workshop = {
   closing: {
     heading: "Reserve your seat before it fills.",
     detailLine:
-      "Fridays at 8:00 AM · Waupaca Business Center · Free · Limited to 25 businesses",
+      "Fridays at 8:00 AM · Waupaca Area Chamber of Commerce · Free · Limited to 25 businesses",
     links: [
       {
         label: "Questions? Email hello@vaelro.co",
@@ -366,7 +368,7 @@ export const workshop = {
       id: "where",
       question: "Where is it, and where do I park?",
       answer:
-        "The Waupaca Business Center in Waupaca. We'll add the room and parking details here before Session 1.",
+        "The Waupaca Area Chamber of Commerce in downtown Waupaca. We'll add the room and parking details here before Session 1.",
     },
     {
       id: "fills-up",

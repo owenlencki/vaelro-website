@@ -193,3 +193,73 @@ export function getPillCopy(
   }
   return pill.upcoming;
 }
+
+// --- Structured data ------------------------------------------------------
+
+interface SchemaShape {
+  title: string;
+  partner: string;
+  partnerUrl: string;
+  capacity: number;
+  venue: { name: string; address: string; city: string };
+  registration: { url: string };
+  meta: { ogImage: string };
+  sessions: WorkshopSession[];
+  speakers: Array<{ id: string; name: string }>;
+}
+
+/**
+ * The three sessions as one schema.org @graph of Event objects. Google runs
+ * JavaScript, so injecting this at runtime is enough; the crawler-facing head
+ * for link previews is separate work.
+ */
+export function buildEventGraph(data: SchemaShape): string {
+  const organizer = [
+    { "@type": "Organization", name: "Vaelro", url: "https://vaelro.co" },
+    { "@type": "Organization", name: data.partner, url: data.partnerUrl },
+  ];
+
+  const person = (id: string) => {
+    const match = data.speakers.find((s) => s.id === id);
+    return match ? { "@type": "Person", name: match.name } : undefined;
+  };
+
+  const graph = data.sessions.map((session) => ({
+    "@type": "Event",
+    name: `${data.title}: Session ${session.number}, ${session.title}`,
+    description: session.blurb,
+    startDate: session.start,
+    endDate: getSessionEnd(session),
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    eventStatus: "https://schema.org/EventScheduled",
+    location: {
+      "@type": "Place",
+      name: data.venue.name,
+      address: {
+        "@type": "PostalAddress",
+        ...(data.venue.address ? { streetAddress: data.venue.address } : {}),
+        addressLocality: "Waupaca",
+        addressRegion: "WI",
+        addressCountry: "US",
+      },
+    },
+    image: data.meta.ogImage,
+    organizer,
+    performer: [
+      person("owen"),
+      person("liam"),
+      ...(session.number === 1 ? [person("casey")] : []),
+    ].filter(Boolean),
+    isAccessibleForFree: true,
+    maximumAttendeeCapacity: data.capacity,
+    offers: {
+      "@type": "Offer",
+      price: 0,
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      url: data.registration.url,
+    },
+  }));
+
+  return JSON.stringify({ "@context": "https://schema.org", "@graph": graph });
+}

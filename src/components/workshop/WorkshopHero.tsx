@@ -73,7 +73,7 @@ export default function WorkshopHero({
               {/* The event details as one plain mono row */}
               {/* Each separator travels with the item after it, so a wrap
                   never strands a slash at the end of a line. */}
-              <div className="mt-8 flex flex-wrap items-center gap-y-2 font-mono text-[0.7rem] tracking-[0.14em] text-ink-600 uppercase md:text-xs">
+              <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[0.7rem] tracking-[0.14em] text-ink-600 uppercase md:text-xs">
                 {detailRow.map((item, i) => (
                   <span
                     key={item.text}

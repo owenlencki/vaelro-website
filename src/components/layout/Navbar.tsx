@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   AnimatePresence,
@@ -10,11 +10,23 @@ import { useLenisContext } from "../../hooks/useLenis";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 import { BOOKING_URL } from "../../lib/booking";
 import { trackEvent } from "../../lib/analytics";
+import { workshop } from "../../data/workshop";
+import { getSeriesPhase } from "../../lib/workshop";
 import logoCream from "../../assets/logos/logo-horizontal-cream.png";
 import logoDark from "../../assets/logos/logo-horizontal-dark.png";
 import type { MouseEvent } from "react";
 
 const NAV_OFFSET = -88;
+
+/** Decorative marker on the Workshop item while the series is running. */
+function LiveDot() {
+  return (
+    <span
+      aria-hidden="true"
+      className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-orange-500 align-middle"
+    />
+  );
+}
 
 export default function Navbar() {
   const { pathname } = useLocation();
@@ -65,7 +77,16 @@ export default function Navbar() {
     { label: "Services", id: "services" },
     { label: "Work", id: "work" },
   ];
+  // The dot marks the series as live. It disappears on its own once Session 3
+  // is done; dropping it early is deleting the `dot` line below.
+  const seriesRunning = useMemo(
+    () =>
+      getSeriesPhase(workshop.sessions, Date.now(), workshop.stageOverride) !==
+      "complete",
+    [],
+  );
   const pageLinks = [
+    { label: "Workshop", to: "/workshop", dot: seriesRunning },
     { label: "About", to: "/about" },
     { label: "Contact", to: "/contact" },
   ];
@@ -114,13 +135,13 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop links */}
-          <div className="hidden items-center gap-8 md:flex">
+          <div className="hidden items-center gap-4 md:flex lg:gap-8">
             {anchorLinks.map((l) => (
               <Link
                 key={l.id}
                 to={`/#${l.id}`}
                 onClick={(e) => handleAnchor(e, l.id)}
-                className={`nav-link text-[0.95rem] font-semibold ${linkColor}`}
+                className={`nav-link text-[0.95rem] font-semibold whitespace-nowrap ${linkColor}`}
               >
                 {l.label}
               </Link>
@@ -130,9 +151,10 @@ export default function Navbar() {
                 key={l.to}
                 to={l.to}
                 aria-current={pathname === l.to ? "page" : undefined}
-                className={`nav-link text-[0.95rem] font-semibold ${linkColor}`}
+                className={`nav-link text-[0.95rem] font-semibold whitespace-nowrap ${linkColor}`}
               >
                 {l.label}
+                {l.dot && <LiveDot />}
               </Link>
             ))}
           </div>
@@ -144,7 +166,7 @@ export default function Navbar() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent("booking_click", { location: "navbar" })}
-              className="inline-flex min-h-11 items-center rounded-full bg-orange-500 px-5 text-[0.95rem] font-bold text-white transition-colors duration-200 hover:bg-orange-600"
+              className="inline-flex min-h-11 items-center rounded-full bg-orange-500 px-5 text-[0.95rem] font-bold whitespace-nowrap text-white transition-colors duration-200 hover:bg-orange-600"
             >
               Book a Call
             </a>
@@ -212,6 +234,7 @@ export default function Navbar() {
                     className="block py-3 font-serif text-4xl font-bold text-cream-100"
                   >
                     {l.label}
+                    {"dot" in l && l.dot && <LiveDot />}
                   </Link>
                 </motion.li>
               ))}

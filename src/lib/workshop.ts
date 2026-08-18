@@ -168,3 +168,28 @@ export function formatNextSessionLine(
 ): string {
   return `Next session: ${formatLongDate(session.start)} at ${time}`;
 }
+
+interface PillCopy {
+  full: string;
+  short: string;
+}
+
+/**
+ * The Home hero pill's two strings for the current phase, with the next
+ * session's date substituted in mid-series.
+ */
+export function getPillCopy(
+  pill: { upcoming: PillCopy; inProgress: PillCopy; complete: PillCopy },
+  phase: SeriesPhase,
+  nextSession?: WorkshopSession,
+): PillCopy {
+  if (phase === "complete") return pill.complete;
+  if (phase === "in-progress" && nextSession) {
+    const date = formatShortDate(nextSession.start);
+    return {
+      full: pill.inProgress.full.replace("{date}", date),
+      short: pill.inProgress.short.replace("{date}", date),
+    };
+  }
+  return pill.upcoming;
+}

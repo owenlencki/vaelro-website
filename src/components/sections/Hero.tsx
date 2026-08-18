@@ -14,6 +14,7 @@ import {
 } from "framer-motion";
 import SplitText from "../ui/SplitText";
 import MagneticButton from "../ui/MagneticButton";
+import HeroWorkshopPill from "../workshop/HeroWorkshopPill";
 import { BOOKING_URL } from "../../lib/booking";
 import { trackEvent } from "../../lib/analytics";
 import { useLenisContext } from "../../hooks/useLenis";
@@ -460,9 +461,14 @@ export default function Hero({ start }: HeroProps) {
           reducedMotion ? undefined : { y: contentY, opacity: contentOpacity }
         }
       >
+        {/* Workshop tease: first item in the hero's entrance stagger */}
+        <motion.div className="mb-5 max-md:mb-4" {...fadeUp(0.1)}>
+          <HeroWorkshopPill />
+        </motion.div>
+
         <motion.p
           className="mb-6 font-mono text-xs tracking-[0.2em] text-orange-300 uppercase max-md:mb-3 md:text-sm"
-          {...fadeUp(0.2)}
+          {...fadeUp(0.25)}
         >
           Web & Automation Agency · Waupaca, WI
         </motion.p>

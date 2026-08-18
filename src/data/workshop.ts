@@ -300,7 +300,7 @@ export const workshop = {
       bio: "Owen leads sales, strategy, and client relationships at Vaelro. He grew up around Waupaca entrepreneurs and hosts all three sessions.",
       photo: [
         { src: "/workshop/owen-320.webp", width: 320 },
-        { src: "/workshop/owen-640.webp", width: 640 },
+        { src: "/workshop/owen-520.webp", width: 520 },
       ],
       photoAlt: "Owen Lencki, co-founder of Vaelro",
     },
@@ -311,7 +311,7 @@ export const workshop = {
       bio: "Liam builds the automations and systems Vaelro delivers. Waupaca High School graduate. In Session 2 he's the one sitting down next to you to help map your workflows.",
       photo: [
         { src: "/workshop/liam-320.webp", width: 320 },
-        { src: "/workshop/liam-630.webp", width: 630 },
+        { src: "/workshop/liam-440.webp", width: 440 },
       ],
       photoAlt: "Liam Bloedow, co-founder of Vaelro",
     },

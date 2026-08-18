@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "predeploy": "tsc --noEmit && vite build --base=/vaelro-website/ && cp dist/index.html dist/404.html && touch dist/.nojekyll",
     "deploy": "gh-pages -d dist --dotfiles",
-    "test:workshop": "tsx scripts/test-workshop.ts"
+    "test:workshop": "tsx scripts/test-workshop.ts",
+    "prepare:portraits": "tsx scripts/prepare-portraits.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.0.0",

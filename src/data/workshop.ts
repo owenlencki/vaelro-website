@@ -84,9 +84,9 @@ export const workshop = {
 
   registration: {
     // PLACEHOLDER: the Chamber's public events calendar (verified live). Swap
-    // for the ChamberMaster event link when Jeff sends it, and set isFinal.
+    // for the ChamberMaster event link when Jeff sends it. That is the only
+    // edit needed: nothing else on the page keys off registration state.
     url: "https://www.waupacachamber.com/events/eventcalendar",
-    isFinal: false,
     label: "Register Through the Chamber",
   },
 
@@ -122,17 +122,13 @@ export const workshop = {
       "FREE WORKSHOP SERIES · WITH THE WAUPACA AREA CHAMBER OF COMMERCE",
     headingLines: ["AI for Your Business,", "Without the Overwhelm"],
     subhead:
-      "Three free Friday morning sessions for local business owners. Learn what AI actually is, map where your business loses time, and leave with real solutions built around your operation.",
-    trustLine:
-      "Led by Owen Lencki and Liam Bloedow, co-founders of Vaelro. Session 1 features guest speaker Casey Plunkett, CEO of Secure AI and a former IBM and Oracle executive.",
+      "Three free Friday morning sessions for local business owners. Learn what AI actually is, map where your business loses time, and leave with something to try.",
     /** Rendered as one plain mono row. Dates are derived from `sessions`. */
     detailLead: "Fridays",
     detailVenue: "Chamber office, downtown Waupaca",
     detailFree: "Free",
-    microcopyPending:
-      "Registration is handled by the Waupaca Area Chamber of Commerce. If you don't see the series on their events calendar yet, email hello@vaelro.co and we'll send you the link the moment it's live.",
-    microcopyFinal:
-      "Registration is handled by the Waupaca Area Chamber of Commerce. Space is limited and we expect this to fill.",
+    /** Sits under the details row, above the button. */
+    reassurance: "No technical background needed.",
   },
 
   outcomes: {

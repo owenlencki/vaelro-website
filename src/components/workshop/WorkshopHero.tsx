@@ -37,13 +37,6 @@ export default function WorkshopHero({
 
   const wrapped = phase === "complete";
   const subhead = wrapped ? workshop.postSeries.heroSubhead : hero.subhead;
-  // Nothing to register for once it is over, so the button and the note that
-  // explains registration both come out.
-  const microcopy = wrapped
-    ? null
-    : workshop.registration.isFinal
-      ? hero.microcopyFinal
-      : hero.microcopyPending;
 
   return (
     <section className="bg-cream-100 pt-32 pb-14 md:pt-40 md:pb-20">
@@ -65,10 +58,8 @@ export default function WorkshopHero({
           {/* Text column */}
           <div>
             <Reveal delay={0.3}>
+              {/* One sentence. The portraits below carry who is leading it. */}
               <p className="max-w-xl text-lead text-ink-600">{subhead}</p>
-              <p className="mt-4 max-w-xl leading-relaxed text-ink-600">
-                {hero.trustLine}
-              </p>
             </Reveal>
 
             <Reveal delay={0.4}>
@@ -99,6 +90,12 @@ export default function WorkshopHero({
                 ))}
               </div>
 
+              {!wrapped && (
+                <p className="mt-3 font-mono text-[0.7rem] tracking-[0.14em] text-ink-600 md:text-xs">
+                  {hero.reassurance}
+                </p>
+              )}
+
               {phase === "in-progress" && nextSession && (
                 <p className="mt-6 font-semibold text-orange-600">
                   {formatNextSessionLine(nextSession, workshop.time)}
@@ -106,14 +103,9 @@ export default function WorkshopHero({
               )}
 
               {!wrapped && (
-                <>
-                  <div ref={ctaRef} className="mt-7">
-                    <RegisterCta location="hero" />
-                  </div>
-                  <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted">
-                    {microcopy}
-                  </p>
-                </>
+                <div ref={ctaRef} className="mt-7">
+                  <RegisterCta location="hero" />
+                </div>
               )}
             </Reveal>
           </div>

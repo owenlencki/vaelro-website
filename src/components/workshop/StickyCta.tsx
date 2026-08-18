@@ -2,11 +2,9 @@ import { useEffect, useState } from "react";
 import type { RefObject } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import RegisterCta from "./RegisterCta";
-import type { SeriesPhase } from "../../data/workshop";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 
 interface StickyCtaProps {
-  phase: SeriesPhase;
   /** The hero's button. The bar shows only once this has scrolled away. */
   watch: RefObject<HTMLDivElement | null>;
 }
@@ -16,7 +14,7 @@ interface StickyCtaProps {
  * opening the menu covers it, and the page carries matching bottom padding so
  * the closing section is never hidden behind it.
  */
-export default function StickyCta({ phase, watch }: StickyCtaProps) {
+export default function StickyCta({ watch }: StickyCtaProps) {
   const reducedMotion = usePrefersReducedMotion();
   const [visible, setVisible] = useState(false);
 
@@ -41,7 +39,7 @@ export default function StickyCta({ phase, watch }: StickyCtaProps) {
           exit={reducedMotion ? { opacity: 0 } : { y: "100%" }}
           transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
         >
-          <RegisterCta phase={phase} location="sticky" className="w-full" />
+          <RegisterCta location="sticky" className="w-full" />
         </motion.div>
       )}
     </AnimatePresence>

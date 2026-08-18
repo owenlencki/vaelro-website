@@ -150,7 +150,7 @@ export const workshop = {
       {
         tag: "SESSION 3",
         heading: "Real solutions and a clear next step.",
-        body: "Live demos built from what the group wrote down in Session 2. Free options you can use yourself, and fully built systems that run without you.",
+        body: "In Session 3 we come back with real tools built from what the room wrote down: free ones you can use that afternoon, and live examples of the same jobs running on their own.",
       },
     ] as Outcome[],
     closingLine:
@@ -203,18 +203,16 @@ export const workshop = {
   },
 
   // -------------------------------------------------------------------------
-  // Wrapped state: everything the page swaps to once Session 3 is completed.
-  // Owen refines this copy before November 6.
+  // Wrapped state: what the page swaps to once Session 3 is completed. There is
+  // no call to action here by design. The page stops asking for anything and
+  // becomes the record of what happened, so the hero loses its button, the
+  // sticky bar stops rendering, and the Home pill disappears.
   // -------------------------------------------------------------------------
   postSeries: {
-    ctaLabel: "Book a Free Gameplan Call",
-    ctaHref: "/contact",
-    eventCardLabel: "FALL 2026 SERIES",
-    microcopy:
-      "A free 15 to 20 minute conversation about your specific business. We'll name the top two or three places you could get time back. No pitch, no obligation.",
-    closingHeading: "Want this built around your business?",
-    closingDetailLine:
-      "A free 15 to 20 minute Gameplan call. We'll name the top two or three places you could get time back. No pitch, no obligation.",
+    heroSubhead: "The series wrapped on November 6. Here's what we covered.",
+    closingHeading: "Thanks for coming.",
+    closingBody:
+      "Recaps from all three sessions are above. Questions? Email hello@vaelro.co.",
   },
 
   pill: {
@@ -226,10 +224,6 @@ export const workshop = {
       // {date} is replaced with the next session's short date, e.g. "Oct 9".
       full: "Free AI workshop series · Next session {date}",
       short: "Workshop series · Next: {date}",
-    },
-    complete: {
-      full: "The workshop series has wrapped · Book a free Gameplan call",
-      short: "Book a free Gameplan call",
     },
   },
 
@@ -252,8 +246,10 @@ export const workshop = {
   // -------------------------------------------------------------------------
   whyBand: {
     eyebrow: "WHY WE'RE DOING THIS",
-    heading: "Why we're doing this",
-    body: [] as string[],
+    heading: "Plain English, from people who live here.",
+    body: [
+      "Vaelro is a web and automation agency in Waupaca. Owen and Liam grew up here and build websites and systems that give local business owners their time back. This series is education, start to finish: plain English, real examples, and honest answers to the questions you actually have. If you leave with a clearer head and one thing to try, it did its job.",
+    ] as string[],
   },
 
   /** Testing only. Must be undefined in commits. */
@@ -267,7 +263,7 @@ export const workshop = {
       start: "2026-09-25T08:00:00-05:00",
       durationMinutes: 60,
       blurb:
-        "What AI actually is, the different types, and why it matters for a business of any size. Guest speaker Casey Plunkett breaks it down in plain English, then the floor opens for questions.",
+        "Pure education. What AI is, the kinds you'll actually run into, whether you should be worried, and why it matters for a business of any size. Then open Q&A, so bring the skeptical questions. You'll leave with an accurate, non-scary picture of the whole thing.",
       leaders: "Casey Plunkett with Owen and Liam",
     },
     {
@@ -287,7 +283,7 @@ export const workshop = {
       start: "2026-11-06T08:00:00-06:00",
       durationMinutes: 60,
       blurb:
-        "Real tools and live demos built from your answers in Session 2. Free options you can use yourself, plus fully built systems. Then a clear next step.",
+        "We take the biggest pain points from the room and show two versions of each: a free do-it-yourself version you can use that day, and a live example of the same job running on its own. You'll see the difference between doing it by hand every week and having it just happen. You'll leave with something to try that week.",
       leaders: "Owen and Liam",
     },
   ] as WorkshopSession[],
@@ -297,7 +293,7 @@ export const workshop = {
       id: "owen",
       name: "Owen Lencki",
       role: "Co-founder, Vaelro",
-      bio: "Owen leads sales, strategy, and client relationships at Vaelro. He grew up around Waupaca entrepreneurs and hosts all three sessions.",
+      bio: "Owen leads client relationships and builds Vaelro's websites and applications. He grew up in a Waupaca business family and studies marketing at UW-Stevens Point. He runs the room across all three sessions.",
       photo: [
         { src: "/workshop/owen-320.webp", width: 320 },
         { src: "/workshop/owen-520.webp", width: 520 },
@@ -329,10 +325,10 @@ export const workshop = {
 
   faqs: [
     {
-      id: "sales-pitch",
-      question: "Is this a sales pitch?",
+      id: "what-is-ai",
+      question: "What is AI, in one sentence?",
       answer:
-        "No. The sessions are education and hands-on work, and nothing is for sale in the room. The only offer, at the very end of Session 3, is an optional free conversation about your specific business.",
+        "That's most of Session 1, but here's the short version: software that has learned from huge numbers of examples, so it can write, sort, predict, and handle steps that used to need a person doing them by hand. You've used it for years without noticing, every time your phone finished a sentence or your email caught spam.",
     },
     {
       id: "all-three",
@@ -356,7 +352,7 @@ export const workshop = {
       id: "free",
       question: "Is it really free?",
       answer:
-        "Yes. Free to attend, presented with the Waupaca Area Chamber of Commerce. Registration is limited to 25 businesses so the working sessions stay hands-on.",
+        "Yes. Free to attend. Owen and Liam are running it because this is their community, and the Chamber is hosting it for its members.",
     },
     {
       id: "who-for",

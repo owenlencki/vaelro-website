@@ -175,15 +175,15 @@ interface PillCopy {
 }
 
 /**
- * The Home hero pill's two strings for the current phase, with the next
- * session's date substituted in mid-series.
+ * The Home hero pill's two strings, with the next session's date substituted in
+ * mid-series. The wrapped state has no pill, so callers stop rendering it
+ * rather than asking for copy that does not exist.
  */
 export function getPillCopy(
-  pill: { upcoming: PillCopy; inProgress: PillCopy; complete: PillCopy },
+  pill: { upcoming: PillCopy; inProgress: PillCopy },
   phase: SeriesPhase,
   nextSession?: WorkshopSession,
 ): PillCopy {
-  if (phase === "complete") return pill.complete;
   if (phase === "in-progress" && nextSession) {
     const date = formatShortDate(nextSession.start);
     return {

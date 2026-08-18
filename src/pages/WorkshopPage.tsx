@@ -41,8 +41,9 @@ const OWNED_META = [
 /**
  * The public home of the Chamber workshop series. Before the series it
  * confirms the details and sends people to Chamber registration; during it, it
- * is the attendee resource; after November 6 it flips to the Gameplan call.
- * Which of those you get is decided here, once, from the data file.
+ * is the attendee resource; after November 6 it stops asking for anything and
+ * becomes the record of what happened. Which of those you get is decided here,
+ * once, from the data file.
  */
 export default function WorkshopPage() {
   // Pinned for the life of the page so every section agrees on "now".
@@ -105,7 +106,7 @@ export default function WorkshopPage() {
         <ClosingCta phase={phase} />
       </div>
 
-      <StickyCta phase={phase} watch={heroCtaRef} />
+      {phase !== "complete" && <StickyCta watch={heroCtaRef} />}
     </>
   );
 }

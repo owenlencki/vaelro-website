@@ -12,13 +12,15 @@ import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 
 /**
  * The tease that lives above the Home hero's eyebrow line. It is a link, not a
- * second button: it must not compete with "Book a Free Consultation" or push
- * that CTA out of the first viewport on a phone, which is why the short string
- * takes over under 640px.
+ * second button: it must not compete with the hero's primary CTA or push that
+ * CTA out of the first viewport on a phone, which is why the short string takes
+ * over under 640px.
  */
 export default function HeroWorkshopPill() {
   const reducedMotion = usePrefersReducedMotion();
 
+  // Null once the series has wrapped: there is nothing left to tease, so the
+  // pill leaves the Home hero rather than pointing at an ended event.
   const copy = useMemo(() => {
     const now = Date.now();
     const phase = getSeriesPhase(
@@ -26,12 +28,15 @@ export default function HeroWorkshopPill() {
       now,
       workshop.stageOverride,
     );
+    if (phase === "complete") return null;
     return getPillCopy(
       workshop.pill,
       phase,
       getNextSession(workshop.sessions, now),
     );
   }, []);
+
+  if (!copy) return null;
 
   return (
     <Link

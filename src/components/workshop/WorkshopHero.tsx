@@ -34,12 +34,15 @@ export default function WorkshopHero({
     { text: `${hero.detailFree} · Limited to ${workshop.capacity} businesses` },
   ];
 
-  const microcopy =
-    phase === "complete"
-      ? workshop.postSeries.microcopy
-      : workshop.registration.isFinal
-        ? hero.microcopyFinal
-        : hero.microcopyPending;
+  const wrapped = phase === "complete";
+  const subhead = wrapped ? workshop.postSeries.heroSubhead : hero.subhead;
+  // Nothing to register for once it is over, so the button and the note that
+  // explains registration both come out.
+  const microcopy = wrapped
+    ? null
+    : workshop.registration.isFinal
+      ? hero.microcopyFinal
+      : hero.microcopyPending;
 
   return (
     <section className="bg-cream-100 pt-32 pb-14 md:pt-40 md:pb-20">
@@ -61,9 +64,7 @@ export default function WorkshopHero({
           {/* Text column */}
           <div>
             <Reveal delay={0.3}>
-              <p className="max-w-xl text-lead text-ink-600">
-                {hero.subhead}
-              </p>
+              <p className="max-w-xl text-lead text-ink-600">{subhead}</p>
               <p className="mt-4 max-w-xl leading-relaxed text-ink-600">
                 {hero.trustLine}
               </p>
@@ -97,13 +98,16 @@ export default function WorkshopHero({
                 </p>
               )}
 
-              <div ref={ctaRef} className="mt-7">
-                <RegisterCta phase={phase} location="hero" />
-              </div>
-
-              <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted">
-                {microcopy}
-              </p>
+              {!wrapped && (
+                <>
+                  <div ref={ctaRef} className="mt-7">
+                    <RegisterCta location="hero" />
+                  </div>
+                  <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted">
+                    {microcopy}
+                  </p>
+                </>
+              )}
             </Reveal>
           </div>
 

@@ -15,7 +15,7 @@ export default function ClosingCta({ phase }: ClosingCtaProps) {
     ? workshop.postSeries.closingHeading
     : workshop.closing.heading;
   const detailLine = wrapped
-    ? workshop.postSeries.closingDetailLine
+    ? workshop.postSeries.closingBody
     : workshop.closing.detailLine;
 
   return (
@@ -41,15 +41,16 @@ export default function ClosingCta({ phase }: ClosingCtaProps) {
                 {detailLine}
               </p>
 
-              <div className="mt-9 flex justify-center">
-                <MagneticButton>
-                  <RegisterCta
-                    phase={phase}
-                    location="closing"
-                    className="shadow-[0_10px_40px_rgba(212,116,59,0.4)]"
-                  />
-                </MagneticButton>
-              </div>
+              {!wrapped && (
+                <div className="mt-9 flex justify-center">
+                  <MagneticButton>
+                    <RegisterCta
+                      location="closing"
+                      className="shadow-[0_10px_40px_rgba(212,116,59,0.4)]"
+                    />
+                  </MagneticButton>
+                </div>
+              )}
 
               {!wrapped && (
                 <div className="mt-9 flex flex-col items-center gap-3">

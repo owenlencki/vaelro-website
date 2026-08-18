@@ -18,6 +18,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 
 // Lazy so Home's bundle doesn't grow with the case-study pages.
 const WorkDetailPage = lazy(() => import("./pages/WorkDetailPage"));
+// Same reason: /workshop is a standalone landing page for the Chamber series.
+const WorkshopPage = lazy(() => import("./pages/WorkshopPage"));
 
 const NAV_OFFSET = -88;
 
@@ -76,6 +78,17 @@ function AnimatedRoutes() {
             <PageTransition>
               <Suspense fallback={null}>
                 <WorkDetailPage />
+              </Suspense>
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/workshop"
+          element={
+            <PageTransition>
+              {/* Full-viewport hold in the page background, no spinner */}
+              <Suspense fallback={<div className="min-h-svh bg-cream-100" />}>
+                <WorkshopPage />
               </Suspense>
             </PageTransition>
           }

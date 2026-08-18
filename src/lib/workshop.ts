@@ -160,3 +160,11 @@ export function resolveFaqAnswer(
   const [firstSentence] = faq.answer.split(". ");
   return `${firstSentence}. ${details.join(" ")}`;
 }
+
+/** "Next session: Friday, October 9 at 8:00 AM" */
+export function formatNextSessionLine(
+  session: WorkshopSession,
+  time: string,
+): string {
+  return `Next session: ${formatLongDate(session.start)} at ${time}`;
+}

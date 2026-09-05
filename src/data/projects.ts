@@ -116,6 +116,12 @@ export const projects: Project[] = [
       hero: "/work/715-harvest-fest/hero.webp",
       alt: "The 715 Harvest Fest website on a phone",
     },
+    testimonial: {
+      quote:
+        "Working with Vaelro on our website for 715 Harvest Fest was a great experience from start to finish. They took the time to understand what we needed and built us a clean, professional site that made it easy for people to find event details. Whenever we had a question or needed a change, we heard back fast. We're glad to have a site we fully own going forward.",
+      name: "Nicole",
+      role: "715 Harvest Fest",
+    },
     featured: true,
     rank: 3,
   },
@@ -179,6 +185,12 @@ export const projects: Project[] = [
       card: "/work/udoni-salan-real-estate/card.webp",
       hero: "/work/udoni-salan-real-estate/hero.webp",
       alt: "The AI email generator built for United Country Udoni & Salan Realty Group",
+    },
+    testimonial: {
+      quote:
+        "As an agent, the listing tool Vaelro built for our office has become part of how we do things day-to-day. I fill out one simple form for a new listing, and it automatically transfers the information to the master listing cheat sheet and gives me a ready-to-use MLS description, a social media caption, and a printable PDF for our files. Any time we've had a question or needed something adjusted, Liam and Owen got back to us right away. It's saved a lot of back-and-forth and kept things consistent no matter who's putting a listing together.",
+      name: "Nicole",
+      role: "United Country Udoni & Salan Realty",
     },
     featured: true,
     rank: 6,

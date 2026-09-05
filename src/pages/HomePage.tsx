@@ -5,6 +5,7 @@ import Hero from "../components/sections/Hero";
 import Marquee from "../components/sections/Marquee";
 import Services from "../components/sections/Services";
 import WorkFan from "../components/sections/WorkFan";
+import Testimonials from "../components/sections/Testimonials";
 import SocialProof from "../components/sections/SocialProof";
 import HomeCTA from "../components/sections/HomeCTA";
 
@@ -39,6 +40,7 @@ export default function HomePage() {
       <Marquee />
       <Services />
       <WorkFan />
+      <Testimonials />
       <SocialProof />
       <HomeCTA />
     </>

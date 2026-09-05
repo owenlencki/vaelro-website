@@ -23,8 +23,8 @@ const quoted = projects.filter((p) => p.testimonial);
 /**
  * Proof and the ask, in one block. The quotes used to sit in their own
  * section on the same cream as its neighbours and read as more of the page;
- * on the deeper cream band, with the invitation as its heading, the whole
- * thing lands as one stop rather than two skippable ones.
+ * on the deeper cream band, under one heading, the whole thing lands as one
+ * stop rather than two skippable ones.
  */
 export default function SocialProof() {
   return (
@@ -39,7 +39,7 @@ export default function SocialProof() {
             In Their Words
           </p>
           <h2 className="font-serif text-title font-bold text-ink-900">
-            <SplitText text="We're just getting started. Ask our clients what it's like to work with us." />
+            <SplitText text="Don't take our word for it." />
           </h2>
         </div>
 

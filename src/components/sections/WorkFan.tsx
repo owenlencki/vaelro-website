@@ -238,8 +238,8 @@ export default function WorkFan() {
           Our Work
         </p>
         <h2 className="max-w-3xl text-title text-ink-900">
-          <span className="block font-sans font-extrabold tracking-tight uppercase">
-            <SplitText text="What We've Built" />
+          <span className="block font-serif font-bold tracking-tight">
+            <SplitText text="What we've built" />
           </span>
           <span className="block font-serif font-normal">
             <SplitText text="for businesses like yours" delay={0.2} />

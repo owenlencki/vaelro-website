@@ -12,16 +12,13 @@ import MagneticButton from "../ui/MagneticButton";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 import { easeStandard } from "../../lib/animations";
 import { trackEvent } from "../../lib/analytics";
+import { BOOKING_URL } from "../../lib/booking";
 
 /* ---------------------------------------------------------------------------
    Config — swap these for the real values at wiring time.
-   Local dev uses Cloudflare's public Turnstile TEST site key (always passes).
 --------------------------------------------------------------------------- */
 const APPS_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbxM3e_0MyXn4R88l5CsrGjoYNcDReD0Q2wFSjbp3OVcANuTnC7WJi98bp-YdkFFGZOWlg/exec";
-const TURNSTILE_SITE_KEY = "0x4AAAAAAD4pofYBKt9UoZuo";
-
-const BOOKING_URL = "https://calendar.app.google/Ay64rzC4bx9jqRNG9";
 
 /* ---------------------------------------------------------------------------
    Question data. All copy is final and verbatim from spec.
@@ -162,50 +159,6 @@ function buildFlow(need: OptId | undefined): QId[] {
 }
 
 /* ---------------------------------------------------------------------------
-   Turnstile typing
---------------------------------------------------------------------------- */
-declare global {
-  interface Window {
-    turnstile?: {
-      render: (
-        el: HTMLElement,
-        opts: {
-          sitekey: string;
-          callback: (token: string) => void;
-          "expired-callback"?: () => void;
-          "error-callback"?: () => void;
-          theme?: "light" | "dark" | "auto";
-        },
-      ) => string;
-      reset: (id?: string) => void;
-      remove: (id?: string) => void;
-    };
-  }
-}
-
-const TURNSTILE_SRC =
-  "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
-
-function loadTurnstileScript(): Promise<void> {
-  return new Promise((resolve) => {
-    if (window.turnstile) return resolve();
-    const existing = document.querySelector<HTMLScriptElement>(
-      `script[src="${TURNSTILE_SRC}"]`,
-    );
-    if (existing) {
-      existing.addEventListener("load", () => resolve(), { once: true });
-      return;
-    }
-    const s = document.createElement("script");
-    s.src = TURNSTILE_SRC;
-    s.async = true;
-    s.defer = true;
-    s.addEventListener("load", () => resolve(), { once: true });
-    document.head.appendChild(s);
-  });
-}
-
-/* ---------------------------------------------------------------------------
    Styling helpers
 --------------------------------------------------------------------------- */
 const optionBase =
@@ -242,11 +195,6 @@ export default function ContactFlow() {
   const [honeypot, setHoneypot] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [submitState, setSubmitState] = useState<"idle" | "sending">("idle");
-
-  // Turnstile
-  const turnstileRef = useRef<HTMLDivElement>(null);
-  const turnstileToken = useRef("");
-  const turnstileRendered = useRef(false);
 
   const headingRef = useRef<HTMLHeadingElement>(null);
 
@@ -309,33 +257,6 @@ export default function ContactFlow() {
     window.setTimeout(goForward, 300);
   };
 
-  /* -------------------- Turnstile lifecycle -------------------- */
-  useEffect(() => {
-    if (currentStep !== "contact" || phase !== "flow") return;
-    let cancelled = false;
-    loadTurnstileScript().then(() => {
-      if (cancelled || !turnstileRef.current || !window.turnstile) return;
-      if (turnstileRendered.current) return;
-      window.turnstile.render(turnstileRef.current, {
-        sitekey: TURNSTILE_SITE_KEY,
-        theme: "light",
-        callback: (token) => {
-          turnstileToken.current = token;
-        },
-        "expired-callback": () => {
-          turnstileToken.current = "";
-        },
-        "error-callback": () => {
-          turnstileToken.current = "";
-        },
-      });
-      turnstileRendered.current = true;
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [currentStep, phase]);
-
   /* -------------------- submit -------------------- */
   const validate = () => {
     const errs: Record<string, string> = {};
@@ -382,7 +303,6 @@ export default function ContactFlow() {
       notes: notes.trim(),
       source: window.location.pathname,
       website_url: honeypot,
-      token: turnstileToken.current,
     };
 
     try {
@@ -407,6 +327,14 @@ export default function ContactFlow() {
     } finally {
       setSubmitState("idle");
     }
+  };
+
+  // stepIndex and the typed fields survive a failure, so this lands back on
+  // the filled-in contact step.
+  const retry = () => {
+    setSubmitState("idle");
+    setDirection(-1);
+    setPhase("flow");
   };
 
   /* -------------------- motion props -------------------- */
@@ -581,8 +509,13 @@ export default function ContactFlow() {
           >
             Something went wrong on our end, and it's not you.
           </h2>
-          <p className="mt-4 text-ink-600">
-            Email{" "}
+          <div className="mt-8 flex justify-center">
+            <button type="button" onClick={retry} className={primaryBtn}>
+              Try again
+            </button>
+          </div>
+          <p className="mt-4 text-sm text-muted">
+            Or email{" "}
             <a
               href="mailto:hello@vaelro.co"
               className="font-semibold text-orange-600 hover:text-orange-700"
@@ -765,9 +698,6 @@ export default function ContactFlow() {
               onChange={(e) => setHoneypot(e.target.value)}
             />
           </div>
-
-          {/* Turnstile widget renders above the button. */}
-          <div ref={turnstileRef} className="mt-1" />
 
           <div className="mt-1">
             <button

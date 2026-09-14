@@ -6,7 +6,7 @@ import { trackEvent } from "../../lib/analytics";
 /** Primary conversion moment: Google Calendar appointment scheduling. */
 export default function BookingEmbed() {
   return (
-    <section className="bg-cream-100 pb-8" aria-label="Book a consultation">
+    <section className="bg-cream-100" aria-label="Book a consultation">
       <div className="container-site">
         <Reveal>
           <div className="mx-auto max-w-2xl rounded-3xl border border-cream-300 bg-peach-50 px-6 py-12 text-center md:px-12 md:py-16">

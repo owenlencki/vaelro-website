@@ -8,6 +8,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import { motion } from "framer-motion";
+import MagneticButton from "../ui/MagneticButton";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 import { easeStandard } from "../../lib/animations";
 import { trackEvent } from "../../lib/analytics";
@@ -509,17 +510,17 @@ export default function ContactFlow() {
             Tell us what you're up against.
           </h2>
           <p className="mx-auto mt-4 max-w-md text-ink-600">
-            Takes about a minute. A real person reads every answer, and you'll
-            hear back within one business day.
+            Takes a minute, we'll read each answer, and you'll hear back from us
+            in one day.
           </p>
           <div className="mt-8 flex justify-center">
-            <button type="button" onClick={start} className={primaryBtn}>
-              Start
-            </button>
+            <MagneticButton>
+              <button type="button" onClick={start} className={primaryBtn}>
+                Start
+              </button>
+            </MagneticButton>
           </div>
-          <p className="mt-4 text-sm text-muted">
-            No spam, no pressure, no obligation.
-          </p>
+          <p className="mt-4 text-sm text-muted">Take short survey</p>
         </div>
       );
     }
@@ -787,7 +788,7 @@ export default function ContactFlow() {
 
   return (
     <section
-      className="bg-cream-100 py-12 md:py-20"
+      className="bg-cream-100 pb-12 md:pb-20"
       aria-label="Start a consultation"
     >
       <div className="container-site">

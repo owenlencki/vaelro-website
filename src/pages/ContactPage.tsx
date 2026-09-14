@@ -1,5 +1,6 @@
 import SplitText from "../components/ui/SplitText";
 import Reveal from "../components/ui/Reveal";
+import OrDivider from "../components/ui/OrDivider";
 import BookingEmbed from "../components/sections/BookingEmbed";
 import ContactFlow from "../components/sections/ContactFlow";
 
@@ -36,6 +37,14 @@ export default function ContactPage() {
       </section>
 
       <BookingEmbed />
+
+      {/* Divider between the two ways in: book now, or tell us first */}
+      <div className="bg-cream-100 py-10 md:py-14">
+        <div className="container-site">
+          <OrDivider className="mx-auto max-w-xl" />
+        </div>
+      </div>
+
       <ContactFlow />
 
       {/* Contact info */}

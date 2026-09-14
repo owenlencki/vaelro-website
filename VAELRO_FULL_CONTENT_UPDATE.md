@@ -111,7 +111,7 @@ Rework the four differentiators:
 ## CONTACT PAGE
 
 Keep it simple as-is. Just make sure:
-- The booking button URL should be: `https://calendar.app.google/9eUGdz1BkJnMe4e67`
+- The booking button URL should be: `https://calendar.app.google/3a3NbHPuA1xdUC7v7`
 - Make sure every "Book a Free Consultation" and "Book a Call" button/link across the entire site points to this URL (open in new tab)
 - The contact form works (logs to console is fine for now)
 - hello@vaelro.co is displayed

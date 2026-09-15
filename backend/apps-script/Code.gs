@@ -4,8 +4,8 @@
  * Versioned source of truth for the backend behind the site's contact
  * flow (src/components/sections/ContactFlow.tsx). Paste this into the
  * Apps Script editor bound to the Google Sheet named
- * "Vaelro Website Leads", set TURNSTILE_SECRET in Script Properties,
- * then deploy as a Web App (see DEPLOY notes at the bottom).
+ * "Vaelro Website Leads", then deploy as a Web App (see DEPLOY notes
+ * at the bottom).
  *
  * The frontend POSTs a JSON object as a plain-text body (no JSON
  * content-type header) to avoid a CORS preflight. Shape:
@@ -20,8 +20,7 @@
  *     budget,            // human-readable answer to "What budget..."
  *     notes,             // optional free text
  *     source,            // page path the form was submitted from
- *     website_url,       // honeypot — must be empty for a real human
- *     token              // Cloudflare Turnstile token
+ *     website_url        // honeypot — must be empty for a real human
  *   }
  */
 
@@ -43,8 +42,12 @@ var HEADERS = [
 ];
 
 var NOTIFY_EMAIL = 'hello@vaelro.co';
-var TURNSTILE_VERIFY_URL =
-  'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+
+/** Prevent formula injection — prefix = + - @ with an apostrophe. */
+function safe(v) {
+  var s = String(v || "");
+  return /^[=+\-@]/.test(s) ? "'" + s : s;
+}
 
 function doPost(e) {
   try {
@@ -56,11 +59,6 @@ function doPost(e) {
     // 1. Honeypot. A filled website_url means a bot — silently succeed.
     if (data.website_url && String(data.website_url).trim() !== '') {
       return jsonOutput({ ok: true });
-    }
-
-    // 2. Verify the Cloudflare Turnstile token.
-    if (!verifyTurnstile(data.token)) {
-      return jsonOutput({ ok: false });
     }
 
     // 3. Append the row (create the header row first if the sheet is empty).
@@ -88,29 +86,47 @@ function doPost(e) {
     // 4. Notify.
     sendNotification(data, timestamp);
 
+    // ── Write to Spike_Data → Inbound tab ──
+    try {
+      var spike = SpreadsheetApp.openById(
+        "1vqsGdNZsjBtjBCrV1_Rmw2NeZNJ1fbC_F5fsDcV_BYU"
+      );
+      var inbound = spike.getSheetByName("Inbound");
+      if (!inbound) {
+        inbound = spike.insertSheet("Inbound");
+        inbound.getRange("A:O").setNumberFormat("@");
+        inbound.appendRow([
+          "id","timestamp","name","business","email","phone",
+          "need","website_situation","busywork","headache",
+          "urgency","budget","notes","source","status"
+        ]);
+      }
+      var sid = Math.random().toString(16).slice(2, 10);
+      if (!/[a-f]/.test(sid)) sid = "a" + sid.slice(1);
+      inbound.appendRow([
+        sid,
+        timestamp.toISOString(),
+        safe(data.name),
+        safe(data.business),
+        safe(data.email),
+        safe(data.phone),
+        safe(data.need),
+        safe(data.websiteSituation),
+        safe(data.busywork),
+        safe(data.headache),
+        safe(data.urgency),
+        safe(data.budget),
+        safe(data.notes),
+        safe(data.source),
+        "New"
+      ]);
+    } catch (spikeErr) {
+      Logger.log("Spike inbound write failed: " + spikeErr);
+    }
+
     return jsonOutput({ ok: true });
   } catch (err) {
     return jsonOutput({ ok: false, error: String(err) });
-  }
-}
-
-/** Cloudflare Turnstile server-side verification. */
-function verifyTurnstile(token) {
-  if (!token) return false;
-  var secret =
-    PropertiesService.getScriptProperties().getProperty('TURNSTILE_SECRET');
-  if (!secret) return false;
-
-  var res = UrlFetchApp.fetch(TURNSTILE_VERIFY_URL, {
-    method: 'post',
-    payload: { secret: secret, response: token },
-    muteHttpExceptions: true,
-  });
-  try {
-    var body = JSON.parse(res.getContentText());
-    return body.success === true;
-  } catch (err) {
-    return false;
   }
 }
 
@@ -188,14 +204,9 @@ function jsonOutput(obj) {
  * ------------------------------------------------------------------
  * 1. In the Google Sheet "Vaelro Website Leads", open Extensions →
  *    Apps Script. Paste this file's contents into Code.gs and Save.
- * 2. Project Settings → Script Properties → add a property:
- *      Key:   TURNSTILE_SECRET
- *      Value: <your Cloudflare Turnstile SECRET key>
- * 3. Deploy → New deployment → type "Web app".
+ * 2. Deploy → New deployment → type "Web app".
  *      Execute as:      Me
  *      Who has access:  Anyone
  *    Deploy, authorize when prompted, and copy the Web app /exec URL.
- * 4. Send me that /exec URL and the Turnstile SITE key — I'll wire them
- *    into ContactFlow.tsx. (Local dev uses Cloudflare's public test keys
- *    so nothing is blocked meanwhile.)
+ * 3. Send me that /exec URL — I'll wire it into ContactFlow.tsx.
  */

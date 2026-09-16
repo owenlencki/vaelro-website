@@ -168,8 +168,7 @@ export const workshop = {
 
   speakersSection: {
     eyebrow: "WHO'S LEADING IT",
-    heading:
-      "Two local founders and one guest speaker worth showing up early for.",
+    heading: "Two local founders and one experienced expert.",
   },
 
   faqSection: {
@@ -243,7 +242,7 @@ export const workshop = {
   // -------------------------------------------------------------------------
   whyBand: {
     eyebrow: "WHY WE'RE DOING THIS",
-    heading: "Plain English, from people who live here.",
+    heading: "From people who live here.",
     body: [
       "Vaelro is a web and automation agency in Waupaca. Owen and Liam grew up here and build websites and systems that give local business owners their time back. This series is education, start to finish: plain English, real examples, and honest answers to the questions you actually have. If you leave with a clearer head and one thing to try, it did its job.",
     ] as string[],

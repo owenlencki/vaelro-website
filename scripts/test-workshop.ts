@@ -155,7 +155,7 @@ check("the committed venue answers with its real address", () => {
   const faq = workshop.faqs.find((f) => f.id === "where")!;
   assert.equal(
     resolveFaqAnswer(faq, workshop.venue),
-    "The Waupaca Area Chamber of Commerce in downtown Waupaca. 315 S Main St, Waupaca, WI 54981",
+    "The Waupaca Business Center, inside the Waupaca Recreation Center. 407 School St, Waupaca, WI 54981",
   );
 });
 check("a parking note joins the address once it is filled in", () => {

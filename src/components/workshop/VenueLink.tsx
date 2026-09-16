@@ -4,9 +4,10 @@ import { workshop } from "../../data/workshop";
 /**
  * Wraps the venue in a link to its map. Two shapes, because the venue is
  * written two ways on this page: `children` links a whole phrase (the hero's
- * details row says "Chamber office, downtown Waupaca"), while `text` links only
- * the venue's name where it sits inside a longer sentence (the closing line and
- * the parking answer). Both fall back to plain text if mapUrl is ever cleared.
+ * details row says "Waupaca Business Center, inside the Rec Center"), while
+ * `text` links only the venue's name where it sits inside a longer sentence
+ * (the closing line and the parking answer). Both fall back to plain text if
+ * mapUrl is ever cleared.
  */
 export default function VenueLink({
   text,

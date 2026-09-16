@@ -90,13 +90,13 @@ export const workshop = {
   },
 
   venue: {
-    name: "Waupaca Area Chamber of Commerce",
-    detail: "The Chamber office on South Main Street, downtown Waupaca",
-    address: "315 S Main St, Waupaca, WI 54981",
+    name: "Waupaca Business Center",
+    detail: "Inside the Waupaca Recreation Center on School Street",
+    address: "407 School St, Waupaca, WI 54981",
     city: "Waupaca, WI",
     parkingNote: "", // fill later; renders only when non-empty
     /** Wherever the venue is named on the page, it links here. */
-    mapUrl: "https://maps.app.goo.gl/J9T2zYQgJiJR3hQK7",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=Waupaca%20Recreation%20Center%2C%20407%20School%20St%2C%20Waupaca%2C%20WI%2054981&query_place_id=ChIJhx3a3Nh0AYgR0U06VZP9CH8",
   },
 
   time: "8:00 AM",
@@ -124,7 +124,7 @@ export const workshop = {
       "Three free Friday morning sessions for local business owners. Learn what AI actually is, map where your business loses time, and leave with something to try.",
     /** Rendered as one plain mono row. Dates are derived from `sessions`. */
     detailLead: "Fridays",
-    detailVenue: "Chamber office, downtown Waupaca",
+    detailVenue: "Waupaca Business Center, inside the Rec Center",
     detailFree: "Free",
     /** Sits under the details row, above the button. */
     reassurance: "No technical background needed.",
@@ -185,7 +185,7 @@ export const workshop = {
   closing: {
     heading: "Reserve your seat before it fills.",
     detailLine:
-      "Fridays at 8:00 AM · Waupaca Area Chamber of Commerce · Free · Limited to 25 businesses",
+      "Fridays at 8:00 AM · Waupaca Business Center · Free · Limited to 25 businesses",
     links: [
       {
         label: "Questions? Email hello@vaelro.co",
@@ -362,7 +362,7 @@ export const workshop = {
       id: "where",
       question: "Where is it, and where do I park?",
       answer:
-        "The Waupaca Area Chamber of Commerce in downtown Waupaca. We'll add the room and parking details here before Session 1.",
+        "The Waupaca Business Center, inside the Waupaca Recreation Center. We'll add the room and parking details here before Session 1.",
     },
     {
       id: "fills-up",

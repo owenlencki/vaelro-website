@@ -241,7 +241,7 @@ export function buildEventGraph(data: SchemaShape): string {
       ...(data.venue.mapUrl ? { hasMap: data.venue.mapUrl } : {}),
       address: {
         "@type": "PostalAddress",
-        // venue.address is one display string ("315 S Main St, Waupaca, WI
+        // venue.address is one display string ("407 School St, Waupaca, WI
         // 54981"); locality, region, and postal code are their own fields
         // here, so only the street part belongs in streetAddress.
         ...(street ? { streetAddress: street } : {}),

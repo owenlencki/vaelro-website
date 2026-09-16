@@ -83,10 +83,9 @@ export const workshop = {
   partnerLogo: undefined as string | undefined,
 
   registration: {
-    // PLACEHOLDER: the Chamber's public events calendar (verified live). Swap
-    // for the ChamberMaster event link when Jeff sends it. That is the only
-    // edit needed: nothing else on the page keys off registration state.
-    url: "https://www.waupacachamber.com/events/eventcalendar",
+    // The Chamber's own event listing for the series, where people register.
+    // Every Register button and the Event structured data read this one URL.
+    url: "https://www.waupacachamber.com/event-detail/tjvGZQPgruJYTocDyEmy9w2/ai-for-your-business-without-the-overwhelm-free-3-session-workshop",
     label: "Register Through the Chamber",
   },
 

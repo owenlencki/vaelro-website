@@ -7,6 +7,16 @@
   to = "/index.html"
   status = 200
 
+# The Session 1 attendee page is unlisted: nothing links to it, and it is not
+# in the sitemap. Its noindex meta tag is injected by React, which a crawler
+# that does not run JavaScript never sees, so the guarantee is made here at the
+# edge instead. The redirect above rewrites this path to index.html; Netlify
+# still matches headers against the requested path.
+[[headers]]
+  for = "/workshop/session-1"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+
 [[headers]]
   for = "/fonts/*"
   [headers.values]

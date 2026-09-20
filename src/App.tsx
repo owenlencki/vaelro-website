@@ -20,6 +20,9 @@ import NotFoundPage from "./pages/NotFoundPage";
 const WorkDetailPage = lazy(() => import("./pages/WorkDetailPage"));
 // Same reason: /workshop is a standalone landing page for the Chamber series.
 const WorkshopPage = lazy(() => import("./pages/WorkshopPage"));
+// Unlisted attendee page behind the in-room QR code and NFC tags. Nothing
+// links to it, so it must never sit in the main bundle.
+const Session1Page = lazy(() => import("./pages/Session1Page"));
 
 const NAV_OFFSET = -88;
 
@@ -89,6 +92,16 @@ function AnimatedRoutes() {
               {/* Full-viewport hold in the page background, no spinner */}
               <Suspense fallback={<div className="min-h-svh bg-cream-100" />}>
                 <WorkshopPage />
+              </Suspense>
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/workshop/session-1"
+          element={
+            <PageTransition>
+              <Suspense fallback={<div className="min-h-svh bg-cream-100" />}>
+                <Session1Page />
               </Suspense>
             </PageTransition>
           }

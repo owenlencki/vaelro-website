@@ -143,21 +143,26 @@ export const session1 = {
       "We asked ChatGPT “who wins the next Super Bowl” three times in a row. Same tool. Three different answers.",
     /** Rendered in the empty frame until the screenshots are captured. */
     pendingLabel: "Screenshot coming",
+    /** Every shot is small on a phone; tapping opens the full-size file. */
+    enlargeLabel: "Tap to enlarge",
     shots: [
       {
         id: "response-1",
         label: "Response 1",
-        alt: "First ChatGPT answer to who wins the next Super Bowl",
+        image: "/workshop/session-1/superbowl-1.webp",
+        alt: "ChatGPT's first answer: the five past Super Bowl champions, then the Los Angeles Rams named only as the current betting favorite, with no prediction made.",
       },
       {
         id: "response-2",
         label: "Response 2",
-        alt: "Second ChatGPT answer to the same question, naming a different team",
+        image: "/workshop/session-1/superbowl-2.webp",
+        alt: "ChatGPT's second answer: the same five past champions, then an NFL standings table and an outright pick of the Buffalo Bills.",
       },
       {
         id: "response-3",
         label: "Response 3",
-        alt: "Third ChatGPT answer to the same question, different again",
+        image: "/workshop/session-1/superbowl-3.webp",
+        alt: "ChatGPT's third answer: the same five past champions, then a box score and standings, ending with the Rams, Bills, Ravens and Seahawks as a leading group and no pick at all.",
       },
     ] as SuperBowlShot[],
     kicker: "Facts are stable. Opinions drift. That’s why you check everything.",

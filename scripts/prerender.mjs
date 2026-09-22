@@ -80,16 +80,36 @@ function assertRendered(route, { body }) {
   }
 }
 
+const decode = (text) =>
+  text
+    .replace(/&#x27;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+
 /** The head a crawler reads: one of each tag, and JSON-LD that parses. */
 function assertHead(route, html, { canonical }) {
   const head = html.slice(0, html.indexOf("</head>"));
-  const count = (re) => (head.match(re) ?? []).length;
-  const expect = (what, n, want) => {
-    if (n !== want) throw new Error(`${route}: expected ${want} ${what} in <head>, found ${n}`);
+  const count = (pattern) => head.split(pattern).length - 1;
+  const expect = (tag, want) => {
+    const found = count(tag);
+    if (found !== want) throw new Error(`${route}: expected ${want} × ${tag} in <head>, found ${found}`);
   };
-  expect("<title>", count(/<title>/g), 1);
-  expect('meta name="description"', count(/<meta name="description"/g), 1);
-  expect('link rel="canonical"', count(/<link rel="canonical"/g), canonical ? 1 : 0);
+
+  if (!html.includes('<html lang="en">')) throw new Error(`${route}: <html lang="en"> is missing`);
+  expect("<title>", 1);
+  expect('<meta name="viewport"', 1);
+  expect('<meta name="description"', 1);
+  expect('<meta name="robots"', 1);
+  expect('<link rel="canonical"', canonical ? 1 : 0);
+  expect('<meta property="og:url"', canonical ? 1 : 0);
+  for (const property of ["og:type", "og:locale", "og:title", "og:description", "og:image"]) {
+    expect(`<meta property="${property}"`, 1);
+  }
+  for (const name of ["twitter:card", "twitter:title", "twitter:description"]) {
+    expect(`<meta name="${name}"`, 1);
+  }
   for (const [, json] of head.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)) {
     try {
       JSON.parse(json);
@@ -97,6 +117,20 @@ function assertHead(route, html, { canonical }) {
       throw new Error(`${route}: JSON-LD does not parse (${error.message})`);
     }
   }
+}
+
+/** Search-snippet guidance for indexable pages. Warnings, not failures. */
+function lintHead(route, html) {
+  const head = html.slice(0, html.indexOf("</head>"));
+  if (/<meta name="robots" content="noindex/.test(head)) return [];
+  const title = decode(head.match(/<title>([\s\S]*?)<\/title>/)[1]);
+  const description = decode(head.match(/<meta name="description" content="([^"]*)"/)[1]);
+  const warnings = [];
+  if (title.length >= 60) warnings.push(`title is ${title.length} characters (aim for under 60)`);
+  if (description.length < 120 || description.length > 158) {
+    warnings.push(`description is ${description.length} characters (aim for 120 to 158)`);
+  }
+  return warnings.map((warning) => `${route}: ${warning}`);
 }
 
 function toHtml({ head, body }) {
@@ -107,9 +141,12 @@ function toHtml({ head, body }) {
     .replace('<div id="root"></div>', () => `<div id="root" data-rendered-at="${renderedAt}">${body}</div>`);
 }
 
+const warnings = [];
+
 async function writePage(route, result) {
   const html = toHtml(result);
   assertHead(route, html, { canonical: result.status === 200 });
+  if (result.status === 200) warnings.push(...lintHead(route, html));
   const missing = missingAssets(html);
   if (missing.length) throw new Error(`${route}: references files not in dist/: ${missing.join(", ")}`);
   const file = path.join(DIST, fileFor(route));
@@ -170,4 +207,5 @@ const width = Math.max(...rows.map(([route]) => route.length));
 for (const [route, file, size] of rows) {
   console.log(`  ${route.padEnd(width)}  dist/${file}  ${(size / 1024).toFixed(1)} kB`);
 }
+for (const warning of warnings) console.warn(`  ⚠ ${warning}`);
 console.log(`✓ prerendered ${pages.length} pages and the 404 page`);

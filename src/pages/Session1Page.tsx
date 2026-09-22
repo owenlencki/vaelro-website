@@ -1,4 +1,3 @@
-import { useExclusiveMeta } from "../hooks/useExclusiveMeta";
 import SessionHeader from "../components/workshop/session1/SessionHeader";
 import BuiltShowcase from "../components/workshop/session1/BuiltShowcase";
 import SuperBowlTest from "../components/workshop/session1/SuperBowlTest";
@@ -9,38 +8,23 @@ import SessionFooter from "../components/workshop/session1/SessionFooter";
 import { session1 } from "../data/session1";
 import Seo from "../seo/Seo";
 
-/** Head tags this page owns outright; index.html carries site defaults. */
-const OWNED_META = [
-  'meta[property="og:url"]',
-  'meta[property="og:title"]',
-  'meta[property="og:description"]',
-  'meta[name="twitter:title"]',
-  'meta[name="twitter:description"]',
-];
-
 /**
  * The Session 1 resource hub: unlisted, reached only by the QR code and the
  * NFC tags in the room on September 25. Nothing links here, so it carries
- * noindex and stays out of public/sitemap.xml -- the link still previews
- * properly when someone texts it to the person who missed it.
+ * noindex, and the build leaves noindex pages out of the sitemap. The link
+ * still previews properly when someone texts it to the person who missed it.
  */
 export default function Session1Page() {
-  useExclusiveMeta(OWNED_META);
-
   return (
     <>
       <Seo
         title={session1.meta.title}
         description={session1.meta.description}
         path={new URL(session1.meta.canonical).pathname}
+        robots="noindex, follow"
+        socialTitle={session1.header.title}
+        image={{ url: session1.meta.ogImage, alt: session1.header.title }}
       />
-      <meta name="robots" content="noindex, follow" />
-      <meta property="og:url" content={session1.meta.canonical} />
-      <meta property="og:title" content={session1.header.title} />
-      <meta property="og:description" content={session1.meta.description} />
-      <meta property="og:image" content={session1.meta.ogImage} />
-      <meta name="twitter:title" content={session1.header.title} />
-      <meta name="twitter:description" content={session1.meta.description} />
 
       <SessionHeader />
       <BuiltShowcase />

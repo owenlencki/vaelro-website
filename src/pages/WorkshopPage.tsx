@@ -1,5 +1,4 @@
 import { useMemo, useRef } from "react";
-import { useExclusiveMeta } from "../hooks/useExclusiveMeta";
 import { useNow } from "../hooks/useNow";
 import Seo from "../seo/Seo";
 import WorkshopHero from "../components/workshop/WorkshopHero";
@@ -19,24 +18,6 @@ import {
   getSeriesPhase,
   getSessionStatuses,
 } from "../lib/workshop";
-
-/**
- * Head tags this page owns outright. index.html carries site defaults for each
- * of these, and both would otherwise sit in <head> at once.
- */
-const OWNED_META = [
-  'meta[property="og:type"]',
-  'meta[property="og:url"]',
-  'meta[property="og:title"]',
-  'meta[property="og:description"]',
-  'meta[property="og:image"]',
-  'meta[property="og:image:width"]',
-  'meta[property="og:image:height"]',
-  'meta[property="og:site_name"]',
-  'meta[name="twitter:card"]',
-  'meta[name="twitter:title"]',
-  'meta[name="twitter:description"]',
-];
 
 /**
  * The public home of the Chamber workshop series. Before the series it
@@ -59,8 +40,6 @@ export default function WorkshopPage() {
   const nextSession = getNextSession(workshop.sessions, now);
   const eventGraph = useMemo(() => buildEventGraph(workshop), []);
 
-  useExclusiveMeta(OWNED_META);
-
   return (
     <>
       <Seo
@@ -68,22 +47,10 @@ export default function WorkshopPage() {
         description={workshop.meta.description}
         path={new URL(workshop.meta.canonical).pathname}
         schema={eventGraph}
+        socialTitle={workshop.meta.ogTitle}
+        socialDescription={workshop.meta.ogDescription}
+        image={{ url: workshop.meta.ogImage, alt: workshop.meta.ogTitle }}
       />
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content={workshop.meta.canonical} />
-      <meta property="og:title" content={workshop.meta.ogTitle} />
-      <meta property="og:description" content={workshop.meta.ogDescription} />
-      <meta property="og:image" content={workshop.meta.ogImage} />
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
-      <meta property="og:site_name" content="Vaelro" />
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={workshop.meta.ogTitle} />
-      <meta
-        name="twitter:description"
-        content={workshop.meta.ogDescription}
-      />
-      <meta name="twitter:image" content={workshop.meta.ogImage} />
 
       {/* Bottom padding clears the phone-only sticky bar. */}
       <div className="max-md:pb-24">

@@ -104,15 +104,15 @@ export const workshop = {
   contactEmail: "hello@vaelro.co",
 
   meta: {
-    title: "Free AI Workshop Series for Waupaca Business Owners | Vaelro",
+    // Search snippet: title under 60 characters, description 120 to 158.
+    title: "Free AI Workshop Series for Waupaca Businesses | Vaelro",
     description:
-      "Three free Friday mornings with the Waupaca Area Chamber of Commerce: what AI actually is, where your business loses time, and real solutions built from your answers. Limited to 25 businesses.",
+      "Three free Friday mornings with the Waupaca Area Chamber of Commerce: what AI is, where your business loses time, and solutions built from your answers.",
     ogTitle: "AI for Your Business, Without the Overwhelm",
     ogDescription:
       "Free three-session workshop series with the Waupaca Area Chamber of Commerce. Fridays at 8:00 AM, September 25, October 9, November 6. Limited to 25 businesses.",
     canonical: "https://vaelro.co/workshop",
-    // v1 ships the site's existing OG image. The workshop-specific card and
-    // the crawler-facing head are v1.1, after this merges.
+    // The site's own OG image until a workshop-specific card exists.
     ogImage: "https://vaelro.co/og-image.jpg",
   },
 

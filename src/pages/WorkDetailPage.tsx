@@ -19,6 +19,15 @@ const SERVICE_PAGE: Partial<Record<WorkCategory, { to: string; label: string }>>
   "Custom tool": { to: "/automation", label: "More about business automation" },
 };
 
+/**
+ * Meta description: the tagline, plus who built it and where when that still
+ * fits a search snippet (158 characters).
+ */
+function metaDescription(tagline: string): string {
+  const withCredit = `${tagline} A Vaelro case study, built in Waupaca, WI.`;
+  return withCredit.length <= 158 ? withCredit : tagline;
+}
+
 const blockLabel =
   "font-mono text-xs tracking-[0.2em] text-orange-600 uppercase md:text-sm";
 
@@ -50,7 +59,7 @@ export default function WorkDetailPage() {
     <>
       <Seo
         title={`${project.name} | Work | Vaelro`}
-        description={project.tagline}
+        description={metaDescription(project.tagline)}
         path={`/work/${project.slug}`}
       />
 

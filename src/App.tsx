@@ -6,6 +6,8 @@ import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import PageTransition from "./components/layout/PageTransition";
 import HomePage from "./pages/HomePage";
+import WebDesignPage from "./pages/WebDesignPage";
+import AutomationPage from "./pages/AutomationPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import PrivacyPage from "./pages/PrivacyPage";
@@ -51,6 +53,22 @@ function AnimatedRoutes() {
           element={
             <PageTransition>
               <HomePage />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/web-design"
+          element={
+            <PageTransition>
+              <WebDesignPage />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/automation"
+          element={
+            <PageTransition>
+              <AutomationPage />
             </PageTransition>
           }
         />

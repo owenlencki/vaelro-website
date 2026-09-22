@@ -3,7 +3,19 @@ import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
 import MagneticButton from "../ui/MagneticButton";
 
-export default function HomeCTA() {
+interface ConsultationCtaProps {
+  heading?: string;
+  body?: string;
+}
+
+/**
+ * The closing ask on the dark band: one line, one sentence, one button to
+ * /contact. Home's copy by default; other pages pass their own.
+ */
+export default function ConsultationCta({
+  heading = "Ready to stop doing everything manually?",
+  body = "Book a free 30-minute consultation. We'll map out exactly where your business can save time and get more customers.",
+}: ConsultationCtaProps) {
   return (
     <section
       className="relative overflow-hidden bg-ink-900 bg-noise py-20 md:py-32"
@@ -17,13 +29,12 @@ export default function HomeCTA() {
 
       <div className="container-site relative text-center">
         <h2 className="mx-auto max-w-3xl font-serif text-title font-bold text-cream-100">
-          <SplitText text="Ready to stop doing everything manually?" />
+          <SplitText text={heading} />
         </h2>
 
         <Reveal delay={0.3}>
           <p className="mx-auto mt-6 max-w-xl text-lead text-cream-100/80">
-            Book a free 30-minute consultation. We'll map out exactly where
-            your business can save time and get more customers.
+            {body}
           </p>
         </Reveal>
 

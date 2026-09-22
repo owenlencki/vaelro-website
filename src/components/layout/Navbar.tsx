@@ -15,9 +15,6 @@ import { workshop } from "../../data/workshop";
 import { getSeriesPhase } from "../../lib/workshop";
 import logoCream from "../../assets/logos/logo-horizontal-cream.png";
 import logoDark from "../../assets/logos/logo-horizontal-dark.png";
-import type { MouseEvent } from "react";
-
-const NAV_OFFSET = -88;
 
 /** Decorative marker on the Workshop item while the series is running. */
 function LiveDot() {
@@ -31,7 +28,7 @@ function LiveDot() {
 
 export default function Navbar() {
   const { pathname } = useLocation();
-  const { scrollTo, stop, start } = useLenisContext();
+  const { stop, start } = useLenisContext();
   const reducedMotion = usePrefersReducedMotion();
   const { scrollYProgress, scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
@@ -62,22 +59,10 @@ export default function Navbar() {
     };
   }, [menuOpen, stop, start]);
 
-  function handleAnchor(e: MouseEvent, id: string) {
-    if (isHome) {
-      e.preventDefault();
-      setMenuOpen(false);
-      scrollTo(`#${id}`, { offset: NAV_OFFSET });
-    }
-  }
-
   const linkColor = transparent
     ? "text-cream-100 hover:text-white"
     : "text-ink-900 hover:text-orange-600";
 
-  const anchorLinks = [
-    { label: "Services", id: "services" },
-    { label: "Work", id: "work" },
-  ];
   // The dot marks the series as live. It disappears on its own once Session 3
   // is done; dropping it early is deleting the `dot` line below.
   const now = useNow();
@@ -87,7 +72,11 @@ export default function Navbar() {
       "complete",
     [now],
   );
-  const pageLinks = [
+  // Real pages only, so every item is a crawlable link to its own URL.
+  const links: Array<{ label: string; to: string; dot?: boolean }> = [
+    { label: "Home", to: "/" },
+    { label: "Web Design", to: "/web-design" },
+    { label: "Automation", to: "/automation" },
     { label: "Workshop", to: "/workshop", dot: seriesRunning },
     { label: "About", to: "/about" },
     { label: "Contact", to: "/contact" },
@@ -136,19 +125,10 @@ export default function Navbar() {
             />
           </Link>
 
-          {/* Desktop links */}
-          <div className="hidden items-center gap-4 md:flex lg:gap-8">
-            {anchorLinks.map((l) => (
-              <Link
-                key={l.id}
-                to={`/#${l.id}`}
-                onClick={(e) => handleAnchor(e, l.id)}
-                className={`nav-link text-[0.95rem] font-semibold whitespace-nowrap ${linkColor}`}
-              >
-                {l.label}
-              </Link>
-            ))}
-            {pageLinks.map((l) => (
+          {/* Desktop links. Six items need the room, so tablets get the
+              menu button instead. */}
+          <div className="hidden items-center gap-6 lg:flex xl:gap-8">
+            {links.map((l) => (
               <Link
                 key={l.to}
                 to={l.to}
@@ -176,7 +156,7 @@ export default function Navbar() {
             {/* Hamburger (mobile) */}
             <button
               type="button"
-              className={`flex h-11 w-11 flex-col items-center justify-center gap-[7px] md:hidden ${
+              className={`flex h-11 w-11 flex-col items-center justify-center gap-[7px] lg:hidden ${
                 transparent ? "text-cream-100" : "text-ink-900"
               }`}
               aria-expanded={menuOpen}
@@ -204,21 +184,14 @@ export default function Navbar() {
         {menuOpen && (
           <motion.div
             id="mobile-menu"
-            className="fixed inset-0 z-30 flex flex-col justify-center bg-ink-900 px-8 md:hidden"
+            className="fixed inset-0 z-30 flex flex-col justify-center bg-ink-900 px-8 lg:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: reducedMotion ? 0.15 : 0.3 }}
           >
-            <ul className="flex flex-col gap-2">
-              {[
-                ...anchorLinks.map((l) => ({
-                  label: l.label,
-                  to: `/#${l.id}`,
-                  id: l.id,
-                })),
-                ...pageLinks.map((l) => ({ ...l, id: undefined })),
-              ].map((l, i) => (
+            <ul className="flex flex-col gap-1">
+              {links.map((l, i) => (
                 <motion.li
                   key={l.label}
                   initial={
@@ -229,14 +202,12 @@ export default function Navbar() {
                 >
                   <Link
                     to={l.to}
-                    onClick={(e) => {
-                      if (l.id) handleAnchor(e, l.id);
-                      else setMenuOpen(false);
-                    }}
-                    className="block py-3 font-serif text-4xl font-bold text-cream-100"
+                    aria-current={pathname === l.to ? "page" : undefined}
+                    onClick={() => setMenuOpen(false)}
+                    className="block py-2.5 font-serif text-4xl font-bold text-cream-100"
                   >
                     {l.label}
-                    {"dot" in l && l.dot && <LiveDot />}
+                    {l.dot && <LiveDot />}
                   </Link>
                 </motion.li>
               ))}

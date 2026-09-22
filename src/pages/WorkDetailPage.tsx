@@ -2,11 +2,21 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import Reveal from "../components/ui/Reveal";
 import MagneticButton from "../components/ui/MagneticButton";
 import { withBase } from "../lib/paths";
-import { featuredProjects, getProject } from "../data/projects";
+import {
+  featuredProjects,
+  getProject,
+  type WorkCategory,
+} from "../data/projects";
 
 function domainOf(url: string): string {
   return new URL(url).hostname.replace(/^www\./, "");
 }
+
+/** The service page each kind of project belongs to, for the closing link. */
+const SERVICE_PAGE: Partial<Record<WorkCategory, { to: string; label: string }>> = {
+  Website: { to: "/web-design", label: "More about our website design" },
+  "Custom tool": { to: "/automation", label: "More about business automation" },
+};
 
 const blockLabel =
   "font-mono text-xs tracking-[0.2em] text-orange-600 uppercase md:text-sm";
@@ -20,6 +30,7 @@ export default function WorkDetailPage() {
     return <Navigate to="/#work" replace />;
   }
 
+  const service = SERVICE_PAGE[project.category];
   const idx = featuredProjects.findIndex((p) => p.slug === project.slug);
   const prev = idx > 0 ? featuredProjects[idx - 1] : undefined;
   const next =
@@ -194,6 +205,14 @@ export default function WorkDetailPage() {
                   </Link>
                 </MagneticButton>
               </div>
+              {service && (
+                <Link
+                  to={service.to}
+                  className="nav-link mt-6 inline-flex min-h-11 items-center gap-1 font-semibold text-cream-100/80 hover:text-cream-100"
+                >
+                  {service.label} <span aria-hidden="true">→</span>
+                </Link>
+              )}
             </div>
           </Reveal>
         </div>

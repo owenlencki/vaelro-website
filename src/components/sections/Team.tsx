@@ -11,15 +11,15 @@ const TEAM = [
     name: "Owen Lencki",
     role: "Co-founder",
     photo: owenImg,
-    alt: "Owen Lencki speaking at an event",
-    bio: "Owen grew up in the Waupaca area, and he started Vaelro after watching local businesses wrestle with outdated websites and hours of manual work that software should be handling. He's a college sophomore and D3 athlete at UW-Stevens Point, and he brings that same discipline to client work. At Vaelro he leads client relationships, sales, strategy, and website builds. When you work with us, Owen is the one picking up the phone.",
+    alt: "Owen Lencki, Vaelro co-founder, speaking at an event",
+    bio: "Owen grew up in the Waupaca area, and he started Vaelro after watching local businesses wrestle with outdated websites and hours of manual work that software should be handling. He studies marketing at UW-Stevens Point, where he's also a Division III athlete, and he brings that same discipline to client work. At Vaelro he leads client relationships, sales, strategy, and website builds. When you work with us, Owen is the one picking up the phone.",
   },
   {
     name: "Liam Bloedow",
     role: "Co-founder",
     photo: liamImg,
-    alt: "Liam Bloedow explaining a system at a whiteboard",
-    bio: "Liam is the automation and infrastructure lead, which is a technical way of saying he makes everything actually work. He builds the n8n workflows, manages deployments, and handles the architecture behind every system we ship. He's currently working with Higgsfield AI on next-generation video content. If it's running in production, Liam is the reason it keeps running.",
+    alt: "Liam Bloedow, Vaelro co-founder, explaining a system at a whiteboard",
+    bio: "Liam is a Waupaca High School graduate now at UW-Madison, and he's our automation and infrastructure lead, which is a technical way of saying he makes everything actually work. He builds the n8n workflows, manages deployments, and handles the architecture behind every system we ship. He's currently working with Higgsfield AI on next-generation video content. If it's running in production, Liam is the reason it keeps running.",
   },
 ];
 

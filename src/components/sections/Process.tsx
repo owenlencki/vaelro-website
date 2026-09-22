@@ -4,28 +4,42 @@ import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 
-const STEPS = [
+export interface ProcessStep {
+  title: string;
+  tagline: string;
+  body: string;
+}
+
+const STEPS: ProcessStep[] = [
   {
-    number: "1",
     title: "Discovery",
     tagline: "You talk. We listen.",
     body: "A 30-minute conversation about your business, pain points, and what's costing you time. No pitch, just questions.",
   },
   {
-    number: "2",
     title: "Build",
     tagline: "We design and build.",
     body: "Custom website, automation system, or both. You see progress, give feedback, and approve before anything goes live.",
   },
   {
-    number: "3",
     title: "Launch & Support",
     tagline: "We deploy and stay.",
     body: "We launch, train your team, and stay on as your tech partner. Monthly support keeps everything running and improving.",
   },
 ];
 
-export default function Process() {
+interface ProcessProps {
+  eyebrow?: string;
+  title?: string;
+  steps?: ProcessStep[];
+}
+
+/** Numbered steps on a line that draws as they scroll by. About's copy by default. */
+export default function Process({
+  eyebrow = "How It Works",
+  title = "Three steps. No mystery.",
+  steps = STEPS,
+}: ProcessProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const reducedMotion = usePrefersReducedMotion();
 
@@ -40,13 +54,13 @@ export default function Process() {
   });
 
   return (
-    <section className="bg-peach-50 py-12 md:py-24" aria-label="How it works">
+    <section className="bg-peach-50 py-12 md:py-24" aria-label={eyebrow}>
       <div className="container-site">
         <p className="mb-4 font-mono text-xs tracking-[0.2em] text-orange-600 uppercase md:text-sm">
-          How It Works
+          {eyebrow}
         </p>
         <h2 className="max-w-2xl font-serif text-title font-bold text-ink-900">
-          <SplitText text="Three steps. No mystery." />
+          <SplitText text={title} />
         </h2>
 
         <div ref={trackRef} className="relative mt-16 md:mt-20">
@@ -77,10 +91,10 @@ export default function Process() {
           </svg>
 
           <ol className="relative flex flex-col gap-14 md:gap-24">
-            {STEPS.map((step, i) => {
+            {steps.map((step, i) => {
               const alignRight = i % 2 === 1;
               return (
-                <li key={step.number} className="md:grid md:grid-cols-2">
+                <li key={step.title} className="md:grid md:grid-cols-2">
                   <Reveal
                     delay={0.1}
                     direction={
@@ -114,7 +128,7 @@ export default function Process() {
                         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                         aria-hidden="true"
                       >
-                        {step.number}
+                        {i + 1}
                       </motion.span>
 
                       <div>

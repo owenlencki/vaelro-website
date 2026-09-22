@@ -10,7 +10,7 @@ import Marquee from "../components/sections/Marquee";
 import Services from "../components/sections/Services";
 import WorkFan from "../components/sections/WorkFan";
 import SocialProof from "../components/sections/SocialProof";
-import HomeCTA from "../components/sections/HomeCTA";
+import ConsultationCta from "../components/sections/ConsultationCta";
 
 declare global {
   interface Window {
@@ -64,7 +64,7 @@ export default function HomePage() {
       <Services />
       <WorkFan />
       <SocialProof />
-      <HomeCTA />
+      <ConsultationCta />
     </>
   );
 }

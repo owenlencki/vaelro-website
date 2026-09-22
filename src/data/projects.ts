@@ -68,7 +68,7 @@ export const projects: Project[] = [
     images: {
       card: "/work/health-fitness-headquarters/card.webp",
       hero: "/work/health-fitness-headquarters/hero.webp",
-      alt: "The Health & Fitness Headquarters website on a phone",
+      alt: "The Health & Fitness Headquarters website, built for a gym in Waupaca, WI, shown on a phone",
     },
     featured: true,
     rank: 1,
@@ -91,7 +91,7 @@ export const projects: Project[] = [
     images: {
       card: "/work/chicken-shack/card.webp",
       hero: "/work/chicken-shack/hero.webp",
-      alt: "The Chicken Shack website on a phone",
+      alt: "The Chicken Shack website, built for a Waupaca-area restaurant, shown on a phone",
     },
     featured: true,
     rank: 2,
@@ -114,7 +114,7 @@ export const projects: Project[] = [
     images: {
       card: "/work/715-harvest-fest/card.webp",
       hero: "/work/715-harvest-fest/hero.webp",
-      alt: "The 715 Harvest Fest website on a phone",
+      alt: "The 715 Harvest Fest event website for Waupaca, WI, shown on a phone",
     },
     testimonial: {
       quote:
@@ -184,7 +184,7 @@ export const projects: Project[] = [
     images: {
       card: "/work/udoni-salan-real-estate/card.webp",
       hero: "/work/udoni-salan-real-estate/hero.webp",
-      alt: "The AI email generator built for United Country Udoni & Salan Realty Group",
+      alt: "The AI email generator built for United Country Udoni & Salan Realty Group in Waupaca, WI",
     },
     testimonial: {
       quote:

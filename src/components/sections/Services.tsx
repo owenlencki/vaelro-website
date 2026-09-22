@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
 import { fadeUp, staggerContainer } from "../../lib/animations";
@@ -8,6 +9,8 @@ interface Service {
   label: string;
   title: string;
   body: string;
+  /** Where the card leads. The whole card is clickable; this is its text. */
+  link: { to: string; label: string };
   dark?: boolean;
 }
 
@@ -17,12 +20,14 @@ const SERVICES: Service[] = [
     label: "Websites",
     title: "Websites That Actually Work",
     body: "Not templates. Not WordPress. Custom-built sites on modern infrastructure that load fast, look great on every device, and turn visitors into customers. No lock-in. Everything we build is yours.",
+    link: { to: "/web-design", label: "See website design" },
   },
   {
     number: "02",
     label: "Workflow Automation",
     title: "Stop Doing the Same Thing Twice",
     body: "We build workflows that handle follow-ups, scheduling, document processing, data entry, and the repetitive work your team wastes hours on every week. Custom-built, not off-the-shelf.",
+    link: { to: "/automation", label: "See business automation" },
     dark: true,
   },
   {
@@ -30,6 +35,7 @@ const SERVICES: Service[] = [
     label: "AI Strategy & Consulting",
     title: "Know Exactly Where AI Fits",
     body: "Not sure where to start? We audit your operations, map where AI saves real time and money, and build a concrete roadmap. No buzzwords. No hype. Just a plan that pays for itself.",
+    link: { to: "/contact", label: "Start with a free consultation" },
   },
 ];
 
@@ -63,7 +69,7 @@ export default function Services() {
               variants={fadeUp}
               whileHover={{ y: -4 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className={`group flex flex-col rounded-2xl border p-8 shadow-[0_2px_12px_rgba(26,26,26,0.04)] transition-shadow duration-200 hover:shadow-[0_16px_40px_rgba(26,26,26,0.1)] md:p-9 ${
+              className={`group relative flex flex-col rounded-2xl border p-8 shadow-[0_2px_12px_rgba(26,26,26,0.04)] transition-shadow duration-200 hover:shadow-[0_16px_40px_rgba(26,26,26,0.1)] md:p-9 ${
                 service.dark
                   ? "border-ink-700 bg-ink-900 text-cream-100 md:-translate-y-0 md:translate-y-6"
                   : "border-cream-300 bg-cream-50 text-ink-900"
@@ -97,6 +103,17 @@ export default function Services() {
               >
                 {service.body}
               </p>
+
+              <Link
+                to={service.link.to}
+                className={`mt-6 inline-flex min-h-11 items-center gap-1 font-semibold after:absolute after:inset-0 after:rounded-2xl ${
+                  service.dark
+                    ? "text-orange-300 group-hover:text-orange-200"
+                    : "text-orange-600 group-hover:text-orange-700"
+                }`}
+              >
+                {service.link.label} <span aria-hidden="true">→</span>
+              </Link>
             </motion.article>
           ))}
         </motion.div>

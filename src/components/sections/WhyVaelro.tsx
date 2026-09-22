@@ -5,7 +5,7 @@ import SplitText from "../ui/SplitText";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 
 /** Key phrase with an orange underline that draws on as it enters the viewport. */
-function Highlight({ children }: { children: ReactNode }) {
+export function Highlight({ children }: { children: ReactNode }) {
   const reducedMotion = usePrefersReducedMotion();
   return (
     <motion.span
@@ -26,13 +26,13 @@ function Highlight({ children }: { children: ReactNode }) {
   );
 }
 
-const BLOCKS: Array<{
-  number: string;
+export interface WhyBlock {
   heading: ReactNode;
   body: ReactNode;
-}> = [
+}
+
+const BLOCKS: WhyBlock[] = [
   {
-    number: "01",
     heading: (
       <>
         <Highlight>No lock-in</Highlight>. Ever.
@@ -41,7 +41,6 @@ const BLOCKS: Array<{
     body: "Everything we build is yours. Your domain, your code, your data. If you ever want to move on, you take it all with you. No hostage games, no transfer fees.",
   },
   {
-    number: "02",
     heading: (
       <>
         Built on <Highlight>modern infrastructure</Highlight>.
@@ -50,7 +49,6 @@ const BLOCKS: Array<{
     body: "Our sites load in under 2 seconds and cost a few dollars a month to host. No constant security patches, no plugin updates breaking things overnight.",
   },
   {
-    number: "03",
     heading: (
       <>
         We're <Highlight>10 minutes away</Highlight>.
@@ -59,7 +57,6 @@ const BLOCKS: Array<{
     body: "When something breaks before a big event, you call us directly. Not a ticket queue. Not a chatbot. Us.",
   },
   {
-    number: "04",
     heading: (
       <>
         We <Highlight>don't disappear</Highlight>.
@@ -69,29 +66,40 @@ const BLOCKS: Array<{
   },
 ];
 
-export default function WhyVaelro() {
+interface WhyVaelroProps {
+  eyebrow?: string;
+  title?: string;
+  blocks?: WhyBlock[];
+}
+
+/** Numbered promises on the dark band. About's copy by default. */
+export default function WhyVaelro({
+  eyebrow = "Why Vaelro",
+  title = "What makes us different",
+  blocks = BLOCKS,
+}: WhyVaelroProps) {
   return (
     <section
       className="relative bg-ink-900 bg-noise py-12 md:py-24"
-      aria-label="Why Vaelro"
+      aria-label={eyebrow}
     >
       <div className="container-site relative">
         <p className="mb-4 font-mono text-xs tracking-[0.2em] text-orange-400 uppercase md:text-sm">
-          Why Vaelro
+          {eyebrow}
         </p>
         <h2 className="max-w-2xl font-serif text-title font-bold text-cream-100">
-          <SplitText text="What makes us different" />
+          <SplitText text={title} />
         </h2>
 
         <div className="mt-14 flex flex-col md:mt-20">
-          {BLOCKS.map((block, i) => (
-            <Reveal key={block.number} delay={i * 0.08}>
+          {blocks.map((block, i) => (
+            <Reveal key={i} delay={i * 0.08}>
               <div className="grid gap-4 border-t border-cream-100/10 py-10 md:grid-cols-[80px_1fr_1.2fr] md:gap-10 md:py-14">
                 <span
                   className="font-serif text-xl font-bold text-orange-400/70"
                   aria-hidden="true"
                 >
-                  {block.number}
+                  {String(i + 1).padStart(2, "0")}
                 </span>
                 <h3 className="font-serif text-heading font-bold text-cream-100">
                   {block.heading}

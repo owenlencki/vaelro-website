@@ -1,0 +1,22 @@
+# Vaelro LLC
+
+> Custom website design and business automation for small businesses in Waupaca County, Wisconsin.
+
+Vaelro LLC is a web design and automation agency based in Waupaca, WI. We build fast, mobile-first websites and custom automation systems for small businesses across central Wisconsin. Our clients own everything we build: domain, hosting, code, and CMS. Month-to-month support with no lock-in.
+
+## Services
+
+- [Web Design](https://vaelro.co/web-design): Custom websites starting at $500. Fast, mobile-first, client-owned.
+- [Business Automation](https://vaelro.co/automation): Custom workflows for scheduling, intake, follow-ups, and reporting.
+
+## About
+
+- [About Vaelro](https://vaelro.co/about): Founded by Owen Lencki and Liam Bloedow, who grew up in Waupaca.
+- [AI Workshop Series](https://vaelro.co/workshop): Free AI workshops for Waupaca business owners, with the Waupaca Area Chamber of Commerce.
+
+## Contact
+
+- Website: https://vaelro.co
+- Email: hello@vaelro.co
+- Location: Waupaca, WI 54981
+- Book a free consultation: https://vaelro.co/contact

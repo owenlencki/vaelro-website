@@ -7,12 +7,16 @@
 // Routes are discovered, not listed: the crawl starts at "/" and follows every
 // internal link in the rendered markup, plus the few pages nothing links to
 // (UNLINKED_ROUTES in src/entry-server.tsx). An internal link that lands on
-// the 404 page fails the build, and so does a page that renders empty.
+// the 404 page fails the build, and so does a page that renders empty or has
+// an incomplete head.
+//
+// Also writes dist/sitemap.xml (every indexable page) and dist/_redirects.
 //
 // Plain Node on purpose: everything app-specific comes from the SSR bundle
 // that `vite build --ssr src/entry-server.tsx` writes to dist-ssr/.
 // ---------------------------------------------------------------------------
 
+import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -190,6 +194,55 @@ for (const { route, result } of pages) {
 }
 rows.push([`(${NOT_FOUND_ROUTE})`, fileFor(NOT_FOUND_ROUTE), await writePage(NOT_FOUND_ROUTE, notFound)]);
 
+// --- Sitemap ------------------------------------------------------------------
+// Every indexable page, at its canonical URL (read from the page's own head, so
+// the two can never disagree). <lastmod> is the newest commit touching what the
+// page is made of or the layout every page shares, so it only moves when the
+// page actually changes. Routes not listed here date from all of src/.
+
+const SHARED_SOURCES = ["index.html", "src/App.tsx", "src/components/layout", "src/data/business.ts"];
+const PAGE_SOURCES = [
+  [/^\/$/, ["src/pages/HomePage.tsx", "src/components/sections", "src/data/projects.ts"]],
+  [/^\/web-design$/, ["src/pages/WebDesignPage.tsx", "src/components/service", "src/data/projects.ts"]],
+  [/^\/automation$/, ["src/pages/AutomationPage.tsx", "src/components/service", "src/data/projects.ts"]],
+  [/^\/about$/, ["src/pages/AboutPage.tsx", "src/components/sections"]],
+  [/^\/contact$/, ["src/pages/ContactPage.tsx", "src/components/sections", "src/data/faqs.ts"]],
+  [/^\/privacy$/, ["src/pages/PrivacyPage.tsx"]],
+  [/^\/workshop$/, ["src/pages/WorkshopPage.tsx", "src/components/workshop", "src/data/workshop.ts"]],
+  [/^\/work\//, ["src/pages/WorkDetailPage.tsx", "src/data/projects.ts"]],
+];
+
+function lastmodFor(route) {
+  const own = PAGE_SOURCES.find(([pattern]) => pattern.test(route))?.[1] ?? ["src"];
+  try {
+    const date = execFileSync("git", ["log", "-1", "--format=%cs", "--", ...own, ...SHARED_SOURCES], {
+      cwd: ROOT,
+      encoding: "utf8",
+    }).trim();
+    if (date) return date;
+  } catch {
+    // Not a git checkout: date it by the build instead.
+  }
+  return new Date(renderedAt).toISOString().slice(0, 10);
+}
+
+const sitemap = pages
+  .filter(({ result }) => !/<meta name="robots" content="noindex/.test(result.head))
+  .map(({ route, result }) => ({
+    loc: result.head.match(/<link rel="canonical" href="([^"]+)"/)[1],
+    lastmod: lastmodFor(route),
+  }));
+await writeFile(
+  path.join(DIST, "sitemap.xml"),
+  [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...sitemap.map(({ loc, lastmod }) => `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`),
+    "</urlset>",
+    "",
+  ].join("\n"),
+);
+
 // Netlify: serve each page at its canonical, slash-free URL straight from its
 // file, whatever the site's Pretty URLs setting. Exact paths, never
 // wildcards: a forced wildcard would also catch the images under /work/.
@@ -208,4 +261,4 @@ for (const [route, file, size] of rows) {
   console.log(`  ${route.padEnd(width)}  dist/${file}  ${(size / 1024).toFixed(1)} kB`);
 }
 for (const warning of warnings) console.warn(`  ⚠ ${warning}`);
-console.log(`✓ prerendered ${pages.length} pages and the 404 page`);
+console.log(`✓ prerendered ${pages.length} pages and the 404 page; ${sitemap.length} in dist/sitemap.xml`);

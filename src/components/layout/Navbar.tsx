@@ -8,6 +8,7 @@ import {
 } from "framer-motion";
 import { useLenisContext } from "../../hooks/useLenis";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
+import { useNow } from "../../hooks/useNow";
 import { BOOKING_URL } from "../../lib/booking";
 import { trackEvent } from "../../lib/analytics";
 import { workshop } from "../../data/workshop";
@@ -79,11 +80,12 @@ export default function Navbar() {
   ];
   // The dot marks the series as live. It disappears on its own once Session 3
   // is done; dropping it early is deleting the `dot` line below.
+  const now = useNow();
   const seriesRunning = useMemo(
     () =>
-      getSeriesPhase(workshop.sessions, Date.now(), workshop.stageOverride) !==
+      getSeriesPhase(workshop.sessions, now, workshop.stageOverride) !==
       "complete",
-    [],
+    [now],
   );
   const pageLinks = [
     { label: "Workshop", to: "/workshop", dot: seriesRunning },

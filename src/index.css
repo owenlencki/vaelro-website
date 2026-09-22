@@ -260,3 +260,21 @@
     animation: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Preloader: the prerendered Home page always carries the overlay, and it
+   shows only while <html data-preloader> is set (see Preloader.tsx).
+   Unlayered, so it wins over the utility classes on the element.
+--------------------------------------------------------------------------- */
+
+.preloader {
+  display: none;
+}
+
+html[data-preloader] {
+  overflow: hidden;
+}
+
+html[data-preloader] .preloader {
+  display: flex;
+}

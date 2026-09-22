@@ -2,16 +2,21 @@
   command = "npm run build"
   publish = "dist"
 
+# Every page is prerendered to its own HTML file (scripts/prerender.mjs), and
+# the build also writes dist/_redirects, which serves each one at its
+# slash-free URL. Netlify reads _redirects before these rules, and files that
+# exist are served before this catch-all, so it only answers for paths with no
+# page: the prerendered 404 page, with a real 404 status. (The old SPA rule
+# answered 200 with the home page, which search engines count as a soft 404.)
 [[redirects]]
   from = "/*"
-  to = "/index.html"
-  status = 200
+  to = "/404.html"
+  status = 404
 
 # The Session 1 attendee page is unlisted: nothing links to it, and it is not
-# in the sitemap. Its noindex meta tag is injected by React, which a crawler
-# that does not run JavaScript never sees, so the guarantee is made here at the
-# edge instead. The redirect above rewrites this path to index.html; Netlify
-# still matches headers against the requested path.
+# in the sitemap. Its prerendered HTML carries a noindex meta tag, and this
+# header says the same at the edge for any crawler that only reads headers.
+# Netlify matches headers against the requested path.
 [[headers]]
   for = "/workshop/session-1"
   [headers.values]

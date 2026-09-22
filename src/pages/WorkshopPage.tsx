@@ -1,5 +1,6 @@
 import { useMemo, useRef } from "react";
 import { useExclusiveMeta } from "../hooks/useExclusiveMeta";
+import { useNow } from "../hooks/useNow";
 import WorkshopHero from "../components/workshop/WorkshopHero";
 import Outcomes from "../components/workshop/Outcomes";
 import SessionTimeline from "../components/workshop/SessionTimeline";
@@ -47,7 +48,7 @@ const OWNED_META = [
  */
 export default function WorkshopPage() {
   // Pinned for the life of the page so every section agrees on "now".
-  const now = useMemo(() => Date.now(), []);
+  const now = useNow();
   const heroCtaRef = useRef<HTMLDivElement>(null);
 
   const phase = getSeriesPhase(

@@ -4,6 +4,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   type TouchEvent,
 } from "react";
 import {
@@ -19,6 +20,7 @@ import { BOOKING_URL } from "../../lib/booking";
 import { trackEvent } from "../../lib/analytics";
 import { useLenisContext } from "../../hooks/useLenis";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
+import { useHydrated } from "../../hooks/useHydrated";
 import {
   ORB_COUNT,
   SERVICES,
@@ -44,31 +46,46 @@ type LayoutMode = "desktop" | "portrait" | "mobile";
  * no room for the orbital arrangement beside the headline.
  * desktop: everything else (full arrangement, text inside the split).
  */
-function useLayoutMode(): LayoutMode {
-  const compute = (): LayoutMode => {
-    if (
-      window.matchMedia("(pointer: coarse)").matches ||
-      window.innerWidth < 768
-    ) {
-      return "mobile";
-    }
-    return window.innerWidth / window.innerHeight < 1.05
-      ? "portrait"
-      : "desktop";
+function computeLayoutMode(): LayoutMode {
+  if (
+    window.matchMedia("(pointer: coarse)").matches ||
+    window.innerWidth < 768
+  ) {
+    return "mobile";
+  }
+  return window.innerWidth / window.innerHeight < 1.05
+    ? "portrait"
+    : "desktop";
+}
+
+function subscribeLayoutMode(onChange: () => void) {
+  const coarse = window.matchMedia("(pointer: coarse)");
+  window.addEventListener("resize", onChange);
+  coarse.addEventListener("change", onChange);
+  return () => {
+    window.removeEventListener("resize", onChange);
+    coarse.removeEventListener("change", onChange);
   };
-  const [mode, setMode] = useState<LayoutMode>(compute);
-  useEffect(() => {
-    const onResize = () => setMode(compute());
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-  return mode;
+}
+
+/**
+ * The prerendered HTML and the hydration render use "desktop"; the real mode
+ * lands on the next render. Only the orb overlay, which stays invisible until
+ * the 3D scene positions it, depends on the mode, so nothing visibly shifts.
+ */
+function useLayoutMode(): LayoutMode {
+  return useSyncExternalStore(
+    subscribeLayoutMode,
+    computeLayoutMode,
+    () => "desktop",
+  );
 }
 
 export default function Hero({ start }: HeroProps) {
   const ref = useRef<HTMLElement>(null);
   const mode = useLayoutMode();
   const reducedMotion = usePrefersReducedMotion();
+  const hydrated = useHydrated();
   const { scrollTo } = useLenisContext();
 
   // ---- Orb carousel state ------------------------------------------------
@@ -218,19 +235,23 @@ export default function Hero({ start }: HeroProps) {
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      {/* Layer 1: interactive orb carousel in a particle field */}
+      {/* Layer 1: interactive orb carousel in a particle field. WebGL only
+          exists in the browser, so the prerendered page ships the dark
+          backdrop and the scene mounts once the page has hydrated. */}
       <div className="absolute inset-0 z-0">
-        <Suspense fallback={null}>
-          <OrbCarousel
-            active={active}
-            open={open}
-            mode={mode}
-            pulse={mode === "mobile" && start && !hasInteracted}
-            reducedMotion={reducedMotion}
-            onOrbClick={selectOrb}
-            overlay={overlayNodes}
-          />
-        </Suspense>
+        {hydrated && (
+          <Suspense fallback={null}>
+            <OrbCarousel
+              active={active}
+              open={open}
+              mode={mode}
+              pulse={mode === "mobile" && start && !hasInteracted}
+              reducedMotion={reducedMotion}
+              onOrbClick={selectOrb}
+              overlay={overlayNodes}
+            />
+          </Suspense>
+        )}
       </div>
       {/* Soft vignette so text stays readable over bright clusters */}
       <div
@@ -509,7 +530,7 @@ export default function Hero({ start }: HeroProps) {
           <motion.div {...fadeUp(1.4)}>
             <button
               type="button"
-              onClick={() => scrollTo("#portfolio", { offset: -88 })}
+              onClick={() => scrollTo("#work", { offset: -88 })}
               className="nav-link inline-flex min-h-12 items-center gap-2 text-base font-semibold text-cream-100/90 hover:text-white"
             >
               See Our Work <span aria-hidden="true">↓</span>

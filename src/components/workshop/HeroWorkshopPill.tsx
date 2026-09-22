@@ -9,6 +9,7 @@ import {
 } from "../../lib/workshop";
 import { trackEvent } from "../../lib/analytics";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
+import { useNow } from "../../hooks/useNow";
 
 /**
  * The tease that lives above the Home hero's eyebrow line. It is a link, not a
@@ -18,11 +19,11 @@ import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
  */
 export default function HeroWorkshopPill() {
   const reducedMotion = usePrefersReducedMotion();
+  const now = useNow();
 
   // Null once the series has wrapped: there is nothing left to tease, so the
   // pill leaves the Home hero rather than pointing at an ended event.
   const copy = useMemo(() => {
-    const now = Date.now();
     const phase = getSeriesPhase(
       workshop.sessions,
       now,
@@ -34,7 +35,7 @@ export default function HeroWorkshopPill() {
       phase,
       getNextSession(workshop.sessions, now),
     );
-  }, []);
+  }, [now]);
 
   if (!copy) return null;
 

@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
 import MagneticButton from "../components/ui/MagneticButton";
+import { useSsrStatus } from "../lib/ssr";
 import logoDark from "../assets/logos/logo-horizontal-dark.png";
 
 export default function NotFoundPage() {
+  // Prerendered to dist/404.html, which Netlify serves with a real 404 status.
+  useSsrStatus(404);
+
   return (
     <section className="flex min-h-svh items-center bg-cream-100 pt-24 pb-16">
       <div className="container-site text-center">

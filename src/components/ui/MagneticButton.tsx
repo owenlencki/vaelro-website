@@ -2,19 +2,13 @@ import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import type { ReactNode, PointerEvent } from "react";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 
 interface MagneticButtonProps {
   children: ReactNode;
   /** How strongly the element follows the cursor (0–1). */
   strength?: number;
   className?: string;
-}
-
-function hasFinePointer() {
-  return (
-    typeof window !== "undefined" &&
-    window.matchMedia("(pointer: fine)").matches
-  );
 }
 
 /**
@@ -32,8 +26,9 @@ export default function MagneticButton({
   const y = useMotionValue(0);
   const springX = useSpring(x, { stiffness: 180, damping: 15, mass: 0.4 });
   const springY = useSpring(y, { stiffness: 180, damping: 15, mass: 0.4 });
+  const finePointer = useMediaQuery("(pointer: fine)");
 
-  const enabled = !reducedMotion && hasFinePointer();
+  const enabled = !reducedMotion && finePointer;
 
   function handleMove(e: PointerEvent<HTMLDivElement>) {
     if (!enabled || !ref.current) return;

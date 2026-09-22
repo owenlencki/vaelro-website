@@ -84,6 +84,53 @@
         "priceRange": "$$"
       }
     </script>
+
+    <!-- Page head tags, written in by scripts/prerender.mjs at build time -->
+    <!--app-head-->
+
+    <!-- First-visit preloader on Home, switched on before first paint. The
+         logic and the storage key live in src/components/layout/Preloader.tsx;
+         this only sets the attribute early, plus a failsafe so a failed app
+         bundle can never leave the page covered. -->
+    <script>
+      (function () {
+        try {
+          var trim = /\/+$/;
+          var home =
+            location.pathname.replace(trim, "") ===
+            "%BASE_URL%".replace(trim, "");
+          if (
+            !home ||
+            sessionStorage.getItem("vaelro-preloader-shown") ||
+            matchMedia("(prefers-reduced-motion: reduce)").matches
+          ) {
+            return;
+          }
+          var root = document.documentElement;
+          root.setAttribute("data-preloader", "");
+          window.__vaelroPreloader = setTimeout(function () {
+            root.removeAttribute("data-preloader");
+            sessionStorage.setItem("vaelro-preloader-shown", "1");
+          }, 8000);
+        } catch (e) {}
+      })();
+    </script>
+
+    <!-- A few reveals (the footer's) are prerendered in their faded-out
+         starting state. Without JavaScript nothing plays them, so show them
+         in their final state. Decorative (aria-hidden) elements keep theirs:
+         some rest invisible on purpose. -->
+    <noscript>
+      <style>
+        :is([style*="opacity:0;"], [style$="opacity:0"]):not(
+            [aria-hidden="true"],
+            [aria-hidden="true"] *
+          ) {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
   </head>
   <body>
     <div id="root"></div>

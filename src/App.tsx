@@ -1,10 +1,5 @@
 import { lazy, Suspense, useEffect } from "react";
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  useLocation,
-} from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { LenisProvider, useLenisContext } from "./hooks/useLenis";
 import Navbar from "./components/layout/Navbar";
@@ -127,22 +122,22 @@ function AnimatedRoutes() {
   );
 }
 
+/**
+ * The whole site. The router comes from the entry point: BrowserRouter in the
+ * browser (src/main.tsx), StaticRouter when prerendering (src/entry-server.tsx).
+ */
 export default function App() {
   return (
-    // basename follows Vite's base: "/" locally and on Netlify,
-    // "/vaelro-website/" for the GitHub Pages deploy
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <LenisProvider>
-        <a href="#main" className="skip-link">
-          Skip to content
-        </a>
-        <ScrollManager />
-        <Navbar />
-        <main id="main">
-          <AnimatedRoutes />
-        </main>
-        <Footer />
-      </LenisProvider>
-    </BrowserRouter>
+    <LenisProvider>
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
+      <ScrollManager />
+      <Navbar />
+      <main id="main">
+        <AnimatedRoutes />
+      </main>
+      <Footer />
+    </LenisProvider>
   );
 }

@@ -4,13 +4,44 @@ import logoIcon from "../../assets/logos/logo-icon.png";
 const LETTERS = "VAELRO".split("");
 
 /**
+ * Set on <html> while the preloader shows. The inline script in index.html
+ * sets it before first paint when a first visit lands on Home; HomePage sets
+ * it on a first visit that arrives by client-side navigation. index.css shows
+ * the overlay and locks scrolling only while it is present.
+ */
+export const PRELOADER_ATTR = "data-preloader";
+
+/** sessionStorage key. index.html's inline script reads the same key. */
+const SEEN_KEY = "vaelro-preloader-shown";
+
+/** First visit this session, with motion allowed. Browser only. */
+export function wantsPreloader(): boolean {
+  try {
+    return (
+      !sessionStorage.getItem(SEEN_KEY) &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    );
+  } catch {
+    return false;
+  }
+}
+
+export function markPreloaderSeen() {
+  try {
+    sessionStorage.setItem(SEEN_KEY, "1");
+  } catch {
+    // Storage blocked: the preloader just plays again next visit.
+  }
+}
+
+/**
  * First-visit intro overlay. Mount/unmount is controlled by HomePage via
- * AnimatePresence + sessionStorage; the exit slide-up lives here.
+ * AnimatePresence; the exit slide-up lives here.
  */
 export default function Preloader() {
   return (
     <motion.div
-      className="fixed inset-0 z-[70] flex flex-col items-center justify-center bg-ink-900"
+      className="preloader fixed inset-0 z-[70] flex-col items-center justify-center bg-ink-900"
       exit={{ y: "-100%" }}
       transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
       aria-hidden="true"

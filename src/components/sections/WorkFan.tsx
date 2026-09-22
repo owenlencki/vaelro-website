@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { withBase } from "../../lib/paths";
 import { fanOrder, featuredProjects, type Project } from "../../data/projects";
 
@@ -26,25 +27,10 @@ const FAN = {
 
 // The fan needs hover, a real pointer, and room; everything else (touch and
 // narrow viewports) gets the scroll-snap strip. Capability query, not UA sniffing.
+// The prerendered page carries the strip, which is also what a phone (and
+// Google's smartphone crawler) keeps; a desktop swaps to the fan as soon as
+// the page hydrates, well before anyone scrolls this far.
 const FAN_QUERY = "(min-width: 768px) and (hover: hover) and (pointer: fine)";
-
-/**
- * matchMedia as state. Initialized synchronously in the useState initializer
- * so the first paint renders the correct layout (no fan/strip flash), then
- * subscribes for changes.
- */
-function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(
-    () => window.matchMedia(query).matches,
-  );
-  useEffect(() => {
-    const mql = window.matchMedia(query);
-    const onChange = () => setMatches(mql.matches);
-    mql.addEventListener("change", onChange);
-    return () => mql.removeEventListener("change", onChange);
-  }, [query]);
-  return matches;
-}
 
 type LabelAlign = "left" | "center" | "right";
 

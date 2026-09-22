@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build && npm run build:prerender",
+    "build:prerender": "vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
     "capture:work": "tsx scripts/capture-work.ts",
     "preview": "vite preview",
     "predeploy": "tsc --noEmit && vite build --base=/vaelro-website/ && cp dist/index.html dist/404.html && touch dist/.nojekyll",

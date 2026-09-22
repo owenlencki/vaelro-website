@@ -1,6 +1,7 @@
 import { useMemo, useRef } from "react";
 import { useExclusiveMeta } from "../hooks/useExclusiveMeta";
 import { useNow } from "../hooks/useNow";
+import Seo from "../seo/Seo";
 import WorkshopHero from "../components/workshop/WorkshopHero";
 import Outcomes from "../components/workshop/Outcomes";
 import SessionTimeline from "../components/workshop/SessionTimeline";
@@ -24,8 +25,6 @@ import {
  * of these, and both would otherwise sit in <head> at once.
  */
 const OWNED_META = [
-  'meta[name="description"]',
-  'link[rel="canonical"]',
   'meta[property="og:type"]',
   'meta[property="og:url"]',
   'meta[property="og:title"]',
@@ -64,12 +63,12 @@ export default function WorkshopPage() {
 
   return (
     <>
-      {/* React 19 hoists these into <head>, the same way the case-study pages
-          set their titles. Link-preview crawlers do not run JavaScript, so the
-          static head for /workshop is separate, later work. */}
-      <title>{workshop.meta.title}</title>
-      <meta name="description" content={workshop.meta.description} />
-      <link rel="canonical" href={workshop.meta.canonical} />
+      <Seo
+        title={workshop.meta.title}
+        description={workshop.meta.description}
+        path={new URL(workshop.meta.canonical).pathname}
+        schema={eventGraph}
+      />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={workshop.meta.canonical} />
       <meta property="og:title" content={workshop.meta.ogTitle} />
@@ -85,10 +84,6 @@ export default function WorkshopPage() {
         content={workshop.meta.ogDescription}
       />
       <meta name="twitter:image" content={workshop.meta.ogImage} />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: eventGraph }}
-      />
 
       {/* Bottom padding clears the phone-only sticky bar. */}
       <div className="max-md:pb-24">

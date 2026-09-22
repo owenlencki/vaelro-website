@@ -7,6 +7,10 @@ import ContactFlow from "../components/sections/ContactFlow";
 import FaqSection from "../components/sections/FaqSection";
 import { business } from "../data/business";
 import { contactFaqs } from "../data/faqs";
+import Seo from "../seo/Seo";
+import { businessSchema, faqSchema } from "../seo/schema";
+
+const SCHEMA = [faqSchema(contactFaqs), businessSchema()];
 
 const infoLabel =
   "font-mono text-[0.65rem] tracking-[0.18em] text-muted uppercase";
@@ -14,6 +18,12 @@ const infoLabel =
 export default function ContactPage() {
   return (
     <>
+      <Seo
+        title="Contact Vaelro | Free Website Consultation in Waupaca, WI"
+        description="Get a free consultation for your website or automation project. Email us or book a time online. Vaelro LLC, Waupaca, Wisconsin."
+        path="/contact"
+        schema={SCHEMA}
+      />
       {/* Page header */}
       <section className="bg-cream-100 pt-32 pb-10 md:pt-40 md:pb-14">
         <div className="container-site text-center">

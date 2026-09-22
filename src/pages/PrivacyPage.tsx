@@ -1,8 +1,14 @@
 import Reveal from "../components/ui/Reveal";
+import Seo from "../seo/Seo";
 
 export default function PrivacyPage() {
   return (
     <section className="bg-cream-100 pt-32 pb-16 md:pt-40 md:pb-24">
+      <Seo
+        title="Privacy Policy | Vaelro"
+        description="How Vaelro LLC handles what you share through vaelro.co: what our contact form collects, how we use it, and how to reach us with questions."
+        path="/privacy"
+      />
       <div className="container-site">
         <p className="mb-4 font-mono text-xs tracking-[0.2em] text-orange-600 uppercase md:text-sm">
           Privacy

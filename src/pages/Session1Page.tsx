@@ -7,11 +7,10 @@ import PromptBlock from "../components/workshop/session1/PromptBlock";
 import Takeaways from "../components/workshop/session1/Takeaways";
 import SessionFooter from "../components/workshop/session1/SessionFooter";
 import { session1 } from "../data/session1";
+import Seo from "../seo/Seo";
 
 /** Head tags this page owns outright; index.html carries site defaults. */
 const OWNED_META = [
-  'meta[name="description"]',
-  'link[rel="canonical"]',
   'meta[property="og:url"]',
   'meta[property="og:title"]',
   'meta[property="og:description"]',
@@ -30,10 +29,12 @@ export default function Session1Page() {
 
   return (
     <>
-      <title>{session1.meta.title}</title>
-      <meta name="description" content={session1.meta.description} />
+      <Seo
+        title={session1.meta.title}
+        description={session1.meta.description}
+        path={new URL(session1.meta.canonical).pathname}
+      />
       <meta name="robots" content="noindex, follow" />
-      <link rel="canonical" href={session1.meta.canonical} />
       <meta property="og:url" content={session1.meta.canonical} />
       <meta property="og:title" content={session1.header.title} />
       <meta property="og:description" content={session1.meta.description} />

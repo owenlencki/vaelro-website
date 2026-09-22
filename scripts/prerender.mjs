@@ -80,6 +80,25 @@ function assertRendered(route, { body }) {
   }
 }
 
+/** The head a crawler reads: one of each tag, and JSON-LD that parses. */
+function assertHead(route, html, { canonical }) {
+  const head = html.slice(0, html.indexOf("</head>"));
+  const count = (re) => (head.match(re) ?? []).length;
+  const expect = (what, n, want) => {
+    if (n !== want) throw new Error(`${route}: expected ${want} ${what} in <head>, found ${n}`);
+  };
+  expect("<title>", count(/<title>/g), 1);
+  expect('meta name="description"', count(/<meta name="description"/g), 1);
+  expect('link rel="canonical"', count(/<link rel="canonical"/g), canonical ? 1 : 0);
+  for (const [, json] of head.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)) {
+    try {
+      JSON.parse(json);
+    } catch (error) {
+      throw new Error(`${route}: JSON-LD does not parse (${error.message})`);
+    }
+  }
+}
+
 function toHtml({ head, body }) {
   // Replacer functions, not strings: markup can hold "$&" or "$$" patterns
   // that String.replace would otherwise expand.
@@ -90,6 +109,7 @@ function toHtml({ head, body }) {
 
 async function writePage(route, result) {
   const html = toHtml(result);
+  assertHead(route, html, { canonical: result.status === 200 });
   const missing = missingAssets(html);
   if (missing.length) throw new Error(`${route}: references files not in dist/: ${missing.join(", ")}`);
   const file = path.join(DIST, fileFor(route));

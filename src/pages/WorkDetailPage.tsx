@@ -2,6 +2,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import Reveal from "../components/ui/Reveal";
 import MagneticButton from "../components/ui/MagneticButton";
 import { withBase } from "../lib/paths";
+import Seo from "../seo/Seo";
 import {
   featuredProjects,
   getProject,
@@ -47,9 +48,11 @@ export default function WorkDetailPage() {
 
   return (
     <>
-      {/* React 19 hoists these into <head>. */}
-      <title>{`${project.name} | Work | Vaelro`}</title>
-      <meta name="description" content={project.tagline} />
+      <Seo
+        title={`${project.name} | Work | Vaelro`}
+        description={project.tagline}
+        path={`/work/${project.slug}`}
+      />
 
       <article className="bg-cream-100 pt-28 pb-16 md:pt-36 md:pb-24">
         <div className="container-site">

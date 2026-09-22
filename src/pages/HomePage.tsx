@@ -11,6 +11,10 @@ import Services from "../components/sections/Services";
 import WorkFan from "../components/sections/WorkFan";
 import SocialProof from "../components/sections/SocialProof";
 import ConsultationCta from "../components/sections/ConsultationCta";
+import Seo from "../seo/Seo";
+import { businessSchema, websiteSchema } from "../seo/schema";
+
+const SCHEMA = [businessSchema(), websiteSchema()];
 
 declare global {
   interface Window {
@@ -52,6 +56,12 @@ export default function HomePage() {
 
   return (
     <>
+      <Seo
+        title="Web Design & Automation in Waupaca, WI | Vaelro"
+        description="Custom websites and business automation for small businesses in Waupaca County and central Wisconsin. Fast sites you own, with no lock-in. Free consultation."
+        path="/"
+        schema={SCHEMA}
+      />
       <AnimatePresence
         onExitComplete={() =>
           document.documentElement.removeAttribute(PRELOADER_ATTR)

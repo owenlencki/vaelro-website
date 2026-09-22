@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import MagneticButton from "../components/ui/MagneticButton";
 import { useSsrStatus } from "../lib/ssr";
+import Seo from "../seo/Seo";
 import logoDark from "../assets/logos/logo-horizontal-dark.png";
 
 export default function NotFoundPage() {
@@ -9,6 +10,10 @@ export default function NotFoundPage() {
 
   return (
     <section className="flex min-h-svh items-center bg-cream-100 pt-24 pb-16">
+      <Seo
+        title="Page Not Found | Vaelro"
+        description="The page you're looking for doesn't exist or has moved. Head back to the Vaelro home page."
+      />
       <div className="container-site text-center">
         <img
           src={logoDark}

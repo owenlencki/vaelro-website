@@ -9,6 +9,16 @@ import CrossLink from "../components/service/CrossLink";
 import Reveal from "../components/ui/Reveal";
 import Process, { type ProcessStep } from "../components/sections/Process";
 import ConsultationCta from "../components/sections/ConsultationCta";
+import Seo from "../seo/Seo";
+import { serviceSchema } from "../seo/schema";
+
+const SCHEMA = serviceSchema({
+  name: "Business Automation",
+  serviceType: "Business process automation",
+  description:
+    "Custom automation systems for small businesses in Waupaca County, Wisconsin: client intake, appointment scheduling, follow-up sequences, invoicing reminders, review requests, and reporting. Quoted with the payback math upfront.",
+  path: "/automation",
+});
 
 const AUTOMATIONS: Feature[] = [
   {
@@ -63,6 +73,12 @@ const STEPS: ProcessStep[] = [
 export default function AutomationPage() {
   return (
     <>
+      <Seo
+        title="Small Business Automation in Waupaca, WI | Vaelro"
+        description="Custom automation systems that save hours every week. Client intake, scheduling, follow-ups, reporting. Built for Waupaca County small businesses."
+        path="/automation"
+        schema={SCHEMA}
+      />
       <ServiceHeader
         eyebrow="Business Automation · Waupaca, WI"
         title="Business Automation That Actually Pays for Itself"

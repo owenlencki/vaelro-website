@@ -209,11 +209,11 @@ interface SchemaShape {
 }
 
 /**
- * The three sessions as one schema.org @graph of Event objects. Google runs
- * JavaScript, so injecting this at runtime is enough; the crawler-facing head
- * for link previews is separate work.
+ * The three sessions as one schema.org @graph of Event objects, for the
+ * /workshop page's <head> (prerendered, so crawlers read it without running
+ * JavaScript).
  */
-export function buildEventGraph(data: SchemaShape): string {
+export function buildEventGraph(data: SchemaShape): Record<string, unknown> {
   const organizer = [
     { "@type": "Organization", name: "Vaelro", url: "https://vaelro.co" },
     { "@type": "Organization", name: data.partner, url: data.partnerUrl },
@@ -269,5 +269,5 @@ export function buildEventGraph(data: SchemaShape): string {
     },
   }));
 
-  return JSON.stringify({ "@context": "https://schema.org", "@graph": graph });
+  return { "@context": "https://schema.org", "@graph": graph };
 }

@@ -12,6 +12,17 @@ import WhyVaelro, {
   type WhyBlock,
 } from "../components/sections/WhyVaelro";
 import ConsultationCta from "../components/sections/ConsultationCta";
+import Seo from "../seo/Seo";
+import { serviceSchema } from "../seo/schema";
+
+const SCHEMA = serviceSchema({
+  name: "Custom Website Design",
+  serviceType: "Web design",
+  description:
+    "Custom, mobile-first websites for small businesses in Waupaca County, Wisconsin. Flat-rate pricing starting at $500, launched in 1 to 2 weeks, and owned completely by the client: domain, hosting, code, CMS, and analytics.",
+  path: "/web-design",
+  priceFrom: 500,
+});
 
 const STEPS: ProcessStep[] = [
   {
@@ -69,6 +80,12 @@ const PROMISES: WhyBlock[] = [
 export default function WebDesignPage() {
   return (
     <>
+      <Seo
+        title="Custom Website Design in Waupaca, WI | Vaelro"
+        description="Affordable custom websites for Waupaca County businesses. Fast, mobile-first sites you own completely. No lock-in, no templates. Free consultation."
+        path="/web-design"
+        schema={SCHEMA}
+      />
       <ServiceHeader
         eyebrow="Web Design · Waupaca, WI"
         title="Custom Website Design for Waupaca County Businesses"

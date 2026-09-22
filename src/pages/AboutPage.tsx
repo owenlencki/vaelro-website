@@ -8,13 +8,23 @@ import Team from "../components/sections/Team";
 import Process from "../components/sections/Process";
 import WhyVaelro from "../components/sections/WhyVaelro";
 import ConsultationCta from "../components/sections/ConsultationCta";
+import Seo from "../seo/Seo";
+import { businessSchema } from "../seo/schema";
 import togetherImg from "../assets/team/together.jpg";
+
+const SCHEMA = businessSchema();
 
 const inlineLink = "nav-link font-semibold text-ink-900 hover:text-orange-600";
 
 export default function AboutPage() {
   return (
     <>
+      <Seo
+        title="About Vaelro | Web Design & Automation in Waupaca, WI"
+        description="Owen Lencki and Liam Bloedow started Vaelro to give Waupaca County businesses the same quality websites and automation that big-city companies get."
+        path="/about"
+        schema={SCHEMA}
+      />
       {/* Page header */}
       <section className="bg-cream-100 pt-32 pb-12 md:pt-40 md:pb-20">
         <div className="container-site">

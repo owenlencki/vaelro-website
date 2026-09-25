@@ -91,10 +91,45 @@ function CopyButton({ item }: { item: PromptItem }) {
   );
 }
 
+/** The how-to lines under a prompt: its own note, and the date fill. */
+function PromptNotes({ item }: { item: PromptItem }) {
+  return (
+    <>
+      {item.note && <p className="mt-3 text-ink-600">{item.note}</p>}
+      {item.fillsDate && (
+        <p className="mt-2 text-sm text-ink-600">{session1.tryThis.dateNote}</p>
+      )}
+    </>
+  );
+}
+
+/** The one prompt: a full-width card, larger type, the note under it. */
+function FeaturedPrompt({ item }: { item: PromptItem }) {
+  return (
+    <div className={`mt-10 rounded-2xl bg-cream-50 p-6 md:mt-14 md:p-10 ${cardShadow}`}>
+      <h3 className="font-serif text-heading font-bold text-ink-900">{item.name}</h3>
+      {item.why && <p className="mt-2 text-lead text-ink-600">{item.why}</p>}
+
+      <p className="mt-6 max-w-4xl rounded-xl border-l-2 border-orange-500 bg-cream-100 px-5 py-5 font-serif text-heading leading-snug text-ink-900 md:px-7 md:py-6">
+        &ldquo;
+        <PromptText item={item} />
+        &rdquo;
+      </p>
+      <PromptNotes item={item} />
+
+      <div className="mt-6">
+        <CopyButton item={item} />
+      </div>
+    </div>
+  );
+}
+
+/** A smaller card under the featured prompt. Its heading sits one level
+ *  under the "Two more worth trying" subheading. */
 function PromptCard({ item }: { item: PromptItem }) {
   return (
     <li className={`flex flex-col rounded-2xl bg-cream-50 p-6 md:p-7 ${cardShadow}`}>
-      <h3 className="font-serif text-xl font-bold text-ink-900">{item.name}</h3>
+      <h4 className="font-serif text-xl font-bold text-ink-900">{item.name}</h4>
       {item.why && <p className="mt-1.5 leading-relaxed text-ink-600">{item.why}</p>}
 
       <p className="mt-5 rounded-xl border-l-2 border-orange-500 bg-cream-100 px-4 py-4 font-serif text-lg leading-snug text-ink-900">
@@ -102,9 +137,7 @@ function PromptCard({ item }: { item: PromptItem }) {
         <PromptText item={item} />
         &rdquo;
       </p>
-      {item.fillsDate && (
-        <p className="mt-2 text-sm text-ink-600">{session1.tryThis.dateNote}</p>
-      )}
+      <PromptNotes item={item} />
 
       {/* Pinned to the bottom so the buttons line up across a row. */}
       <div className="mt-auto pt-5">
@@ -115,12 +148,14 @@ function PromptCard({ item }: { item: PromptItem }) {
 }
 
 /**
- * The three prompts from the session, then the bonus. On a phone they stack,
- * each with a full-width button under the thumb.
+ * One prompt to try this week, set large, then two more worth trying and the
+ * bonus. On a phone everything stacks, each with a full-width button under the
+ * thumb.
  */
 export default function TryThis() {
   const { tryThis } = session1;
   const { bonus } = tryThis;
+  const [featured, ...more] = tryThis.items;
 
   return (
     <section
@@ -139,8 +174,13 @@ export default function TryThis() {
           <SplitText text={tryThis.heading} />
         </h2>
 
-        <ul className="mt-10 grid gap-5 md:mt-14 md:grid-cols-3 md:gap-6">
-          {tryThis.items.map((item) => (
+        <FeaturedPrompt item={featured} />
+
+        <h3 className="mt-14 font-serif text-heading font-bold text-ink-900 md:mt-20">
+          {tryThis.moreHeading}
+        </h3>
+        <ul className="mt-6 grid gap-5 md:grid-cols-2 md:gap-6">
+          {more.map((item) => (
             <PromptCard key={item.id} item={item} />
           ))}
         </ul>
@@ -161,6 +201,9 @@ export default function TryThis() {
               <CopyButton item={bonus} />
             </div>
           </div>
+          <p className="mt-4 max-w-2xl leading-relaxed text-ink-600">
+            {tryThis.bonusNote}
+          </p>
         </Reveal>
       </div>
     </section>

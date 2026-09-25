@@ -43,7 +43,7 @@ export interface SoftwareItem extends Shot {
   /** One line over the name: what the thing is. */
   kind: string;
   body: string;
-  /** The "two college students" line, in mono under the body. */
+  /** Who built it, in mono under the body. */
   credit: string;
   alt: string;
   /** File under assets/portfolio/ the capture script resizes from. */
@@ -81,6 +81,8 @@ export interface PromptItem {
   prompt: string;
   /** The one-line reason, when the copy deck gives one. */
   why?: string;
+  /** A how-to line under the prompt itself. */
+  note?: string;
   /**
    * The prompt carries `tryThis.datePlaceholder`. It is shown as a
    * placeholder, and Copy swaps in the reader's own date, so nobody has to
@@ -106,7 +108,7 @@ export const session1 = {
   meta: {
     title: "Session 1: AI Education | Vaelro Workshop",
     description:
-      "Resources from Session 1 of the free AI workshop series with the Waupaca Area Chamber of Commerce: three prompts to try this week, four honest cautions, and your homework for October 9.",
+      "Resources from Session 1 of the free AI workshop series with the Waupaca Area Chamber of Commerce: one prompt to try this week, five honest cautions, and your homework for October 9.",
     canonical: "https://vaelro.co/workshop/session-1",
     ogImage: "https://vaelro.co/og-image.jpg",
   },
@@ -121,8 +123,9 @@ export const session1 = {
 
   idea: {
     eyebrow: "The one idea",
-    lead: "Think of AI as a fast, confident intern.",
-    rest: "Great first drafts. Always check its work.",
+    lead: "Think of AI as a team of newly hired PhDs.",
+    /** The supporting line, set smaller under the idea. */
+    rest: "Confident. Great first drafts. Always check its work. Context is king. And it tends to tell you what you want to hear.",
   },
 
   superBowl: {
@@ -163,7 +166,9 @@ export const session1 = {
 
   tryThis: {
     eyebrow: "Prompts",
-    heading: "Three things to try this week",
+    heading: "One prompt to try this week",
+    /** Over the two smaller cards under the featured prompt. */
+    moreHeading: "Two more worth trying",
     copyLabel: "Copy prompt",
     copiedLabel: "Copied",
     /** Only if the browser refuses the clipboard, which is rare. */
@@ -175,8 +180,9 @@ export const session1 = {
         id: "pull-prompting",
         name: "Pull prompting",
         prompt:
-          "Before you write anything, ask me questions one at a time until you have what you need.",
+          "Before you write anything, ask me questions one at a time until you have what you need, then give me a draft.",
         why: "It interviews you instead of guessing.",
+        note: "Paste it at the end of any request.",
       },
       {
         id: "tell-it-the-date",
@@ -198,11 +204,14 @@ export const session1 = {
       prompt: "Help me learn how to use you.",
       why: "Works in every tool.",
     } as PromptItem,
+    /** Under the bonus card. */
+    bonusNote:
+      "Not every tool is good at every job. Some write better, some handle pictures, some are better at research.",
   },
 
   cautions: {
     eyebrow: "Cautions",
-    heading: "Four honest cautions",
+    heading: "Five honest cautions",
     items: [
       {
         id: "free-tools",
@@ -222,7 +231,12 @@ export const session1 = {
       {
         id: "scams",
         title: "The scams got smarter.",
-        body: "AI can clone a voice from seconds of audio.",
+        body: "Phishing emails now sound like people you know, and AI can clone a voice from seconds of audio.",
+      },
+      {
+        id: "your-thinking",
+        title: "Don't hand it your thinking.",
+        body: "Use it to draft and research, not to decide. Skills you stop using fade.",
       },
     ] as Caution[],
     rule: {
@@ -262,12 +276,12 @@ export const session1 = {
       },
     ] as Pillar[],
     instruction:
-      "Pick one. Over the next two weeks, write down the one to three things in it that eat the most time. Bring the list.",
+      "Write down the one to three (or 50) things you wish took less time. Bring the list.",
   },
 
   built: {
     eyebrow: "Our work",
-    heading: "What two college students built with AI",
+    heading: "Building with AI",
     caseStudyLabel: "See the case study",
     /** The label over each website card; software cards use their `kind`. */
     websiteKind: "Website",
@@ -280,8 +294,7 @@ export const session1 = {
         name: "Maverick",
         kind: "Flight school compliance software",
         body: "Student records, flight logs, and progress against the Part 61 minimums a flight school has to prove. Live and in use at a flight school in Waupaca.",
-        credit:
-          "Roughly 200,000 lines of code. Built by two college students who are not software developers.",
+        credit: "Built by a kinesiology major and a marketing major. Not software developers.",
         alt: "The Maverick admin dashboard, showing flight hours, student counts, and monthly charts",
         image: "/workshop/session-1/maverick.webp",
         source: "maverick-dashboard-portfolio.png",
@@ -292,8 +305,7 @@ export const session1 = {
         name: "Meridian",
         kind: "Property management platform",
         body: "A command center for small landlords: what each property made, what it cost, which rent is missing, and what needs attention this month.",
-        credit:
-          "Built by the same two college students. Still not software developers.",
+        credit: "Built by a kinesiology major and a marketing major. Not software developers.",
         alt: "The Meridian dashboard, showing portfolio income, expenses, rent collection, and upcoming reminders",
         image: "/workshop/session-1/meridian.webp",
         source: "meridian-dashboard-1.png",
@@ -338,12 +350,6 @@ export const session1 = {
     },
     name: "Name",
     business: "Business",
-    email: {
-      label: "Email",
-      invalid: "That email doesn't look right. Mind double-checking?",
-      neededForTools: "Add your email so we can send them.",
-    },
-    tools: "Send me the free tools when they're ready",
     submitLabel: "Send my feedback",
     sendingLabel: "Sending…",
     privacy: "We never share your information.",

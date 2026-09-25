@@ -3,9 +3,10 @@ import Reveal from "../../ui/Reveal";
 import { session1 } from "../../../data/session1";
 
 /**
- * Four cautions as a plain two-by-two of hairline-topped items (the prompts
- * above are cards, so these deliberately are not), then the one rule on a
- * dark card: the single thing on the page worth remembering under pressure.
+ * The cautions as a plain two-column list of hairline-topped items (the
+ * prompts above are cards, so these deliberately are not), then the one rule
+ * on a dark card: the single thing on the page worth remembering under
+ * pressure.
  */
 export default function Cautions() {
   const { cautions } = session1;

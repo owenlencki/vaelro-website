@@ -5,7 +5,6 @@ import { postToAppsScript } from "../../../lib/appsScript";
 import { trackEvent } from "../../../lib/analytics";
 
 const RATINGS = [1, 2, 3, 4, 5];
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** Field borders hold 3:1 against the field, so the boxes read as boxes. */
 const fieldClasses =
@@ -21,8 +20,6 @@ interface Answers {
   referral: string;
   name: string;
   business: string;
-  email: string;
-  wantsTools: boolean;
 }
 
 /**
@@ -37,15 +34,13 @@ function asLeadNotes(answers: Answers): string {
     `${feedback.rating.legend} ${answers.rating} out of 5`,
     `${feedback.octoberWish} ${answers.octoberWish || "(no answer)"}`,
     `${feedback.referral.label} ${answers.referral || "(no answer)"}`,
-    `${feedback.tools}: ${answers.wantsTools ? "Yes" : "No"}`,
   ].join("\n");
 }
 
 /**
  * One short form, posted to the same Apps Script as the Contact page, which
  * files it in its own "Session 1 Feedback" tab. Only the rating is required;
- * ticking "send me the free tools" makes the email required too, since that
- * is where they would go.
+ * name and business are optional, and it asks for no email.
  */
 export default function FeedbackForm() {
   const { feedback } = session1;
@@ -55,14 +50,11 @@ export default function FeedbackForm() {
   const [referral, setReferral] = useState("");
   const [name, setName] = useState("");
   const [business, setBusiness] = useState("");
-  const [email, setEmail] = useState("");
-  const [wantsTools, setWantsTools] = useState(false);
   const [honeypot, setHoneypot] = useState("");
-  const [errors, setErrors] = useState<{ rating?: string; email?: string }>({});
+  const [errors, setErrors] = useState<{ rating?: string }>({});
   const [phase, setPhase] = useState<Phase>("editing");
 
   const firstRatingRef = useRef<HTMLInputElement>(null);
-  const emailRef = useRef<HTMLInputElement>(null);
   const thanksRef = useRef<HTMLHeadingElement>(null);
 
   // The form is replaced by the thank-you line; move focus there so screen
@@ -71,32 +63,16 @@ export default function FeedbackForm() {
     if (phase === "sent") thanksRef.current?.focus();
   }, [phase]);
 
-  function validate() {
-    const found: { rating?: string; email?: string } = {};
-    if (rating === null) found.rating = feedback.rating.error;
-    const trimmed = email.trim();
-    if (trimmed && !EMAIL_RE.test(trimmed)) {
-      found.email = feedback.email.invalid;
-    } else if (!trimmed && wantsTools) {
-      found.email = feedback.email.neededForTools;
-    }
-    return found;
-  }
-
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (phase === "sending") return;
 
-    const found = validate();
-    setErrors(found);
-    if (found.rating || rating === null) {
+    if (rating === null) {
+      setErrors({ rating: feedback.rating.error });
       firstRatingRef.current?.focus();
       return;
     }
-    if (found.email) {
-      emailRef.current?.focus();
-      return;
-    }
+    setErrors({});
 
     setPhase("sending");
     const answers: Answers = {
@@ -105,12 +81,15 @@ export default function FeedbackForm() {
       referral: referral.trim(),
       name: name.trim(),
       business: business.trim(),
-      email: email.trim(),
-      wantsTools,
     };
     const ok = await postToAppsScript({
       form: "session1-feedback",
       ...answers,
+      // The deployed Code.gs still has Email and "Send the free tools"
+      // columns. The form no longer asks for either, so they go blank and the
+      // row reads empty and "No"; the script accepts that without a redeploy.
+      email: "",
+      wantsTools: false,
       source: window.location.pathname,
       website_url: honeypot,
       need: "Session 1 feedback",
@@ -271,53 +250,6 @@ export default function FeedbackForm() {
                     />
                   </div>
                 </div>
-
-                <div>
-                  <label htmlFor="s1-email" className={labelClasses}>
-                    {feedback.email.label}
-                  </label>
-                  <input
-                    ref={emailRef}
-                    id="s1-email"
-                    name="email"
-                    type="email"
-                    inputMode="email"
-                    autoComplete="email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
-                    }}
-                    aria-invalid={errors.email ? true : undefined}
-                    aria-describedby={errors.email ? "s1-email-error" : undefined}
-                    className={`${fieldClasses} ${errors.email ? "border-orange-500" : ""}`}
-                  />
-                  {errors.email && (
-                    <p id="s1-email-error" role="alert" className={errorClasses}>
-                      {errors.email}
-                    </p>
-                  )}
-                </div>
-
-                <label
-                  htmlFor="s1-tools"
-                  className="-mt-2 flex min-h-11 cursor-pointer items-center gap-3"
-                >
-                  <input
-                    id="s1-tools"
-                    name="wantsTools"
-                    type="checkbox"
-                    checked={wantsTools}
-                    onChange={(e) => {
-                      setWantsTools(e.target.checked);
-                      if (!e.target.checked && errors.email === feedback.email.neededForTools) {
-                        setErrors((prev) => ({ ...prev, email: undefined }));
-                      }
-                    }}
-                    className="h-6 w-6 shrink-0 cursor-pointer accent-orange-600"
-                  />
-                  <span className="text-ink-900">{feedback.tools}</span>
-                </label>
 
                 {/* Honeypot: visually hidden, must stay empty. */}
                 <div

@@ -251,6 +251,28 @@ export const workshop = {
   /** Testing only. Must be undefined in commits. */
   stageOverride: undefined as SeriesPhase | undefined,
 
+  // -------------------------------------------------------------------------
+  // OWEN: the session the page shows as "Next up". Every session before it
+  // shows "Completed", even ahead of its date. Change it to 3 after October 9.
+  // It only ever moves the page forward: once the real date passes the same
+  // point, the dates take over, so leaving it set can never make the page
+  // show something stale. Set it to undefined to go back to dates alone.
+  // -------------------------------------------------------------------------
+  forcedNextSession: 2 as 2 | 3 | undefined,
+
+  /**
+   * The card at the very top of /workshop, above the fold on a phone. The
+   * NFC tags and QR codes in the room open /workshop, so this is the way in
+   * to the Session 1 page. "and the slides" joins the line only once
+   * SESSION1_SLIDES_PDF in src/data/session1.ts is set.
+   */
+  session1Card: {
+    heading: "Were you at Session 1?",
+    body: "Get the prompts and the homework",
+    bodyWithSlides: "Get the prompts, the homework, and the slides",
+    to: "/workshop/session-1",
+  },
+
   sessions: [
     {
       number: 1,

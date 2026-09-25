@@ -13,10 +13,11 @@
   to = "/404.html"
   status = 404
 
-# The Session 1 attendee page is unlisted: nothing links to it, and it is not
-# in the sitemap. Its prerendered HTML carries a noindex meta tag, and this
-# header says the same at the edge for any crawler that only reads headers.
-# Netlify matches headers against the requested path.
+# The Session 1 attendee page is for the people who were in the room. The card
+# on /workshop links to it, but it stays out of search results and the
+# sitemap: its prerendered HTML carries a noindex meta tag, and this header
+# says the same at the edge for any crawler that only reads headers. Netlify
+# matches headers against the requested path.
 [[headers]]
   for = "/workshop/session-1"
   [headers.values]

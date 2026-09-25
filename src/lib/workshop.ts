@@ -81,6 +81,26 @@ export function getSeriesPhase(
   return "in-progress";
 }
 
+/**
+ * The "now" the series pages read. Normally the real time. With a forced next
+ * session (the data file's forcedNextSession) it is never earlier than the
+ * moment the session before that one finished, so every earlier session reads
+ * completed and the forced one reads next, even ahead of the date. It only
+ * ever moves the page forward: once the real clock passes that moment, the
+ * dates decide again, so a forgotten setting can never hold the page in the
+ * past.
+ */
+export function getSeriesClock(
+  sessions: WorkshopSession[],
+  now: number = Date.now(),
+  forcedNextSession?: number,
+): number {
+  if (forcedNextSession === undefined) return now;
+  const previous = sessions.find((s) => s.number === forcedNextSession - 1);
+  if (!previous) return now;
+  return Math.max(now, Date.parse(previous.start) + COMPLETED_AFTER_MS);
+}
+
 /** The earliest session that is not completed, or undefined once all are. */
 export function getNextSession(
   sessions: WorkshopSession[],

@@ -5,18 +5,23 @@ import type { SuperBowlShot } from "../../../data/session1";
 import { withBase } from "../../../lib/paths";
 import { trackEvent } from "../../../lib/analytics";
 
+/** Taller than this (height over width), a capture is cropped to its answer. */
+const TALL_RATIO = 1.6;
+
 /**
  * The three screenshots are real captures of whole conversations, and their
- * aspect ratios run from nearly square to very tall. Each one therefore sets
- * its own height rather than fitting a shared frame: a shared frame would
- * letterbox the square one into a mostly-empty box and shrink the tall ones
- * to about 40% of native. At full card width the tall two render near 60-75%
- * instead, which is the difference between readable and not. The cards align
- * at the top and the frame is a link to the full-size file, since the widest
- * capture is still only a third of native size on a phone.
+ * aspect ratios run from nearly square to very tall. Each renders at full card
+ * width, which keeps the text readable, rather than shrinking into a shared
+ * frame. At that width the two tall ones would run to 800 and 1,000px on a
+ * phone, and the row takes its height from the tallest, which left a screen
+ * of empty dark band under the short one. So a tall capture is capped and
+ * shows its bottom, where ChatGPT gives its answer (the part that differs),
+ * with the cut-off standings fading out above it. The frame links to the
+ * full-size file, which shows the whole conversation.
  */
 function ShotCard({ shot }: { shot: SuperBowlShot }) {
   const { superBowl } = session1;
+  const tall = shot.height / shot.width > TALL_RATIO;
 
   return (
     <li className="w-[88vw] shrink-0 snap-center sm:w-[54vw] md:w-auto">
@@ -33,15 +38,29 @@ function ShotCard({ shot }: { shot: SuperBowlShot }) {
           className="group block"
         >
           {/* The border hugs each capture rather than boxing it, so the one
-              short screenshot does not read as a half-empty frame. */}
-          <div className="overflow-hidden rounded-2xl border border-ink-700 bg-ink-950 transition-colors duration-200 group-hover:border-orange-500/60">
+              short screenshot does not read as a half-empty frame. A tall one
+              is bottom-anchored in a capped frame: justify-end pushes the
+              overflow out through the top, where it is clipped. */}
+          <div
+            className={`relative overflow-hidden rounded-2xl border border-ink-700 bg-ink-950 transition-colors duration-200 group-hover:border-orange-500/60 ${
+              tall ? "flex max-h-[30rem] flex-col justify-end" : ""
+            }`}
+          >
             <img
               src={withBase(shot.image)}
               alt={shot.alt}
+              width={shot.width}
+              height={shot.height}
               loading="lazy"
               decoding="async"
-              className="block h-auto w-full"
+              className="block h-auto w-full shrink-0"
             />
+            {tall && (
+              <div
+                className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-ink-950 to-transparent"
+                aria-hidden="true"
+              />
+            )}
           </div>
           <p className="mt-2.5 inline-flex items-center gap-1.5 font-mono text-[0.65rem] tracking-[0.14em] text-cream-100/45 uppercase transition-colors duration-200 group-hover:text-orange-400">
             {superBowl.enlargeLabel}
@@ -73,9 +92,9 @@ function ShotCard({ shot }: { shot: SuperBowlShot }) {
 }
 
 /**
- * The dark band in the middle of the page: three answers to one question, side
- * by side. On a phone they swipe horizontally rather than stacking, so the
- * "three different answers" point lands in one screen instead of three.
+ * The dark band right after the one idea, and its proof: three answers to one
+ * question, side by side. On a phone they swipe horizontally rather than
+ * stacking, so the "three answers" point lands in one screen instead of three.
  */
 export default function SuperBowlTest() {
   const { superBowl } = session1;
@@ -94,8 +113,8 @@ export default function SuperBowlTest() {
           <SplitText text={superBowl.heading} />
         </h2>
         <Reveal delay={0.15}>
-          <p className="mt-5 max-w-xl leading-relaxed text-cream-100/75">
-            {superBowl.intro}
+          <p className="mt-5 max-w-2xl text-lead text-cream-100/85">
+            {superBowl.line}
           </p>
         </Reveal>
       </div>
@@ -109,14 +128,6 @@ export default function SuperBowlTest() {
           <ShotCard key={shot.id} shot={shot} />
         ))}
       </ul>
-
-      <div className="container-site relative">
-        <Reveal delay={0.1}>
-          <p className="mt-10 max-w-2xl border-l-2 border-orange-500 pl-5 font-serif text-heading font-bold text-cream-100 md:mt-14">
-            {superBowl.kicker}
-          </p>
-        </Reveal>
-      </div>
     </section>
   );
 }

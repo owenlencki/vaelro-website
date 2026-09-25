@@ -15,6 +15,7 @@ import { workshop } from "../data/workshop";
 import {
   buildEventGraph,
   getNextSession,
+  getSeriesClock,
   getSeriesPhase,
   getSessionStatuses,
 } from "../lib/workshop";
@@ -27,8 +28,13 @@ import {
  * once, from the data file.
  */
 export default function WorkshopPage() {
-  // Pinned for the life of the page so every section agrees on "now".
-  const now = useNow();
+  // Pinned for the life of the page so every section agrees on "now", and
+  // moved forward to forcedNextSession when that is set.
+  const now = getSeriesClock(
+    workshop.sessions,
+    useNow(),
+    workshop.forcedNextSession,
+  );
   const heroCtaRef = useRef<HTMLDivElement>(null);
 
   const phase = getSeriesPhase(

@@ -5,6 +5,7 @@ import { workshop } from "../../data/workshop";
 import {
   getNextSession,
   getPillCopy,
+  getSeriesClock,
   getSeriesPhase,
 } from "../../lib/workshop";
 import { trackEvent } from "../../lib/analytics";
@@ -19,7 +20,11 @@ import { useNow } from "../../hooks/useNow";
  */
 export default function HeroWorkshopPill() {
   const reducedMotion = usePrefersReducedMotion();
-  const now = useNow();
+  const now = getSeriesClock(
+    workshop.sessions,
+    useNow(),
+    workshop.forcedNextSession,
+  );
 
   // Null once the series has wrapped: there is nothing left to tease, so the
   // pill leaves the Home hero rather than pointing at an ended event.

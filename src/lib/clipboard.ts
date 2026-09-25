@@ -1,7 +1,7 @@
 /**
  * Clipboard write with a fallback for browsers that withhold the async
  * clipboard API (older Safari, any non-secure context). Shared by the prompt
- * cards on /workshop and the prompt block on /workshop/session-1.
+ * cards on /workshop and on /workshop/session-1.
  */
 export async function copyText(text: string): Promise<boolean> {
   try {

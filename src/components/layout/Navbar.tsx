@@ -12,7 +12,7 @@ import { useNow } from "../../hooks/useNow";
 import { BOOKING_URL } from "../../lib/booking";
 import { trackEvent } from "../../lib/analytics";
 import { workshop } from "../../data/workshop";
-import { getSeriesPhase } from "../../lib/workshop";
+import { getSeriesClock, getSeriesPhase } from "../../lib/workshop";
 import logoCream from "../../assets/logos/logo-horizontal-cream.png";
 import logoDark from "../../assets/logos/logo-horizontal-dark.png";
 
@@ -65,7 +65,11 @@ export default function Navbar() {
 
   // The dot marks the series as live. It disappears on its own once Session 3
   // is done; dropping it early is deleting the `dot` line below.
-  const now = useNow();
+  const now = getSeriesClock(
+    workshop.sessions,
+    useNow(),
+    workshop.forcedNextSession,
+  );
   const seriesRunning = useMemo(
     () =>
       getSeriesPhase(workshop.sessions, now, workshop.stageOverride) !==

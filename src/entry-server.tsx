@@ -14,8 +14,10 @@ import { SsrContext, type SsrCollector } from "./lib/ssr";
 export const BASE_URL = import.meta.env.BASE_URL;
 
 /**
- * Routes nothing links to, so the prerender's link crawl cannot find them.
- * Everything else is discovered by following links out from "/".
+ * Routes the prerender builds whether or not anything links to them; every
+ * other page is discovered by following links out from "/". The Session 1
+ * page is linked from the card on /workshop today, but people also reach it
+ * straight from a texted link, so it must keep building if that card goes.
  */
 export const UNLINKED_ROUTES = ["/workshop/session-1"];
 

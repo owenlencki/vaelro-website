@@ -4,6 +4,7 @@ import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
 import Portrait from "./Portrait";
 import RegisterCta from "./RegisterCta";
+import Session1Card from "./Session1Card";
 import VenueLink from "./VenueLink";
 import { workshop } from "../../data/workshop";
 import type { SeriesPhase, WorkshopSession } from "../../data/workshop";
@@ -41,6 +42,8 @@ export default function WorkshopHero({
   return (
     <section className="bg-cream-100 pt-32 pb-14 md:pt-40 md:pb-20">
       <div className="container-site">
+        <Session1Card />
+
         {/* The headline spans the full container so it breaks on the two lines
             the copy deck sets, rather than wherever a column edge lands. */}
         <p className="mb-4 max-w-md font-mono text-xs tracking-[0.2em] text-orange-600 uppercase md:text-sm">

@@ -12,13 +12,8 @@ import MagneticButton from "../ui/MagneticButton";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 import { easeStandard } from "../../lib/animations";
 import { trackEvent } from "../../lib/analytics";
+import { APPS_SCRIPT_URL } from "../../lib/appsScript";
 import { BOOKING_URL } from "../../lib/booking";
-
-/* ---------------------------------------------------------------------------
-   Config — swap these for the real values at wiring time.
---------------------------------------------------------------------------- */
-const APPS_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxM3e_0MyXn4R88l5CsrGjoYNcDReD0Q2wFSjbp3OVcANuTnC7WJi98bp-YdkFFGZOWlg/exec";
 
 /* ---------------------------------------------------------------------------
    Question data. All copy is final and verbatim from spec.

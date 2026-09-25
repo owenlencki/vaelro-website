@@ -19,6 +19,7 @@ import {
   formatSessionDateLine,
   formatShortDate,
   getNextSession,
+  getSeriesClock,
   getSeriesPhase,
   getSessionEnd,
   getSessionStatuses,
@@ -123,6 +124,51 @@ check("override beats the real date in both directions", () => {
 });
 check("stageOverride is unset in the committed data file", () => {
   assert.equal(workshop.stageOverride, undefined);
+});
+
+console.log("\nforcedNextSession");
+const nightBefore = Date.parse("2026-09-24T21:00:00-05:00");
+const forced = (now: number, next = 2) => getSeriesClock(sessions, now, next);
+check("forcing session 2 the night before reads 1 completed, 2 next", () => {
+  const now = forced(nightBefore);
+  assert.deepEqual(getSessionStatuses(sessions, now), [
+    "completed",
+    "next",
+    "upcoming",
+  ]);
+  assert.equal(getSeriesPhase(sessions, now), "in-progress");
+  assert.equal(getNextSession(sessions, now)?.number, 2);
+});
+check("forcing session 2 holds during session 1 itself", () => {
+  assert.deepEqual(getSessionStatuses(sessions, forced(AT.duringSession1)), [
+    "completed",
+    "next",
+    "upcoming",
+  ]);
+});
+check("the dates take over again once they pass the forced point", () => {
+  const session2Morning = Date.parse("2026-10-09T08:30:00-05:00");
+  assert.deepEqual(getSessionStatuses(sessions, forced(session2Morning)), [
+    "completed",
+    "today",
+    "upcoming",
+  ]);
+  assert.deepEqual(getSessionStatuses(sessions, forced(AT.betweenSessions)), [
+    "completed",
+    "completed",
+    "next",
+  ]);
+  assert.equal(getSeriesPhase(sessions, forced(AT.afterSeries)), "complete");
+});
+check("forcing session 3 marks 1 and 2 completed", () => {
+  assert.deepEqual(getSessionStatuses(sessions, forced(nightBefore, 3)), [
+    "completed",
+    "completed",
+    "next",
+  ]);
+});
+check("unset means the real clock", () => {
+  assert.equal(getSeriesClock(sessions, nightBefore, undefined), nightBefore);
 });
 
 console.log("\nFormatting, from a process running in Asia/Tokyo");

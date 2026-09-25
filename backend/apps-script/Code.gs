@@ -22,6 +22,21 @@
  *     source,            // page path the form was submitted from
  *     website_url        // honeypot — must be empty for a real human
  *   }
+ *
+ * The Session 1 feedback form on /workshop/session-1 posts to the same
+ * URL with form: "session1-feedback". That goes to handleFeedback()
+ * below: its own "Session 1 Feedback" tab and its own email, and never
+ * the lead sheet or Spike_Data. Shape:
+ *
+ *   {
+ *     form: "session1-feedback",
+ *     rating,            // 1 to 5, "Was this worth your morning?"
+ *     octoberWish,       // "What would make October 9 worth coming back for?"
+ *     referral,          // "Know anyone else who should be at these?"
+ *     name, business, email,
+ *     wantsTools,        // true when "Send me the free tools" is checked
+ *     source, website_url
+ *   }
  */
 
 // Header row, in the exact required order.
@@ -43,6 +58,20 @@ var HEADERS = [
 
 var NOTIFY_EMAIL = 'hello@vaelro.co';
 
+var FEEDBACK_FORM = 'session1-feedback';
+var FEEDBACK_SHEET = 'Session 1 Feedback';
+var FEEDBACK_HEADERS = [
+  'Timestamp',
+  'Worth the morning (1 to 5)',
+  'What would make October 9 worth it',
+  'Who else should be here',
+  'Name',
+  'Business',
+  'Email',
+  'Send the free tools',
+  'Source',
+];
+
 /** Prevent formula injection — prefix = + - @ with an apostrophe. */
 function safe(v) {
   var s = String(v || "");
@@ -54,6 +83,12 @@ function doPost(e) {
     var data = {};
     if (e && e.postData && e.postData.contents) {
       data = JSON.parse(e.postData.contents);
+    }
+
+    // Session 1 feedback has its own tab and email. It returns here, so it
+    // never reaches the lead sheet, the lead email, or Spike_Data.
+    if (data.form === FEEDBACK_FORM) {
+      return handleFeedback(data);
     }
 
     // 1. Honeypot. A filled website_url means a bot — silently succeed.
@@ -128,6 +163,77 @@ function doPost(e) {
   } catch (err) {
     return jsonOutput({ ok: false, error: String(err) });
   }
+}
+
+/**
+ * One Session 1 feedback response: a row in the "Session 1 Feedback" tab
+ * (created on first use, in this same spreadsheet) and an email to
+ * hello@vaelro.co. Every reply names the form, which is how you can tell
+ * from outside that this version is the one deployed: POST a feedback
+ * payload with website_url filled in and this answers
+ * {"ok":true,"form":"session1-feedback"} without writing anything, where
+ * an older deployment answers {"ok":true} and nothing more.
+ */
+function handleFeedback(data) {
+  if (data.website_url && String(data.website_url).trim() !== '') {
+    return jsonOutput({ ok: true, form: FEEDBACK_FORM });
+  }
+
+  var rating = Number(data.rating);
+  if (!(rating >= 1 && rating <= 5)) {
+    return jsonOutput({ ok: false, form: FEEDBACK_FORM, error: 'rating must be 1 to 5' });
+  }
+
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet =
+    spreadsheet.getSheetByName(FEEDBACK_SHEET) || spreadsheet.insertSheet(FEEDBACK_SHEET);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(FEEDBACK_HEADERS);
+    sheet.getRange(1, 1, 1, FEEDBACK_HEADERS.length).setFontWeight('bold');
+    sheet.setFrozenRows(1);
+  }
+
+  var timestamp = new Date();
+  var wantsTools = data.wantsTools === true;
+  sheet.appendRow([
+    timestamp,
+    rating,
+    safe(value(data.octoberWish)),
+    safe(value(data.referral)),
+    safe(value(data.name)),
+    safe(value(data.business)),
+    safe(value(data.email)),
+    wantsTools ? 'Yes' : 'No',
+    safe(value(data.source)),
+  ]);
+
+  var who = value(data.business) || value(data.name) || 'No name given';
+  var lines = [
+    'Was this worth your morning? ' + rating + ' out of 5',
+    '',
+    'What would make October 9 worth coming back for?',
+    value(data.octoberWish) || '(no answer)',
+    '',
+    'Know anyone else who should be at these?',
+    value(data.referral) || '(no answer)',
+    '',
+    'Name: ' + (value(data.name) || '(none)'),
+    'Business: ' + (value(data.business) || '(none)'),
+    'Email: ' + (value(data.email) || '(none)'),
+    'Send the free tools: ' + (wantsTools ? 'Yes' : 'No'),
+    '',
+    'Submitted: ' + timestamp,
+    'Source page: ' + (value(data.source) || '(none)'),
+  ];
+  MailApp.sendEmail({
+    to: NOTIFY_EMAIL,
+    subject:
+      'Session 1 feedback: ' + rating + '/5 · ' + who +
+      (wantsTools ? ' · wants the free tools' : ''),
+    body: lines.join('\n'),
+  });
+
+  return jsonOutput({ ok: true, form: FEEDBACK_FORM });
 }
 
 /** Write the header row if the sheet has no data yet. */
@@ -209,4 +315,12 @@ function jsonOutput(obj) {
  *      Who has access:  Anyone
  *    Deploy, authorize when prompted, and copy the Web app /exec URL.
  * 3. Send me that /exec URL — I'll wire it into ContactFlow.tsx.
+ *
+ * UPDATING (every change after the first deploy)
+ * ------------------------------------------------------------------
+ * Paste this file over Code.gs and Save, then Deploy → Manage
+ * deployments → the pencil (Edit) → Version: New version → Deploy.
+ * Never "New deployment" for an update: that mints a new /exec URL,
+ * and the site keeps posting to the old one. The URL lives in
+ * src/lib/appsScript.ts.
  */

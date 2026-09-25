@@ -1,28 +1,33 @@
 import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
-import MagneticButton from "../ui/MagneticButton";
-import RegisterCta from "./RegisterCta";
 import VenueLink from "./VenueLink";
 import { workshop } from "../../data/workshop";
-import type { SeriesPhase } from "../../data/workshop";
+import type { SeriesPhase, WorkshopSession } from "../../data/workshop";
+import { formatNextSessionLine } from "../../lib/workshop";
 
 interface ClosingCtaProps {
   phase: SeriesPhase;
+  nextSession?: WorkshopSession;
 }
 
-export default function ClosingCta({ phase }: ClosingCtaProps) {
-  const wrapped = phase === "complete";
-  const heading = wrapped
-    ? workshop.postSeries.closingHeading
-    : workshop.closing.heading;
-  const detailLine = wrapped
-    ? workshop.postSeries.closingBody
-    : workshop.closing.detailLine;
+/**
+ * The page's sign-off. Chamber registration has closed, so there is no button:
+ * while the series runs it names the next session (the same line the hero
+ * shows) and offers the two email links; once it wraps, it says thanks.
+ */
+export default function ClosingCta({ phase, nextSession }: ClosingCtaProps) {
+  const running = phase !== "complete" && nextSession !== undefined;
+  const heading = running
+    ? formatNextSessionLine(nextSession, workshop.time)
+    : workshop.postSeries.closingHeading;
+  const detailLine = running
+    ? workshop.closing.detailLine
+    : workshop.postSeries.closingBody;
 
   return (
     <section
       className="bg-cream-100 pb-16 md:pb-24"
-      aria-label="Reserve your seat"
+      aria-label={running ? "Next session" : "Thanks for coming"}
     >
       <div className="container-site">
         <div className="relative overflow-hidden rounded-2xl bg-ink-900 bg-noise px-6 py-14 text-center md:px-12 md:py-20">
@@ -45,18 +50,7 @@ export default function ClosingCta({ phase }: ClosingCtaProps) {
                 />
               </p>
 
-              {!wrapped && (
-                <div className="mt-9 flex justify-center">
-                  <MagneticButton>
-                    <RegisterCta
-                      location="closing"
-                      className="shadow-[0_10px_40px_rgba(212,116,59,0.4)]"
-                    />
-                  </MagneticButton>
-                </div>
-              )}
-
-              {!wrapped && (
+              {running && (
                 <div className="mt-9 flex flex-col items-center gap-3">
                   {workshop.closing.links.map((link) => (
                     <a

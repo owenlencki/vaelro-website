@@ -81,6 +81,26 @@ export function getSeriesPhase(
   return "in-progress";
 }
 
+/**
+ * The "now" the series pages read. Normally the real time. With a forced next
+ * session (the data file's forcedNextSession) it is never earlier than the
+ * moment the session before that one finished, so every earlier session reads
+ * completed and the forced one reads next, even ahead of the date. It only
+ * ever moves the page forward: once the real clock passes that moment, the
+ * dates decide again, so a forgotten setting can never hold the page in the
+ * past.
+ */
+export function getSeriesClock(
+  sessions: WorkshopSession[],
+  now: number = Date.now(),
+  forcedNextSession?: number,
+): number {
+  if (forcedNextSession === undefined) return now;
+  const previous = sessions.find((s) => s.number === forcedNextSession - 1);
+  if (!previous) return now;
+  return Math.max(now, Date.parse(previous.start) + COMPLETED_AFTER_MS);
+}
+
 /** The earliest session that is not completed, or undefined once all are. */
 export function getNextSession(
   sessions: WorkshopSession[],
@@ -202,7 +222,6 @@ interface SchemaShape {
   partnerUrl: string;
   capacity: number;
   venue: { name: string; address: string; city: string; mapUrl?: string };
-  registration: { url: string };
   meta: { ogImage: string };
   sessions: WorkshopSession[];
   speakers: Array<{ id: string; name: string }>;
@@ -260,13 +279,9 @@ export function buildEventGraph(data: SchemaShape): Record<string, unknown> {
     ].filter(Boolean),
     isAccessibleForFree: true,
     maximumAttendeeCapacity: data.capacity,
-    offers: {
-      "@type": "Offer",
-      price: 0,
-      priceCurrency: "USD",
-      availability: "https://schema.org/InStock",
-      url: data.registration.url,
-    },
+    // No Offer: Chamber registration has closed, and an Offer would point
+    // search engines at a registration page and call the seats in stock.
+    // isAccessibleForFree still says it is free.
   }));
 
   return { "@context": "https://schema.org", "@graph": graph };

@@ -56,13 +56,25 @@ first response. React then hydrates that markup in the browser.
 - **Service pages**: [`src/pages/WebDesignPage.tsx`](src/pages/WebDesignPage.tsx)
   and [`src/pages/AutomationPage.tsx`](src/pages/AutomationPage.tsx).
 - **Workshop series**: [`src/data/workshop.ts`](src/data/workshop.ts).
+  `forcedNextSession` picks the session the page shows as "Next up" (every
+  earlier one shows "Completed"); change it to 3 after October 9.
+- **Session 1 attendee page** (`/workshop/session-1`):
+  [`src/data/session1.ts`](src/data/session1.ts). To add the slides, put the
+  PDF at `public/workshop/session-1/slides.pdf` and set
+  `SESSION1_SLIDES_PDF` to `"/workshop/session-1/slides.pdf"`; the download
+  button and the "and the slides" line on the /workshop card appear on their
+  own.
 - **Booking URL**: [`src/lib/booking.ts`](src/lib/booking.ts).
 - **Contact flow**: the multi-step lead form lives in
   [`src/components/sections/ContactFlow.tsx`](src/components/sections/ContactFlow.tsx).
   It POSTs to a Google Apps Script Web App (source of truth:
-  [`backend/apps-script/Code.gs`](backend/apps-script/Code.gs)) which appends a
-  row to the "Vaelro Website Leads" Sheet and emails hello@vaelro.co. Spam is
-  blocked by a honeypot field.
+  [`backend/apps-script/Code.gs`](backend/apps-script/Code.gs), URL in
+  [`src/lib/appsScript.ts`](src/lib/appsScript.ts)) which appends a row to the
+  "Vaelro Website Leads" Sheet and emails hello@vaelro.co. Spam is blocked by a
+  honeypot field. The Session 1 feedback form posts to the same script, which
+  files it in its own "Session 1 Feedback" tab instead. Code.gs is deployed by
+  hand: after changing it, paste it into the Apps Script editor and publish a
+  new version of the existing deployment (Manage deployments, Edit).
 
 ## Deploy (Netlify)
 

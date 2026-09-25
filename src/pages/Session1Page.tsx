@@ -1,18 +1,21 @@
 import SessionHeader from "../components/workshop/session1/SessionHeader";
-import BuiltShowcase from "../components/workshop/session1/BuiltShowcase";
+import OneIdea from "../components/workshop/session1/OneIdea";
 import SuperBowlTest from "../components/workshop/session1/SuperBowlTest";
+import TryThis from "../components/workshop/session1/TryThis";
+import Cautions from "../components/workshop/session1/Cautions";
 import Homework from "../components/workshop/session1/Homework";
-import PromptBlock from "../components/workshop/session1/PromptBlock";
-import Takeaways from "../components/workshop/session1/Takeaways";
+import BuiltShowcase from "../components/workshop/session1/BuiltShowcase";
+import FeedbackForm from "../components/workshop/session1/FeedbackForm";
 import SessionFooter from "../components/workshop/session1/SessionFooter";
 import { session1 } from "../data/session1";
 import Seo from "../seo/Seo";
 
 /**
- * The Session 1 resource hub: unlisted, reached only by the QR code and the
- * NFC tags in the room on September 25. Nothing links here, so it carries
- * noindex, and the build leaves noindex pages out of the sitemap. The link
- * still previews properly when someone texts it to the person who missed it.
+ * The Session 1 resource page, for the people who were in the room on
+ * September 25. The NFC tags and QR codes open /workshop, whose top card links
+ * here. It stays out of search (noindex, so the build also leaves it out of
+ * the sitemap) because /workshop is the page that should rank, but the link
+ * still previews properly when someone texts it to a person who missed it.
  */
 export default function Session1Page() {
   return (
@@ -27,11 +30,13 @@ export default function Session1Page() {
       />
 
       <SessionHeader />
-      <BuiltShowcase />
+      <OneIdea />
       <SuperBowlTest />
+      <TryThis />
+      <Cautions />
       <Homework />
-      <PromptBlock />
-      <Takeaways />
+      <BuiltShowcase />
+      <FeedbackForm />
       <SessionFooter />
     </>
   );

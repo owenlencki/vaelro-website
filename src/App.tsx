@@ -17,8 +17,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 const WorkDetailPage = lazy(() => import("./pages/WorkDetailPage"));
 // Same reason: /workshop is a standalone landing page for the Chamber series.
 const WorkshopPage = lazy(() => import("./pages/WorkshopPage"));
-// Unlisted attendee page behind the in-room QR code and NFC tags. Nothing
-// links to it, so it must never sit in the main bundle.
+// The Session 1 attendee page, opened from the card on /workshop. Only people
+// who were in the room need it, so it stays out of the main bundle.
 const Session1Page = lazy(() => import("./pages/Session1Page"));
 
 const NAV_OFFSET = -88;

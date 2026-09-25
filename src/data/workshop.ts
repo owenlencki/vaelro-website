@@ -5,9 +5,9 @@
 // free of JSX, asset imports, and import.meta.* -- plain data only).
 //
 // Everything on the page reads from here. No copy lives in components. The
-// page moves itself through the three dates from Date.now(); recaps, the
-// registration link, the venue address, and the Chamber logo are edits to this
-// file and nothing else.
+// page moves itself through the three dates from Date.now(); recaps, the venue
+// address, and the Chamber logo are edits to this file and nothing else.
+// (Chamber registration has closed, so the page carries no register buttons.)
 //
 // Image paths are plain public-root strings ("/workshop/..."); components
 // prefix them with Vite's BASE_URL via src/lib/paths.ts.
@@ -82,13 +82,6 @@ export const workshop = {
   // Jeff confirms co-branding and the logo slot renders itself.
   partnerLogo: undefined as string | undefined,
 
-  registration: {
-    // The Chamber's own event listing for the series, where people register.
-    // Every Register button and the Event structured data read this one URL.
-    url: "https://www.waupacachamber.com/event-detail/tjvGZQPgruJYTocDyEmy9w2/ai-for-your-business-without-the-overwhelm-free-3-session-workshop",
-    label: "Register Through the Chamber",
-  },
-
   venue: {
     name: "Waupaca Business Center",
     detail: "Inside the Waupaca Recreation Center on School Street",
@@ -126,7 +119,7 @@ export const workshop = {
     detailLead: "Fridays",
     detailVenue: "Waupaca Business Center, inside the Rec Center",
     detailFree: "Free",
-    /** Sits under the details row, above the button. */
+    /** Sits under the details row. */
     reassurance: "No technical background needed.",
   },
 
@@ -182,8 +175,9 @@ export const workshop = {
       "Event registration and promotion are handled by the Chamber. Questions about the sessions themselves go to Owen and Liam at hello@vaelro.co.",
   },
 
+  // The sign-off card at the bottom of the page. Its heading is the next
+  // session line (formatNextSessionLine), the same one the hero shows.
   closing: {
-    heading: "Reserve your seat before it fills.",
     detailLine:
       "Fridays at 8:00 AM · Waupaca Business Center · Free · Limited to 25 businesses",
     links: [
@@ -200,9 +194,8 @@ export const workshop = {
 
   // -------------------------------------------------------------------------
   // Wrapped state: what the page swaps to once Session 3 is completed. There is
-  // no call to action here by design. The page stops asking for anything and
-  // becomes the record of what happened, so the hero loses its button, the
-  // sticky bar stops rendering, and the Home pill disappears.
+  // no call to action here by design. The page becomes the record of what
+  // happened: the closing card says thanks and the Home pill disappears.
   // -------------------------------------------------------------------------
   postSeries: {
     heroSubhead: "The series wrapped on November 6. Here's what we covered.",
@@ -250,6 +243,28 @@ export const workshop = {
 
   /** Testing only. Must be undefined in commits. */
   stageOverride: undefined as SeriesPhase | undefined,
+
+  // -------------------------------------------------------------------------
+  // OWEN: the session the page shows as "Next up". Every session before it
+  // shows "Completed", even ahead of its date. Change it to 3 after October 9.
+  // It only ever moves the page forward: once the real date passes the same
+  // point, the dates take over, so leaving it set can never make the page
+  // show something stale. Set it to undefined to go back to dates alone.
+  // -------------------------------------------------------------------------
+  forcedNextSession: 2 as 2 | 3 | undefined,
+
+  /**
+   * The card at the very top of /workshop, above the fold on a phone. The
+   * NFC tags and QR codes in the room open /workshop, so this is the way in
+   * to the Session 1 page. "and the slides" joins the line only once
+   * SESSION1_SLIDES_PDF in src/data/session1.ts is set.
+   */
+  session1Card: {
+    heading: "Were you at Session 1?",
+    body: "Get the prompts and the homework",
+    bodyWithSlides: "Get the prompts, the homework, and the slides",
+    to: "/workshop/session-1",
+  },
 
   sessions: [
     {

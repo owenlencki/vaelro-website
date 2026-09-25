@@ -1,12 +1,11 @@
-import { motion } from "framer-motion";
 import SplitText from "../../ui/SplitText";
 import Reveal from "../../ui/Reveal";
 import { session1 } from "../../../data/session1";
-import { fadeUp, staggerContainer } from "../../../lib/animations";
 
 /**
- * The five pillars, as a numbered list rather than a card grid: the ask is to
- * pick one, and a list reads like a thing you choose from.
+ * The five pillars as cards to pick from, then the ask. Unnumbered: they are
+ * five places to look, not five steps. On a two-column phone-landscape or
+ * tablet layout the fifth card spans the row rather than sitting alone.
  */
 export default function Homework() {
   const { homework } = session1;
@@ -14,48 +13,38 @@ export default function Homework() {
   return (
     <section
       id="homework"
-      className="bg-cream-100 py-12 md:py-20"
-      aria-label="Your homework for October 9"
+      className="bg-cream-100 py-14 md:py-24"
+      aria-labelledby="homework-heading"
     >
       <div className="container-site">
-        <p className="mb-4 font-mono text-xs tracking-[0.2em] text-orange-600 uppercase md:text-sm">
+        <p className="mb-4 font-mono text-xs tracking-[0.2em] text-orange-700 uppercase md:text-sm">
           {homework.eyebrow}
         </p>
-        <h2 className="max-w-2xl font-serif text-title font-bold text-ink-900">
+        <h2
+          id="homework-heading"
+          className="max-w-2xl font-serif text-title font-bold text-ink-900"
+        >
           <SplitText text={homework.heading} />
         </h2>
 
-        <motion.ol
-          className="mt-10 border-t border-cream-300 md:mt-14"
-          variants={staggerContainer(0.08)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-        >
-          {homework.pillars.map((pillar, i) => (
-            <motion.li
+        <ul className="mt-10 grid gap-4 sm:grid-cols-2 md:mt-14 lg:grid-cols-5">
+          {homework.pillars.map((pillar) => (
+            <li
               key={pillar.id}
-              variants={fadeUp}
-              className="flex items-baseline gap-4 border-b border-cream-300 py-5 md:gap-8 md:py-6"
+              className="rounded-2xl bg-cream-50 p-5 shadow-[0_1px_2px_rgba(26,26,26,0.04),0_12px_32px_rgba(26,26,26,0.06)] sm:last:col-span-2 md:p-6 lg:last:col-span-1"
             >
-              <span
-                className="font-mono text-[0.7rem] text-orange-600 tabular-nums"
-                aria-hidden="true"
-              >
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div className="flex flex-1 flex-col gap-1 md:flex-row md:items-baseline md:gap-8">
-                <h3 className="font-serif text-xl font-bold text-ink-900 md:w-44 md:shrink-0">
-                  {pillar.name}
-                </h3>
-                <p className="leading-relaxed text-ink-600">{pillar.examples}</p>
-              </div>
-            </motion.li>
+              <h3 className="font-serif text-xl font-bold text-ink-900">
+                {pillar.name}
+              </h3>
+              <p className="mt-2 leading-relaxed text-ink-600">
+                {pillar.examples}
+              </p>
+            </li>
           ))}
-        </motion.ol>
+        </ul>
 
         <Reveal delay={0.1}>
-          <p className="mt-8 max-w-xl border-l-2 border-orange-500 pl-5 font-serif text-heading font-bold text-ink-900 md:mt-10">
+          <p className="mt-10 max-w-2xl border-l-2 border-orange-500 pl-5 font-serif text-heading font-bold text-ink-900 md:mt-14">
             {homework.instruction}
           </p>
         </Reveal>

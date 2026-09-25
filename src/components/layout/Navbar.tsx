@@ -16,6 +16,13 @@ import { getSeriesClock, getSeriesPhase } from "../../lib/workshop";
 import logoCream from "../../assets/logos/logo-horizontal-cream.png";
 import logoDark from "../../assets/logos/logo-horizontal-dark.png";
 
+/**
+ * Pages with no "Book a Call" button. The Chamber workshop is education only,
+ * and the NFC tags on the tables open these two pages, so they carry no sales
+ * button. Every other page keeps it.
+ */
+const NO_BOOKING_BUTTON = new Set(["/workshop", "/workshop/session-1"]);
+
 /** Decorative marker on the Workshop item while the series is running. */
 function LiveDot() {
   return (
@@ -36,6 +43,7 @@ export default function Navbar() {
 
   const isHome = pathname === "/";
   const transparent = isHome && !scrolled && !menuOpen;
+  const hideBooking = NO_BOOKING_BUTTON.has(pathname);
 
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 60));
 
@@ -146,13 +154,19 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* CTA: always visible, including on mobile outside the menu */}
+            {/* CTA: visible on every page but the workshop ones, including on
+                mobile outside the menu. There, a phone drops it from the bar;
+                from lg up it stays as an invisible placeholder (no focus, not
+                read out), so the links sit exactly where they do elsewhere
+                instead of jumping when you move between pages. */}
             <a
               href={BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent("booking_click", { location: "navbar" })}
-              className="inline-flex min-h-11 items-center rounded-full bg-orange-500 px-5 text-[0.95rem] font-bold whitespace-nowrap text-white transition-colors duration-200 hover:bg-orange-600"
+              className={`inline-flex min-h-11 items-center rounded-full bg-orange-500 px-5 text-[0.95rem] font-bold whitespace-nowrap text-white transition-colors duration-200 hover:bg-orange-600 ${
+                hideBooking ? "max-lg:hidden lg:invisible" : ""
+              }`}
             >
               Book a Call
             </a>

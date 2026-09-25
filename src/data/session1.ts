@@ -189,6 +189,7 @@ export const session1 = {
         id: "easy-way",
         name: "Ask for the easy way",
         prompt: "What is the most efficient way to do this?",
+        why: "Often it knows a shortcut you didn't.",
       },
     ] as PromptItem[],
     bonus: {

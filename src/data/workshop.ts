@@ -5,9 +5,9 @@
 // free of JSX, asset imports, and import.meta.* -- plain data only).
 //
 // Everything on the page reads from here. No copy lives in components. The
-// page moves itself through the three dates from Date.now(); recaps, the
-// registration link, the venue address, and the Chamber logo are edits to this
-// file and nothing else.
+// page moves itself through the three dates from Date.now(); recaps, the venue
+// address, and the Chamber logo are edits to this file and nothing else.
+// (Chamber registration has closed, so the page carries no register buttons.)
 //
 // Image paths are plain public-root strings ("/workshop/..."); components
 // prefix them with Vite's BASE_URL via src/lib/paths.ts.
@@ -82,13 +82,6 @@ export const workshop = {
   // Jeff confirms co-branding and the logo slot renders itself.
   partnerLogo: undefined as string | undefined,
 
-  registration: {
-    // The Chamber's own event listing for the series, where people register.
-    // Every Register button and the Event structured data read this one URL.
-    url: "https://www.waupacachamber.com/event-detail/tjvGZQPgruJYTocDyEmy9w2/ai-for-your-business-without-the-overwhelm-free-3-session-workshop",
-    label: "Register Through the Chamber",
-  },
-
   venue: {
     name: "Waupaca Business Center",
     detail: "Inside the Waupaca Recreation Center on School Street",
@@ -126,7 +119,7 @@ export const workshop = {
     detailLead: "Fridays",
     detailVenue: "Waupaca Business Center, inside the Rec Center",
     detailFree: "Free",
-    /** Sits under the details row, above the button. */
+    /** Sits under the details row. */
     reassurance: "No technical background needed.",
   },
 
@@ -182,8 +175,9 @@ export const workshop = {
       "Event registration and promotion are handled by the Chamber. Questions about the sessions themselves go to Owen and Liam at hello@vaelro.co.",
   },
 
+  // The sign-off card at the bottom of the page. Its heading is the next
+  // session line (formatNextSessionLine), the same one the hero shows.
   closing: {
-    heading: "Reserve your seat before it fills.",
     detailLine:
       "Fridays at 8:00 AM · Waupaca Business Center · Free · Limited to 25 businesses",
     links: [
@@ -200,9 +194,8 @@ export const workshop = {
 
   // -------------------------------------------------------------------------
   // Wrapped state: what the page swaps to once Session 3 is completed. There is
-  // no call to action here by design. The page stops asking for anything and
-  // becomes the record of what happened, so the hero loses its button, the
-  // sticky bar stops rendering, and the Home pill disappears.
+  // no call to action here by design. The page becomes the record of what
+  // happened: the closing card says thanks and the Home pill disappears.
   // -------------------------------------------------------------------------
   postSeries: {
     heroSubhead: "The series wrapped on November 6. Here's what we covered.",

@@ -222,7 +222,6 @@ interface SchemaShape {
   partnerUrl: string;
   capacity: number;
   venue: { name: string; address: string; city: string; mapUrl?: string };
-  registration: { url: string };
   meta: { ogImage: string };
   sessions: WorkshopSession[];
   speakers: Array<{ id: string; name: string }>;
@@ -280,13 +279,9 @@ export function buildEventGraph(data: SchemaShape): Record<string, unknown> {
     ].filter(Boolean),
     isAccessibleForFree: true,
     maximumAttendeeCapacity: data.capacity,
-    offers: {
-      "@type": "Offer",
-      price: 0,
-      priceCurrency: "USD",
-      availability: "https://schema.org/InStock",
-      url: data.registration.url,
-    },
+    // No Offer: Chamber registration has closed, and an Offer would point
+    // search engines at a registration page and call the seats in stock.
+    // isAccessibleForFree still says it is free.
   }));
 
   return { "@context": "https://schema.org", "@graph": graph };

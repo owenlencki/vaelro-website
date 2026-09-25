@@ -1,9 +1,7 @@
-import type { RefObject } from "react";
 import { motion } from "framer-motion";
 import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
 import Portrait from "./Portrait";
-import RegisterCta from "./RegisterCta";
 import Session1Card from "./Session1Card";
 import VenueLink from "./VenueLink";
 import { workshop } from "../../data/workshop";
@@ -14,8 +12,6 @@ import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 interface WorkshopHeroProps {
   phase: SeriesPhase;
   nextSession?: WorkshopSession;
-  /** Watched by the sticky bar so it only shows once this button scrolls off. */
-  ctaRef?: RefObject<HTMLDivElement | null>;
 }
 
 /** Vertical offsets for the portrait strip, so it reads as a stagger. */
@@ -24,7 +20,6 @@ const PORTRAIT_STAGGER = ["mt-0", "mt-6 md:mt-10", "mt-12 md:mt-20"];
 export default function WorkshopHero({
   phase,
   nextSession,
-  ctaRef,
 }: WorkshopHeroProps) {
   const reducedMotion = usePrefersReducedMotion();
   const { hero } = workshop;
@@ -99,16 +94,11 @@ export default function WorkshopHero({
                 </p>
               )}
 
+              {/* No button here: Chamber registration has closed. */}
               {phase === "in-progress" && nextSession && (
                 <p className="mt-6 font-semibold text-orange-600">
                   {formatNextSessionLine(nextSession, workshop.time)}
                 </p>
-              )}
-
-              {!wrapped && (
-                <div ref={ctaRef} className="mt-7">
-                  <RegisterCta location="hero" />
-                </div>
               )}
             </Reveal>
           </div>

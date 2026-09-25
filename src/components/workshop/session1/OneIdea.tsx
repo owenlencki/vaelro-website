@@ -23,8 +23,11 @@ export default function OneIdea() {
             id="the-one-idea-heading"
             className="max-w-4xl font-serif text-title font-bold text-ink-900"
           >
-            {idea.lead} <span className="text-orange-700">{idea.rest}</span>
+            {idea.lead}
           </h2>
+          <p className="mt-5 max-w-3xl text-lead text-ink-600 md:mt-6">
+            {idea.rest}
+          </p>
         </Reveal>
       </div>
     </section>

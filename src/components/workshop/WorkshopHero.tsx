@@ -28,7 +28,7 @@ export default function WorkshopHero({
     { text: `${hero.detailLead} · ${workshop.time}` },
     { text: formatDateRow(workshop.sessions), muted: phase === "complete" },
     { text: hero.detailVenue, mapped: true },
-    { text: `${hero.detailFree} · Limited to ${workshop.capacity} businesses` },
+    { text: hero.detailFree },
   ];
 
   const wrapped = phase === "complete";

@@ -103,7 +103,7 @@ export const workshop = {
       "Three free Friday mornings with the Waupaca Area Chamber of Commerce: what AI is, where your business loses time, and solutions built from your answers.",
     ogTitle: "AI for Your Business, Without the Overwhelm",
     ogDescription:
-      "Free three-session workshop series with the Waupaca Area Chamber of Commerce. Fridays at 8:00 AM, September 25, October 9, November 6. Limited to 25 businesses.",
+      "Free three-session workshop series with the Waupaca Area Chamber of Commerce. Fridays at 8:00 AM, September 25, October 9, November 6.",
     canonical: "https://vaelro.co/workshop",
     // The site's own OG image until a workshop-specific card exists.
     ogImage: "https://vaelro.co/og-image.jpg",
@@ -172,21 +172,21 @@ export const workshop = {
   chamberBand: {
     text: "Presented in partnership with the Waupaca Area Chamber of Commerce.",
     smallText:
-      "Event registration and promotion are handled by the Chamber. Questions about the sessions themselves go to Owen and Liam at hello@vaelro.co.",
+      "Hosted with the Waupaca Area Chamber of Commerce. Questions about the sessions themselves go to Owen and Liam at hello@vaelro.co.",
   },
 
   // The sign-off card at the bottom of the page. Its heading is the next
   // session line (formatNextSessionLine), the same one the hero shows.
   closing: {
     detailLine:
-      "Fridays at 8:00 AM · Waupaca Business Center · Free · Limited to 25 businesses",
+      "Fridays at 8:00 AM · Waupaca Business Center · Free",
     links: [
       {
         label: "Questions? Email hello@vaelro.co",
         href: "mailto:hello@vaelro.co?subject=Workshop%20series%20question",
       },
       {
-        label: "Missed a seat? Email us and we'll tell you if one opens.",
+        label: "Want to hear when the next series is scheduled? Email us.",
         href: "mailto:hello@vaelro.co?subject=Workshop%20series%3A%20add%20me%20to%20the%20list",
       },
     ],
@@ -378,12 +378,6 @@ export const workshop = {
       question: "Where is it, and where do I park?",
       answer:
         "The Waupaca Business Center, inside the Waupaca Recreation Center. We'll add the room and parking details here before Session 1.",
-    },
-    {
-      id: "fills-up",
-      question: "What if it fills up?",
-      answer:
-        "It might, so register early. If you miss a seat, email hello@vaelro.co and we'll let you know if a spot opens or when the next series is scheduled.",
     },
   ] as Faq[],
 };

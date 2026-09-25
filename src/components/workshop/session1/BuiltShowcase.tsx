@@ -28,7 +28,7 @@ function Arrow() {
 
 /**
  * One piece of work, linking to its case study. Software and websites share
- * the card; only the software carries the "two college students" credit.
+ * the card; only the software carries the line about who built it.
  */
 function WorkCard({ item }: { item: ShowcaseItem }) {
   const { built } = session1;

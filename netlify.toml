@@ -15,6 +15,21 @@
   status = 302
   force = true
 
+# Netlify matches these paths case-sensitively (on the live site /Upload
+# answered 404 while /upload redirected), so the two capitalised spellings
+# people actually type get rules of their own.
+[[redirects]]
+  from = "/Upload"
+  to = "https://vaelro-packet-upload.netlify.app"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/UPLOAD"
+  to = "https://vaelro-packet-upload.netlify.app"
+  status = 302
+  force = true
+
 # Every page is prerendered to its own HTML file (scripts/prerender.mjs), and
 # the build also writes dist/_redirects, which serves each one at its
 # slash-free URL. Netlify reads _redirects before these rules, and files that

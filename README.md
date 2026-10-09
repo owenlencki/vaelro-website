@@ -84,8 +84,9 @@ Connect the GitHub repo in Netlify. `netlify.toml` sets the build command
 (`npm run build`) and publish directory (`dist`). The build writes
 `dist/_redirects`, which serves each prerendered page at its slash-free URL;
 any other path gets the prerendered `404.html` with a real 404 status. The one
-hand-written redirect, `/upload`, sits above that catch-all in `netlify.toml`.
-The contact flow submits directly to Apps Script, so no Netlify Forms
+hand-written redirect, `/upload` (with `/Upload` and `/UPLOAD`, because Netlify
+matches case-sensitively), sits above that catch-all in `netlify.toml`. The
+contact flow submits directly to Apps Script, so no Netlify Forms
 configuration is required.
 
 Custom domain: add `vaelro.co` in Netlify Domain settings, then point DNS at

@@ -8,6 +8,9 @@ import { trackEvent } from "../../../lib/analytics";
 
 const COPIED_MS = 1600;
 
+/** What a copy reports to GA unless the page using the card names its own. */
+const COPY_EVENT = "session1_prompt_copy";
+
 const cardShadow =
   "shadow-[0_1px_2px_rgba(26,26,26,0.04),0_12px_32px_rgba(26,26,26,0.06)]";
 
@@ -46,7 +49,13 @@ function PromptText({ item }: { item: PromptItem }) {
  * One tap puts the prompt on the clipboard. Every button reads the same, so
  * the prompt's name rides along for screen readers.
  */
-function CopyButton({ item }: { item: PromptItem }) {
+function CopyButton({
+  item,
+  event = COPY_EVENT,
+}: {
+  item: PromptItem;
+  event?: string;
+}) {
   const { tryThis } = session1;
   const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
   const timer = useRef<number | undefined>(undefined);
@@ -63,7 +72,7 @@ function CopyButton({ item }: { item: PromptItem }) {
       setState("failed");
       return;
     }
-    trackEvent("session1_prompt_copy", { prompt_id: item.id });
+    trackEvent(event, { prompt_id: item.id });
     setState("copied");
     timer.current = window.setTimeout(() => setState("idle"), COPIED_MS);
   }
@@ -125,11 +134,21 @@ function FeaturedPrompt({ item }: { item: PromptItem }) {
 }
 
 /** A smaller card under the featured prompt. Its heading sits one level
- *  under the "Two more worth trying" subheading. */
-function PromptCard({ item }: { item: PromptItem }) {
+ *  under the "Two more worth trying" subheading. The Session 2 page uses the
+ *  same card straight under its section heading, so it asks for an h3 and
+ *  reports copies under its own event. */
+export function PromptCard({
+  item,
+  as: Heading = "h4",
+  copyEvent,
+}: {
+  item: PromptItem;
+  as?: "h3" | "h4";
+  copyEvent?: string;
+}) {
   return (
     <li className={`flex flex-col rounded-2xl bg-cream-50 p-6 md:p-7 ${cardShadow}`}>
-      <h4 className="font-serif text-xl font-bold text-ink-900">{item.name}</h4>
+      <Heading className="font-serif text-xl font-bold text-ink-900">{item.name}</Heading>
       {item.why && <p className="mt-1.5 leading-relaxed text-ink-600">{item.why}</p>}
 
       <p className="mt-5 rounded-xl border-l-2 border-orange-500 bg-cream-100 px-4 py-4 font-serif text-lg leading-snug text-ink-900">
@@ -141,7 +160,7 @@ function PromptCard({ item }: { item: PromptItem }) {
 
       {/* Pinned to the bottom so the buttons line up across a row. */}
       <div className="mt-auto pt-5">
-        <CopyButton item={item} />
+        <CopyButton item={item} event={copyEvent} />
       </div>
     </li>
   );

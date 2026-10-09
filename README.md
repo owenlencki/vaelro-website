@@ -66,6 +66,13 @@ first response. React then hydrates that markup in the browser.
   PDF at `public/workshop/session-1/slides.pdf` and set
   `SESSION1_SLIDES_PDF` to `"/workshop/session-1/slides.pdf"`; the download
   button appears on its own.
+- **Session 2 attendee page** (`/workshop/session-2`):
+  [`src/data/session2.ts`](src/data/session2.ts). To add the blank packet, put
+  the PDF at `public/workshop/session-2/packet.pdf` and set
+  `SESSION2_PACKET_PDF` to `"/workshop/session-2/packet.pdf"`; the download
+  button and its line appear on their own. Set `next.summaryLine` to `""` to
+  drop the line about the summary. Both session pages are `noindex`, stay out
+  of the sitemap, and get an `X-Robots-Tag` header in `netlify.toml`.
 - **Booking URL**: [`src/lib/booking.ts`](src/lib/booking.ts).
 - **Contact flow**: the multi-step lead form lives in
   [`src/components/sections/ContactFlow.tsx`](src/components/sections/ContactFlow.tsx).

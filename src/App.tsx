@@ -20,6 +20,8 @@ const WorkshopPage = lazy(() => import("./pages/WorkshopPage"));
 // The Session 1 attendee page, opened from the card on /workshop. Only people
 // who were in the room need it, so it stays out of the main bundle.
 const Session1Page = lazy(() => import("./pages/Session1Page"));
+// The Session 2 attendee page, lazy for the same reason.
+const Session2Page = lazy(() => import("./pages/Session2Page"));
 
 const NAV_OFFSET = -88;
 
@@ -115,6 +117,16 @@ function AnimatedRoutes() {
             <PageTransition>
               <Suspense fallback={<div className="min-h-svh bg-cream-100" />}>
                 <Session1Page />
+              </Suspense>
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/workshop/session-2"
+          element={
+            <PageTransition>
+              <Suspense fallback={<div className="min-h-svh bg-cream-100" />}>
+                <Session2Page />
               </Suspense>
             </PageTransition>
           }

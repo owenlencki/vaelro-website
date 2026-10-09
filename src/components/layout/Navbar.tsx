@@ -18,10 +18,14 @@ import logoDark from "../../assets/logos/logo-horizontal-dark.png";
 
 /**
  * Pages with no "Book a Call" button. The Chamber workshop is education only,
- * and the NFC tags on the tables open these two pages, so they carry no sales
+ * and the NFC tags on the tables open these pages, so they carry no sales
  * button. Every other page keeps it.
  */
-const NO_BOOKING_BUTTON = new Set(["/workshop", "/workshop/session-1"]);
+const NO_BOOKING_BUTTON = new Set([
+  "/workshop",
+  "/workshop/session-1",
+  "/workshop/session-2",
+]);
 
 /** Decorative marker on the Workshop item while the series is running. */
 function LiveDot() {

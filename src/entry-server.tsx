@@ -15,11 +15,12 @@ export const BASE_URL = import.meta.env.BASE_URL;
 
 /**
  * Routes the prerender builds whether or not anything links to them; every
- * other page is discovered by following links out from "/". The Session 1
- * page is linked from the card on /workshop today, but people also reach it
- * straight from a texted link, so it must keep building if that card goes.
+ * other page is discovered by following links out from "/". The session
+ * pages are linked from the card on /workshop today, but people also reach
+ * them straight from a texted link, so they must keep building if that card
+ * goes.
  */
-export const UNLINKED_ROUTES = ["/workshop/session-1"];
+export const UNLINKED_ROUTES = ["/workshop/session-1", "/workshop/session-2"];
 
 /** Rendered to dist/404.html. Any path the router does not know will do. */
 export const NOT_FOUND_ROUTE = "/404";

@@ -281,6 +281,10 @@ export const workshop = {
     uploadLabel: "Upload your packet pages",
     links: [
       {
+        label: "Free prompts and resources",
+        to: "/workshop/session-2",
+      },
+      {
         label: "Session 1 prompts and homework",
         to: "/workshop/session-1",
         // The event the Session 1 card this replaced fired on a tap.

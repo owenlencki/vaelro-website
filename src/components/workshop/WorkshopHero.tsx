@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
 import Portrait from "./Portrait";
-import Session1Card from "./Session1Card";
+import AttendeeCard from "./AttendeeCard";
 import VenueLink from "./VenueLink";
 import { workshop } from "../../data/workshop";
 import type { SeriesPhase, WorkshopSession } from "../../data/workshop";
@@ -37,7 +37,7 @@ export default function WorkshopHero({
   return (
     <section className="bg-cream-100 pt-32 pb-14 md:pt-40 md:pb-20">
       <div className="container-site">
-        <Session1Card />
+        <AttendeeCard />
 
         {/* The headline spans the full container so it breaks on the two lines
             the copy deck sets, rather than wherever a column edge lands. */}

@@ -2,6 +2,19 @@
   command = "npm run build"
   publish = "dist"
 
+# vaelro.co/upload is the short link on the Session 2 slide. It sends people to
+# the packet upload form, which is its own Netlify site (the same address as
+# PACKET_UPLOAD_URL in src/data/workshop.ts, so change the two together).
+# Netlify takes the first rule that matches, reading dist/_redirects and then
+# this file from the top, so this must stay above the catch-all below. It is
+# forced so that no file in dist/ can ever shadow it. No page links to /upload:
+# the prerender would crawl it as a page and fail the build.
+[[redirects]]
+  from = "/upload"
+  to = "https://vaelro-packet-upload.netlify.app"
+  status = 302
+  force = true
+
 # Every page is prerendered to its own HTML file (scripts/prerender.mjs), and
 # the build also writes dist/_redirects, which serves each one at its
 # slash-free URL. Netlify reads _redirects before these rules, and files that

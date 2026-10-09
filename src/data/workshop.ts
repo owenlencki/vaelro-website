@@ -13,6 +13,14 @@
 // prefix them with Vite's BASE_URL via src/lib/paths.ts.
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Where attendees send photos of their Session 2 packet pages. It is its own
+// site with its own repo; every upload button links straight to it. The short
+// link vaelro.co/upload is a redirect in netlify.toml that carries this same
+// address, so change the two together.
+// ---------------------------------------------------------------------------
+export const PACKET_UPLOAD_URL = "https://vaelro-packet-upload.netlify.app";
+
 export type SessionStatus = "upcoming" | "next" | "today" | "completed";
 export type SeriesPhase = "upcoming" | "in-progress" | "complete";
 
@@ -72,6 +80,14 @@ export interface PromptCard {
   title: string;
   /** The prompt itself. This is what the copy button puts on the clipboard. */
   prompt: string;
+}
+
+/** A text link under the upload button on the card at the top of /workshop. */
+export interface AttendeeCardLink {
+  label: string;
+  to: string;
+  /** Sent to GA when the link is tapped, for the links that have an event. */
+  event?: string;
 }
 
 export const workshop = {
@@ -255,15 +271,22 @@ export const workshop = {
 
   /**
    * The card at the very top of /workshop, above the fold on a phone. The
-   * NFC tags and QR codes in the room open /workshop, so this is the way in
-   * to the Session 1 page. "and the slides" joins the line only once
-   * SESSION1_SLIDES_PDF in src/data/session1.ts is set.
+   * NFC tags and table stands in the room open /workshop, so this is the way
+   * in for whoever is sitting at a table: one big button to the packet upload
+   * form (PACKET_UPLOAD_URL, at the top of this file), then text links to the
+   * session pages.
    */
-  session1Card: {
-    heading: "Were you at Session 1?",
-    body: "Get the prompts and the homework",
-    bodyWithSlides: "Get the prompts, the homework, and the slides",
-    to: "/workshop/session-1",
+  attendeeCard: {
+    heading: "Here for Session 2?",
+    uploadLabel: "Upload your packet pages",
+    links: [
+      {
+        label: "Session 1 prompts and homework",
+        to: "/workshop/session-1",
+        // The event the Session 1 card this replaced fired on a tap.
+        event: "session1_card_click",
+      },
+    ] as AttendeeCardLink[],
   },
 
   sessions: [

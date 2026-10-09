@@ -21,8 +21,8 @@
 // ---------------------------------------------------------------------------
 // OWEN: the slides. Put the PDF at public/workshop/session-1/slides.pdf and set
 // this to "/workshop/session-1/slides.pdf". The download button on the Session
-// 1 page and "and the slides" on the /workshop card then appear on their own.
-// The build fails if this points at a file that is not there.
+// 1 page then appears on its own. The build fails if this points at a file
+// that is not there.
 // ---------------------------------------------------------------------------
 export const SESSION1_SLIDES_PDF = undefined as string | undefined;
 

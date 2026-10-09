@@ -58,12 +58,14 @@ first response. React then hydrates that markup in the browser.
 - **Workshop series**: [`src/data/workshop.ts`](src/data/workshop.ts).
   `forcedNextSession` picks the session the page shows as "Next up" (every
   earlier one shows "Completed"); change it to 3 after October 9.
+  `attendeeCard` is the card at the top of the page. Its button goes to
+  `PACKET_UPLOAD_URL`, the packet upload form (a separate site), and
+  `vaelro.co/upload` is a redirect to the same address in `netlify.toml`.
 - **Session 1 attendee page** (`/workshop/session-1`):
   [`src/data/session1.ts`](src/data/session1.ts). To add the slides, put the
   PDF at `public/workshop/session-1/slides.pdf` and set
   `SESSION1_SLIDES_PDF` to `"/workshop/session-1/slides.pdf"`; the download
-  button and the "and the slides" line on the /workshop card appear on their
-  own.
+  button appears on its own.
 - **Booking URL**: [`src/lib/booking.ts`](src/lib/booking.ts).
 - **Contact flow**: the multi-step lead form lives in
   [`src/components/sections/ContactFlow.tsx`](src/components/sections/ContactFlow.tsx).
@@ -81,8 +83,9 @@ first response. React then hydrates that markup in the browser.
 Connect the GitHub repo in Netlify. `netlify.toml` sets the build command
 (`npm run build`) and publish directory (`dist`). The build writes
 `dist/_redirects`, which serves each prerendered page at its slash-free URL;
-any other path gets the prerendered `404.html` with a real 404 status. The
-contact flow submits directly to Apps Script, so no Netlify Forms
+any other path gets the prerendered `404.html` with a real 404 status. The one
+hand-written redirect, `/upload`, sits above that catch-all in `netlify.toml`.
+The contact flow submits directly to Apps Script, so no Netlify Forms
 configuration is required.
 
 Custom domain: add `vaelro.co` in Netlify Domain settings, then point DNS at

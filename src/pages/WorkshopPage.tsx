@@ -22,7 +22,7 @@ import {
 /**
  * The public home of the Chamber workshop series. Chamber registration has
  * closed, so the page asks for nothing: while the series runs it is the
- * attendee resource (the Session 1 card, statuses, the next session), and
+ * attendee resource (the card at the top, statuses, the next session), and
  * after November 6 it becomes the record of what happened. Which of those you
  * get is decided here, once, from the data file.
  */

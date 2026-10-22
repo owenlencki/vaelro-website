@@ -13,6 +13,7 @@ process.env.TZ = "Asia/Tokyo";
 
 import assert from "node:assert/strict";
 import { workshop } from "../src/data/workshop";
+import { session2 } from "../src/data/session2";
 import {
   formatLongDate,
   formatSessionDateLine,
@@ -223,6 +224,14 @@ check("no em dashes, sign-up language, retainer, or prices", () => {
 check("the closing card has no button, only the email link", () => {
   assert.equal(workshop.closing.links.length, 1);
   assert.match(workshop.closing.links[0].href, /^mailto:/);
+});
+
+console.log("\nSession 2 page");
+check("no upload, summary, deadline, or em dash copy on the Session 2 page", () => {
+  const text = JSON.stringify(session2);
+  assert.ok(!/upload|summary|October 14|\u2014/i.test(text), "stale copy");
+  assert.ok(!/running on its own/i.test(text), "old demo wording");
+  assert.match(text, /live demos built from what the room wrote down/);
 });
 
 console.log(

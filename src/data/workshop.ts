@@ -14,10 +14,10 @@
 // ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
-// Where attendees send photos of their Session 2 packet pages. It is its own
-// site with its own repo; every upload button links straight to it. The short
-// link vaelro.co/upload is a redirect in netlify.toml that carries this same
-// address, so change the two together.
+// The packet upload form, its own site with its own repo. Uploads are closed
+// and no page on this site links to it any more; the constant stays because
+// the vaelro.co/upload redirect in netlify.toml carries this same address and
+// its comment points here.
 // ---------------------------------------------------------------------------
 export const PACKET_UPLOAD_URL = "https://vaelro-packet-upload.netlify.app";
 

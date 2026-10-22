@@ -61,9 +61,9 @@ first response. React then hydrates that markup in the browser.
   changing between sessions. Registration is closed, so the page has no form
   and no sign-up button. `whatWeHeard` and `gameplan` hold the two general
   sections, and `attendeeCard` is the text-link card under the timeline.
-  `PACKET_UPLOAD_URL` (the packet upload form, a separate site) is still
-  used by the Session 2 page, and `vaelro.co/upload` is a redirect to the
-  same address in `netlify.toml`. The /workshop JSON-LD only describes
+  No page links to `PACKET_UPLOAD_URL` (the packet upload form, a separate
+  site) any more; `vaelro.co/upload` is still a redirect to the same address
+  in `netlify.toml`. The /workshop JSON-LD only describes
   sessions that have not happened yet.
 - **Session 1 attendee page** (`/workshop/session-1`):
   [`src/data/session1.ts`](src/data/session1.ts). To add the slides, put the
@@ -74,8 +74,8 @@ first response. React then hydrates that markup in the browser.
   [`src/data/session2.ts`](src/data/session2.ts). To add the blank packet, put
   the PDF at `public/workshop/session-2/packet.pdf` and set
   `SESSION2_PACKET_PDF` to `"/workshop/session-2/packet.pdf"`; the download
-  button and its line appear on their own. Set `next.summaryLine` to `""` to
-  drop the line about the summary. Both session pages are `noindex`, stay out
+  button and its line appear on their own. Uploads are closed, so the page
+  has no upload section. Both session pages are `noindex`, stay out
   of the sitemap, and get an `X-Robots-Tag` header in `netlify.toml`.
 - **Booking URL**: [`src/lib/booking.ts`](src/lib/booking.ts).
 - **Contact flow**: the multi-step lead form lives in

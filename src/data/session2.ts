@@ -1,12 +1,11 @@
 // ---------------------------------------------------------------------------
 // SESSION 2 RESOURCE PAGE DATA
 // Single source of truth for /workshop/session-2, the attendee page linked
-// from the card at the top of /workshop. It exists to get packet pages
-// uploaded; the free resources come second.
+// from the resources card on /workshop. Packet uploads are closed, so the page
+// carries what Session 2 led to (Session 3) and the free prompts.
 //
 // Plain data only, like session1.ts: no JSX, no asset imports, and no
-// import.meta.*. The upload button's address is not here: it is
-// PACKET_UPLOAD_URL in src/data/workshop.ts, shared with the /workshop card.
+// import.meta.*.
 // ---------------------------------------------------------------------------
 
 import type { PromptItem } from "./session1";
@@ -23,7 +22,7 @@ export const session2 = {
   meta: {
     title: "Session 2: Pain Point Workshop | Vaelro Workshop",
     description:
-      "Session 2 of the free AI workshop series with the Waupaca Area Chamber: upload your packet pages, grab three free prompts, and see what happens November 6.",
+      "Session 2 of the AI workshop series with the Waupaca Area Chamber: three free prompts to use on your own packet, and what comes next on November 6.",
     canonical: "https://vaelro.co/workshop/session-2",
     ogImage: "https://vaelro.co/og-image.jpg",
   },
@@ -34,36 +33,13 @@ export const session2 = {
     line: "With Owen and Liam.",
   },
 
-  upload: {
-    eyebrow: "Your packet",
-    heading: "Send us your pages",
-    steps: [
-      "Tap the button below.",
-      "Enter your name, business, and email.",
-      "Tap Take Photo for each page, 2 through 6.",
-      "Tap Submit Packet.",
-    ],
-    buttonLabel: "Upload my packet",
-    lateLine: "Need more time? Take it home and upload by Wednesday, October 14.",
-    /** The address inside this sentence becomes the mailto link. */
-    fallbackLine: "Upload not working? Email your photos to hello@vaelro.co.",
-    fallbackEmail: "hello@vaelro.co",
-    fallbackSubject: "Session 2 packet",
-    privacy:
-      "Your pages go to a private folder that only Owen and Liam can open. We never share your information.",
-  },
-
   next: {
     eyebrow: "What happens next",
-    heading: "November 6 is built from what you wrote",
+    heading: "November 6 is built from what the room wrote down",
     steps: [
-      "We read every uploaded packet ourselves.",
-      "We look for the problems that show up across the room.",
-      "On November 6 we bring the fixes: a free version you can do yourself, and a live example of the same job running on its own.",
+      "We looked for the problems that showed up across the room.",
+      "On November 6 we bring live demos built from what the room wrote down: a free do-it-yourself option and a done-for-you version for each of the top three problems.",
     ],
-    // OWEN: set this to "" and the line leaves the page.
-    summaryLine:
-      "We'll also send you a short summary of your answers before November 6.",
   },
 
   resources: {
@@ -104,7 +80,7 @@ export const session2 = {
     /** Rendered only once SESSION2_PACKET_PDF above is set. */
     packet: {
       label: "Download a blank packet (PDF)",
-      line: "Missed the session, or want a clean copy? Print it, fill it out, and upload your pages by Wednesday, October 14.",
+      line: "Missed the session, or want a clean copy? Print it and fill it out.",
     },
     session1Link: {
       label: "Session 1: prompts and cautions",
@@ -114,7 +90,7 @@ export const session2 = {
 
   footer: {
     eyebrow: "Next session",
-    line: "Friday, November 6, 8:00 AM, same room. We bring the fixes.",
+    line: "Session 3 is Friday, November 6, 8:00 AM, same room. Registration for Session 3 is closed. If you signed up, we will see you there.",
     email: "hello@vaelro.co",
     /** Subject line of the email the address opens. Not shown on the page. */
     emailSubject: "Workshop Session 2",

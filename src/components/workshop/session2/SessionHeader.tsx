@@ -2,9 +2,8 @@ import SplitText from "../../ui/SplitText";
 import { session2 } from "../../../data/session2";
 
 /**
- * Thinner still than Session 1's header. The upload section right under it
- * has to fit its four steps and its button in the first screen on a phone, so
- * this says where you are and stops: tighter padding, no portrait, no reveal.
+ * Thinner than Session 1's header: it says where you are and stops, with
+ * tighter padding, no portrait, and no reveal.
  */
 export default function SessionHeader() {
   const { header } = session2;

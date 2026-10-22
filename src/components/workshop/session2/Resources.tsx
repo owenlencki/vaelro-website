@@ -65,9 +65,8 @@ export default function Resources() {
 
         {SESSION2_PACKET_PDF && (
           <div className="mt-10 md:mt-14">
-            {/* Outlined, so "Upload my packet" stays the page's one orange
-                button. Tight padding and a touch smaller on a phone: the
-                label has to stay on one line at 375px. */}
+            {/* Outlined and quiet. Tight padding and a touch smaller on a phone:
+                the label has to stay on one line at 375px. */}
             <a
               href={withBase(SESSION2_PACKET_PDF)}
               target="_blank"

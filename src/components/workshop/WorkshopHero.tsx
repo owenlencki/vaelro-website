@@ -2,11 +2,10 @@ import { motion } from "framer-motion";
 import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
 import Portrait from "./Portrait";
-import AttendeeCard from "./AttendeeCard";
 import VenueLink from "./VenueLink";
 import { workshop } from "../../data/workshop";
 import type { SeriesPhase, WorkshopSession } from "../../data/workshop";
-import { formatDateRow, formatNextSessionLine } from "../../lib/workshop";
+import { formatLongDate } from "../../lib/workshop";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 
 interface WorkshopHeroProps {
@@ -24,21 +23,22 @@ export default function WorkshopHero({
   const reducedMotion = usePrefersReducedMotion();
   const { hero } = workshop;
 
+  // The featured session: the next one, or the last one once the series is over.
+  const featured =
+    nextSession ?? workshop.sessions[workshop.sessions.length - 1];
+  const wrapped = phase === "complete";
+
   const detailRow = [
-    { text: `${hero.detailLead} · ${workshop.time}` },
-    { text: formatDateRow(workshop.sessions), muted: phase === "complete" },
+    { text: formatLongDate(featured.start), muted: wrapped },
+    { text: workshop.time },
     { text: hero.detailVenue, mapped: true },
-    { text: hero.detailFree },
   ];
 
-  const wrapped = phase === "complete";
   const subhead = wrapped ? workshop.postSeries.heroSubhead : hero.subhead;
 
   return (
     <section className="bg-cream-100 pt-32 pb-14 md:pt-40 md:pb-20">
       <div className="container-site">
-        <AttendeeCard />
-
         {/* The headline spans the full container so it breaks on the two lines
             the copy deck sets, rather than wherever a column edge lands. */}
         <p className="mb-4 max-w-md font-mono text-xs tracking-[0.2em] text-orange-600 uppercase md:text-sm">
@@ -88,16 +88,10 @@ export default function WorkshopHero({
                 ))}
               </div>
 
-              {!wrapped && (
-                <p className="mt-3 font-mono text-[0.7rem] tracking-[0.14em] text-ink-600 md:text-xs">
-                  {hero.reassurance}
-                </p>
-              )}
-
               {/* No button here: Chamber registration has closed. */}
-              {phase === "in-progress" && nextSession && (
-                <p className="mt-6 font-semibold text-orange-600">
-                  {formatNextSessionLine(nextSession, workshop.time)}
+              {!wrapped && (
+                <p className="mt-6 max-w-xl font-semibold text-ink-900">
+                  {hero.registrationLine}
                 </p>
               )}
             </Reveal>

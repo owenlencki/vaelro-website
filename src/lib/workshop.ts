@@ -81,26 +81,6 @@ export function getSeriesPhase(
   return "in-progress";
 }
 
-/**
- * The "now" the series pages read. Normally the real time. With a forced next
- * session (the data file's forcedNextSession) it is never earlier than the
- * moment the session before that one finished, so every earlier session reads
- * completed and the forced one reads next, even ahead of the date. It only
- * ever moves the page forward: once the real clock passes that moment, the
- * dates decide again, so a forgotten setting can never hold the page in the
- * past.
- */
-export function getSeriesClock(
-  sessions: WorkshopSession[],
-  now: number = Date.now(),
-  forcedNextSession?: number,
-): number {
-  if (forcedNextSession === undefined) return now;
-  const previous = sessions.find((s) => s.number === forcedNextSession - 1);
-  if (!previous) return now;
-  return Math.max(now, Date.parse(previous.start) + COMPLETED_AFTER_MS);
-}
-
 /** The earliest session that is not completed, or undefined once all are. */
 export function getNextSession(
   sessions: WorkshopSession[],
@@ -158,14 +138,6 @@ export function getSessionEnd(session: WorkshopSession): string {
 // --- Derived copy ---------------------------------------------------------
 
 /**
- * "Sep 25 · Oct 9 · Nov 6", derived so the hero row can never drift from the
- * session data.
- */
-export function formatDateRow(sessions: WorkshopSession[]): string {
-  return sessions.map((s) => formatShortDate(s.start)).join(" · ");
-}
-
-/**
  * FAQ answers are verbatim from the copy deck, except the venue question:
  * once the address and parking note are filled in, they replace the
  * placeholder second sentence.
@@ -189,29 +161,22 @@ export function formatNextSessionLine(
   return `Next session: ${formatLongDate(session.start)} at ${time}`;
 }
 
-interface PillCopy {
-  full: string;
-  short: string;
-}
-
 /**
- * The Home hero pill's two strings, with the next session's date substituted in
- * mid-series. The wrapped state has no pill, so callers stop rendering it
- * rather than asking for copy that does not exist.
+ * The Home hero pill's two strings for the next session: {number},
+ * {longDate} ("Friday, November 6"), and {date} ("Nov 6") are filled in from
+ * it. The wrapped state has no pill, so callers stop rendering it rather than
+ * asking for copy that does not exist.
  */
 export function getPillCopy(
-  pill: { upcoming: PillCopy; inProgress: PillCopy },
-  phase: SeriesPhase,
-  nextSession?: WorkshopSession,
-): PillCopy {
-  if (phase === "in-progress" && nextSession) {
-    const date = formatShortDate(nextSession.start);
-    return {
-      full: pill.inProgress.full.replace("{date}", date),
-      short: pill.inProgress.short.replace("{date}", date),
-    };
-  }
-  return pill.upcoming;
+  pill: { full: string; short: string },
+  session: WorkshopSession,
+): { full: string; short: string } {
+  const fill = (text: string) =>
+    text
+      .replace("{number}", String(session.number))
+      .replace("{longDate}", formatLongDate(session.start))
+      .replace("{date}", formatShortDate(session.start));
+  return { full: fill(pill.full), short: fill(pill.short) };
 }
 
 // --- Structured data ------------------------------------------------------
@@ -220,7 +185,6 @@ interface SchemaShape {
   title: string;
   partner: string;
   partnerUrl: string;
-  capacity: number;
   venue: { name: string; address: string; city: string; mapUrl?: string };
   meta: { ogImage: string };
   sessions: WorkshopSession[];
@@ -228,11 +192,15 @@ interface SchemaShape {
 }
 
 /**
- * The three sessions as one schema.org @graph of Event objects, for the
- * /workshop page's <head> (prerendered, so crawlers read it without running
- * JavaScript).
+ * schema.org Event objects for the sessions that have not happened yet, for
+ * the /workshop page's <head> (prerendered, so crawlers read it without
+ * running JavaScript). A session in the past is never described as scheduled,
+ * so today that is Session 3 alone. Returns undefined once the series is over.
  */
-export function buildEventGraph(data: SchemaShape): Record<string, unknown> {
+export function buildEventGraph(
+  data: SchemaShape,
+  now: number = Date.now(),
+): Record<string, unknown> | undefined {
   const organizer = [
     { "@type": "Organization", name: "Vaelro", url: "https://vaelro.co" },
     { "@type": "Organization", name: data.partner, url: data.partnerUrl },
@@ -246,43 +214,39 @@ export function buildEventGraph(data: SchemaShape): Record<string, unknown> {
   const street = data.venue.address.split(",")[0].trim();
   const postalCode = data.venue.address.match(/\b\d{5}\b/)?.[0] ?? "";
 
-  const graph = data.sessions.map((session) => ({
-    "@type": "Event",
-    name: `${data.title}: Session ${session.number}, ${session.title}`,
-    description: session.blurb,
-    startDate: session.start,
-    endDate: getSessionEnd(session),
-    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    eventStatus: "https://schema.org/EventScheduled",
-    location: {
-      "@type": "Place",
-      name: data.venue.name,
-      ...(data.venue.mapUrl ? { hasMap: data.venue.mapUrl } : {}),
-      address: {
-        "@type": "PostalAddress",
-        // venue.address is one display string ("407 School St, Waupaca, WI
-        // 54981"); locality, region, and postal code are their own fields
-        // here, so only the street part belongs in streetAddress.
-        ...(street ? { streetAddress: street } : {}),
-        addressLocality: "Waupaca",
-        addressRegion: "WI",
-        ...(postalCode ? { postalCode } : {}),
-        addressCountry: "US",
+  const graph = data.sessions
+    .filter((session) => getSessionStatus(session, now) !== "completed")
+    .map((session) => ({
+      "@type": "Event",
+      name: `${data.title}: Session ${session.number}, ${session.title}`,
+      description: session.blurb,
+      startDate: session.start,
+      endDate: getSessionEnd(session),
+      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+      eventStatus: "https://schema.org/EventScheduled",
+      location: {
+        "@type": "Place",
+        name: data.venue.name,
+        ...(data.venue.mapUrl ? { hasMap: data.venue.mapUrl } : {}),
+        address: {
+          "@type": "PostalAddress",
+          // venue.address is one display string ("407 School St, Waupaca, WI
+          // 54981"); locality, region, and postal code are their own fields
+          // here, so only the street part belongs in streetAddress.
+          ...(street ? { streetAddress: street } : {}),
+          addressLocality: "Waupaca",
+          addressRegion: "WI",
+          ...(postalCode ? { postalCode } : {}),
+          addressCountry: "US",
+        },
       },
-    },
-    image: data.meta.ogImage,
-    organizer,
-    performer: [
-      person("owen"),
-      person("liam"),
-      ...(session.number === 1 ? [person("casey")] : []),
-    ].filter(Boolean),
-    isAccessibleForFree: true,
-    maximumAttendeeCapacity: data.capacity,
-    // No Offer: Chamber registration has closed, and an Offer would point
-    // search engines at a registration page and call the seats in stock.
-    // isAccessibleForFree still says it is free.
-  }));
+      image: data.meta.ogImage,
+      organizer,
+      performer: [person("owen"), person("liam")].filter(Boolean),
+      // No Offer, no capacity, and no isAccessibleForFree: registration has
+      // closed, so nothing here should read as an open invitation.
+    }));
 
+  if (graph.length === 0) return undefined;
   return { "@context": "https://schema.org", "@graph": graph };
 }

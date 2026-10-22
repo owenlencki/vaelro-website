@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------
 // test-workshop.ts
-// Pins the /workshop date logic at four fixed moments so the page's behaviour
+// Pins the /workshop date logic at fixed moments so the page's behaviour
 // across the three sessions can be checked today instead of in November.
 //
 // Run:  npm run test:workshop
@@ -14,12 +14,12 @@ process.env.TZ = "Asia/Tokyo";
 import assert from "node:assert/strict";
 import { workshop } from "../src/data/workshop";
 import {
-  formatDateRow,
   formatLongDate,
   formatSessionDateLine,
   formatShortDate,
   getNextSession,
-  getSeriesClock,
+  buildEventGraph,
+  getPillCopy,
   getSeriesPhase,
   getSessionEnd,
   getSessionStatuses,
@@ -126,59 +126,14 @@ check("stageOverride is unset in the committed data file", () => {
   assert.equal(workshop.stageOverride, undefined);
 });
 
-console.log("\nforcedNextSession");
-const nightBefore = Date.parse("2026-09-24T21:00:00-05:00");
-const forced = (now: number, next = 2) => getSeriesClock(sessions, now, next);
-check("forcing session 2 the night before reads 1 completed, 2 next", () => {
-  const now = forced(nightBefore);
-  assert.deepEqual(getSessionStatuses(sessions, now), [
-    "completed",
-    "next",
-    "upcoming",
-  ]);
-  assert.equal(getSeriesPhase(sessions, now), "in-progress");
-  assert.equal(getNextSession(sessions, now)?.number, 2);
-});
-check("forcing session 2 holds during session 1 itself", () => {
-  assert.deepEqual(getSessionStatuses(sessions, forced(AT.duringSession1)), [
-    "completed",
-    "next",
-    "upcoming",
-  ]);
-});
-check("the dates take over again once they pass the forced point", () => {
-  const session2Morning = Date.parse("2026-10-09T08:30:00-05:00");
-  assert.deepEqual(getSessionStatuses(sessions, forced(session2Morning)), [
-    "completed",
-    "today",
-    "upcoming",
-  ]);
-  assert.deepEqual(getSessionStatuses(sessions, forced(AT.betweenSessions)), [
-    "completed",
-    "completed",
-    "next",
-  ]);
-  assert.equal(getSeriesPhase(sessions, forced(AT.afterSeries)), "complete");
-});
-check("forcing session 3 marks 1 and 2 completed", () => {
-  assert.deepEqual(getSessionStatuses(sessions, forced(nightBefore, 3)), [
-    "completed",
-    "completed",
-    "next",
-  ]);
-});
-check("unset means the real clock", () => {
-  assert.equal(getSeriesClock(sessions, nightBefore, undefined), nightBefore);
-});
-
 console.log("\nFormatting, from a process running in Asia/Tokyo");
 check("long dates are Central, not local", () => {
   assert.equal(formatLongDate(sessions[0].start), "Friday, September 25");
   assert.equal(formatLongDate(sessions[2].start), "Friday, November 6");
 });
-check("short dates match the hero row", () => {
+check("short dates are Central too", () => {
   assert.equal(formatShortDate(sessions[1].start), "Oct 9");
-  assert.equal(formatDateRow(sessions), "Sep 25 · Oct 9 · Nov 6");
+  assert.equal(formatShortDate(sessions[2].start), "Nov 6");
 });
 check("session date lines match the copy deck", () => {
   assert.equal(
@@ -195,7 +150,7 @@ console.log("\nVenue-dependent FAQ");
 check("placeholder sentence holds while the address is empty", () => {
   const faq = workshop.faqs.find((f) => f.id === "where")!;
   const answer = resolveFaqAnswer(faq, { address: "", parkingNote: "" });
-  assert.match(answer, /before Session 1\.$/);
+  assert.match(answer, /Same room as Session 2\.$/);
 });
 check("the committed venue answers with its real address", () => {
   const faq = workshop.faqs.find((f) => f.id === "where")!;
@@ -224,6 +179,50 @@ check("the closing detail line carries the venue name too", () => {
 });
 check("venue has a map URL for the links to point at", () => {
   assert.match(workshop.venue.mapUrl, /^https:\/\//);
+});
+
+console.log("\nSession 3 is the only event advertised, and nothing invites sign-ups");
+check("the schema holds one Event, Session 3, while sessions 1 and 2 are past", () => {
+  const graph = buildEventGraph(workshop, AT.betweenSessions) as {
+    "@graph": Array<Record<string, unknown>>;
+  };
+  assert.equal(graph["@graph"].length, 1);
+  assert.match(String(graph["@graph"][0].name), /Session 3/);
+  assert.equal(graph["@graph"][0].startDate, "2026-11-06T08:00:00-06:00");
+});
+check("the Event has no Offer, capacity, or free flag", () => {
+  const graph = buildEventGraph(workshop, AT.betweenSessions) as {
+    "@graph": Array<Record<string, unknown>>;
+  };
+  const event = graph["@graph"][0];
+  assert.equal(event.offers, undefined);
+  assert.equal(event.maximumAttendeeCapacity, undefined);
+  assert.equal(event.isAccessibleForFree, undefined);
+});
+check("no schema at all once the series is over", () => {
+  assert.equal(buildEventGraph(workshop, AT.afterSeries), undefined);
+});
+check("the pill names the next session and its date", () => {
+  const copy = getPillCopy(workshop.pill, sessions[2]);
+  assert.equal(copy.full, "Session 3 · Friday, November 6");
+  assert.equal(copy.short, "Session 3 · Nov 6");
+});
+check("the hero carries the registration-closed line", () => {
+  assert.equal(
+    workshop.hero.registrationLine,
+    "Registration for Session 3 is closed. If you signed up, we will see you there.",
+  );
+});
+check("no em dashes, sign-up language, retainer, or prices", () => {
+  const text = JSON.stringify(workshop);
+  assert.ok(!text.includes("\u2014"), "em dash in workshop copy");
+  assert.ok(!/sign.?up|register now|rsvp/i.test(text.replace(/Registration for Session 3 is closed/g, "").replace(/If you signed up/g, "").replace(/registered attendees/g, "")), "sign-up language");
+  assert.ok(!/retainer/i.test(text), "retainer");
+  assert.ok(!/\$\d/.test(text), "a price");
+});
+check("the closing card has no button, only the email link", () => {
+  assert.equal(workshop.closing.links.length, 1);
+  assert.match(workshop.closing.links[0].href, /^mailto:/);
 });
 
 console.log(

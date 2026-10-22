@@ -56,11 +56,15 @@ first response. React then hydrates that markup in the browser.
 - **Service pages**: [`src/pages/WebDesignPage.tsx`](src/pages/WebDesignPage.tsx)
   and [`src/pages/AutomationPage.tsx`](src/pages/AutomationPage.tsx).
 - **Workshop series**: [`src/data/workshop.ts`](src/data/workshop.ts).
-  `forcedNextSession` picks the session the page shows as "Next up" (every
-  earlier one shows "Completed"); change it to 3 after October 9.
-  `attendeeCard` is the card at the top of the page. Its button goes to
-  `PACKET_UPLOAD_URL`, the packet upload form (a separate site), and
-  `vaelro.co/upload` is a redirect to the same address in `netlify.toml`.
+  Session statuses come from the dates alone: a session reads "Completed" two
+  hours after it starts and the next one reads "Next up", so nothing needs
+  changing between sessions. Registration is closed, so the page has no form
+  and no sign-up button. `whatWeHeard` and `gameplan` hold the two general
+  sections, and `attendeeCard` is the text-link card under the timeline.
+  `PACKET_UPLOAD_URL` (the packet upload form, a separate site) is still
+  used by the Session 2 page, and `vaelro.co/upload` is a redirect to the
+  same address in `netlify.toml`. The /workshop JSON-LD only describes
+  sessions that have not happened yet.
 - **Session 1 attendee page** (`/workshop/session-1`):
   [`src/data/session1.ts`](src/data/session1.ts). To add the slides, put the
   PDF at `public/workshop/session-1/slides.pdf` and set
@@ -80,8 +84,8 @@ first response. React then hydrates that markup in the browser.
   [`backend/apps-script/Code.gs`](backend/apps-script/Code.gs), URL in
   [`src/lib/appsScript.ts`](src/lib/appsScript.ts)) which appends a row to the
   "Vaelro Website Leads" Sheet and emails hello@vaelro.co. Spam is blocked by a
-  honeypot field. The Session 1 feedback form posts to the same script, which
-  files it in its own "Session 1 Feedback" tab instead. Code.gs is deployed by
+  honeypot field. The Session 1 feedback form has been removed from the site;
+  its handler is still in Code.gs, unused. Code.gs is deployed by
   hand: after changing it, paste it into the Apps Script editor and publish a
   new version of the existing deployment (Manage deployments, Edit).
 

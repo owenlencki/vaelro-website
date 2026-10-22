@@ -60,10 +60,9 @@ export interface Speaker {
   photoAlt: string;
 }
 
-export interface Outcome {
+export interface HeardItem {
   tag: string;
-  heading: string;
-  body: string;
+  text: string;
 }
 
 export interface Faq {
@@ -82,7 +81,7 @@ export interface PromptCard {
   prompt: string;
 }
 
-/** A text link under the upload button on the card at the top of /workshop. */
+/** A text link on the resources card under the timeline on /workshop. */
 export interface AttendeeCardLink {
   label: string;
   to: string;
@@ -109,17 +108,16 @@ export const workshop = {
   },
 
   time: "8:00 AM",
-  capacity: 25,
   contactEmail: "hello@vaelro.co",
 
   meta: {
     // Search snippet: title under 60 characters, description 120 to 158.
-    title: "Free AI Workshop Series for Waupaca Businesses | Vaelro",
+    title: "Session 3: Solutions for Waupaca Businesses | Vaelro",
     description:
-      "Three free Friday mornings with the Waupaca Area Chamber of Commerce: what AI is, where your business loses time, and solutions built from your answers.",
-    ogTitle: "AI for Your Business, Without the Overwhelm",
+      "Session 3 is Friday, November 6: live demos for the top three problems local businesses shared, with a free do-it-yourself option. Registration is closed.",
+    ogTitle: "Session 3: Live Demos for the Top Three Problems",
     ogDescription:
-      "Free three-session workshop series with the Waupaca Area Chamber of Commerce. Fridays at 8:00 AM, September 25, October 9, November 6.",
+      "Hosted with the Waupaca Area Chamber of Commerce. Friday, November 6 at 8:00 AM. A free do-it-yourself option and a done-for-you version of each. Registration is closed.",
     canonical: "https://vaelro.co/workshop",
     // The site's own OG image until a workshop-specific card exists.
     ogImage: "https://vaelro.co/og-image.jpg",
@@ -127,45 +125,51 @@ export const workshop = {
 
   hero: {
     eyebrow:
-      "FREE WORKSHOP SERIES · WITH THE WAUPACA AREA CHAMBER OF COMMERCE",
-    headingLines: ["AI for Your Business,", "Without the Overwhelm"],
+      "SESSION 3 · FRIDAY, NOVEMBER 6 · WITH THE WAUPACA AREA CHAMBER OF COMMERCE",
+    headingLines: ["Three Problems From the Room,", "Two Ways to Fix Each"],
     subhead:
-      "Three free Friday morning sessions for local business owners. Learn what AI actually is, map where your business loses time, and leave with something to try.",
-    /** Rendered as one plain mono row. Dates are derived from `sessions`. */
-    detailLead: "Fridays",
+      "In Sessions 1 and 2, local business owners told us where their time goes. On Friday, November 6, we show live demos for the top three problems: a free do-it-yourself option and a done-for-you version of each.",
+    /** Sits under the subhead. Registration is closed; the page asks for nothing. */
+    registrationLine:
+      "Registration for Session 3 is closed. If you signed up, we will see you there.",
+    /** Rendered as one plain mono row: the featured session's date, then these. */
     detailVenue: "Waupaca Business Center, inside the Rec Center",
-    detailFree: "Free",
-    /** Sits under the details row. */
-    reassurance: "No technical background needed.",
   },
 
-  outcomes: {
-    eyebrow: "WHAT YOU'LL LEAVE WITH",
-    heading: "Three mornings, three things you walk out with.",
+  // What the room told us, in general terms only. No business or person is
+  // named here, and nothing is quoted from the slides or packets.
+  whatWeHeard: {
+    eyebrow: "WHAT WE HEARD FROM LOCAL BUSINESSES",
+    heading: "The same few problems kept coming up.",
+    body: "Across Sessions 1 and 2, owners described the same kinds of daily drags. Three came up most, and those are the three we built live demos for.",
     items: [
       {
-        tag: "SESSION 1",
-        heading: "A clear, non-scary understanding of AI.",
-        body: "What it actually is, the different kinds, and why it matters for a business your size. Plain English, with time for your questions.",
+        tag: "01",
+        text: "Typing the same information into more than one place, and getting it wrong a little more each time.",
       },
       {
-        tag: "SESSION 2",
-        heading: "A map of where your business loses time.",
-        body: "A guided worksheet you fill out in the room, with Owen and Liam helping. Worth the hour whether you ever use AI or not.",
+        tag: "02",
+        text: "Marketing and follow-ups slipping when the day gets busy.",
       },
       {
-        tag: "SESSION 3",
-        heading: "Real solutions and a clear next step.",
-        body: "In Session 3 we come back with real tools built from what the room wrote down: free ones you can use that afternoon, and live examples of the same jobs running on their own.",
+        tag: "03",
+        text: "Paperwork that every office asks for in a different shape.",
       },
-    ] as Outcome[],
-    closingLine:
-      "No technical background needed. Bring a pen. Each session stands on its own, but the series builds.",
+    ] as HeardItem[],
+    footer: "No business or person is named here. Attendee details stay with Vaelro.",
+  },
+
+  // Text only, by design: the call is offered to people who attend, so there is
+  // no button and no link here.
+  gameplan: {
+    eyebrow: "FOR SESSION 3 ATTENDEES",
+    heading: "After Session 3: a free Gameplan call.",
+    body: "Each business that attends Session 3 is offered a free Gameplan call afterward, a chance to talk through what would give you your time back. Nothing is sold at any session.",
   },
 
   series: {
     eyebrow: "THE SERIES",
-    heading: "Three Fridays. One hour each. Built around your business.",
+    heading: "Two sessions done. One to go.",
     recapLabel: "WHAT HAPPENED",
     badges: {
       next: "Next up",
@@ -186,24 +190,20 @@ export const workshop = {
   },
 
   chamberBand: {
-    text: "Presented in partnership with the Waupaca Area Chamber of Commerce.",
+    text: "Hosted in partnership with the Waupaca Area Chamber of Commerce.",
     smallText:
-      "Hosted with the Waupaca Area Chamber of Commerce. Questions about the sessions themselves go to Owen and Liam at hello@vaelro.co.",
+      "Questions about Session 3 go to Owen and Liam at hello@vaelro.co.",
   },
 
   // The sign-off card at the bottom of the page. Its heading is the next
-  // session line (formatNextSessionLine), the same one the hero shows.
+  // session line (formatNextSessionLine), the same one the hero shows. No
+  // button: registration is closed.
   closing: {
-    detailLine:
-      "Fridays at 8:00 AM · Waupaca Business Center · Free",
+    detailLine: "Session 3 · Waupaca Business Center",
     links: [
       {
         label: "Questions? Email hello@vaelro.co",
-        href: "mailto:hello@vaelro.co?subject=Workshop%20series%20question",
-      },
-      {
-        label: "Want to hear when the next series is scheduled? Email us.",
-        href: "mailto:hello@vaelro.co?subject=Workshop%20series%3A%20add%20me%20to%20the%20list",
+        href: "mailto:hello@vaelro.co?subject=Session%203%20question",
       },
     ],
   },
@@ -216,20 +216,14 @@ export const workshop = {
   postSeries: {
     heroSubhead: "The series wrapped on November 6. Here's what we covered.",
     closingHeading: "Thanks for coming.",
-    closingBody:
-      "Recaps from all three sessions are above. Questions? Email hello@vaelro.co.",
+    closingBody: "The series wrapped on November 6. Questions? Email hello@vaelro.co.",
   },
 
+  // The Home hero pill. {number}, {longDate}, and {date} are the next
+  // session's number, "Friday, November 6", and "Nov 6".
   pill: {
-    upcoming: {
-      full: "Free AI workshop series with the Waupaca Chamber · Starts Sep 25",
-      short: "Free AI workshop series · Sep 25",
-    },
-    inProgress: {
-      // {date} is replaced with the next session's short date, e.g. "Oct 9".
-      full: "Free AI workshop series · Next session {date}",
-      short: "Workshop series · Next: {date}",
-    },
+    full: "Session {number} · {longDate}",
+    short: "Session {number} · {date}",
   },
 
   // -------------------------------------------------------------------------
@@ -260,35 +254,22 @@ export const workshop = {
   /** Testing only. Must be undefined in commits. */
   stageOverride: undefined as SeriesPhase | undefined,
 
-  // -------------------------------------------------------------------------
-  // OWEN: the session the page shows as "Next up". Every session before it
-  // shows "Completed", even ahead of its date. Change it to 3 after October 9.
-  // It only ever moves the page forward: once the real date passes the same
-  // point, the dates take over, so leaving it set can never make the page
-  // show something stale. Set it to undefined to go back to dates alone.
-  // -------------------------------------------------------------------------
-  forcedNextSession: 2 as 2 | 3 | undefined,
-
   /**
-   * The card at the very top of /workshop, above the fold on a phone. The
-   * NFC tags and table stands in the room open /workshop, so this is the way
-   * in for whoever is sitting at a table: one big button to the packet upload
-   * form (PACKET_UPLOAD_URL, at the top of this file), then text links to the
-   * session pages.
-   */
+  * The resources card under the timeline on /workshop. It is for people who
+  * were in the room: text links to the Session 1 and Session 2 pages. It has
+  * no upload button; the packet deadline has passed.
+  */
   attendeeCard: {
-    heading: "Here for Session 2?",
-    uploadLabel: "Upload your packet pages",
+    heading: "Were you at Session 1 or Session 2?",
     links: [
-      {
-        label: "Free prompts and resources",
-        to: "/workshop/session-2",
-      },
       {
         label: "Session 1 prompts and homework",
         to: "/workshop/session-1",
-        // The event the Session 1 card this replaced fired on a tap.
         event: "session1_card_click",
+      },
+      {
+        label: "Session 2 free prompts and resources",
+        to: "/workshop/session-2",
       },
     ] as AttendeeCardLink[],
   },
@@ -301,7 +282,7 @@ export const workshop = {
       start: "2026-09-25T08:00:00-05:00",
       durationMinutes: 60,
       blurb:
-        "Pure education. What AI is, the kinds you'll actually run into, whether you should be worried, and why it matters for a business of any size. Then open Q&A, so bring the skeptical questions. You'll leave with an accurate, non-scary picture of the whole thing.",
+        "Pure education. We covered how to think of AI as a fast, confident intern, why the way you ask matters, and why most businesses are still early. The homework was to bring one to three things that eat your week.",
       leaders: "Casey Plunkett with Owen and Liam",
     },
     {
@@ -311,7 +292,7 @@ export const workshop = {
       start: "2026-10-09T08:00:00-05:00",
       durationMinutes: 60,
       blurb:
-        "Hands-on. Map your biggest time drains, workflows, and tools with a guided worksheet while Owen and Liam work the room. Valuable whether you ever use AI or not.",
+        "Hands-on. Owners worked through a six-part packet: where their hours go, which tools they use, what is actually painful, and what they would do with the time back.",
       leaders: "Owen and Liam",
     },
     {
@@ -321,7 +302,7 @@ export const workshop = {
       start: "2026-11-06T08:00:00-06:00",
       durationMinutes: 60,
       blurb:
-        "We take the biggest pain points from the room and show two versions of each: a free do-it-yourself version you can use that day, and a live example of the same job running on its own. You'll see the difference between doing it by hand every week and having it just happen. You'll leave with something to try that week.",
+        "We are bringing live demos built from what the room wrote down. Each of the top three problems gets a free do-it-yourself option and a done-for-you version. Nothing is sold at any session.",
       leaders: "Owen and Liam",
     },
   ] as WorkshopSession[],
@@ -342,7 +323,7 @@ export const workshop = {
       id: "liam",
       name: "Liam Bloedow",
       role: "Co-founder, Vaelro",
-      bio: "Liam builds the automations and systems Vaelro delivers. Waupaca High School graduate. In Session 2 he's the one sitting down next to you to help map your workflows.",
+      bio: "Liam builds the automations and systems Vaelro delivers. Waupaca High School graduate. In Session 2 he sat down next to owners to help map their workflows.",
       photo: [
         { src: "/workshop/liam-320.webp", width: 320 },
         { src: "/workshop/liam-440.webp", width: 440 },
@@ -366,13 +347,13 @@ export const workshop = {
       id: "what-is-ai",
       question: "What is AI, in one sentence?",
       answer:
-        "That's most of Session 1, but here's the short version: software that has learned from huge numbers of examples, so it can write, sort, predict, and handle steps that used to need a person doing them by hand. You've used it for years without noticing, every time your phone finished a sentence or your email caught spam.",
+        "Session 1 covered this, and here is the short version: software that has learned from huge numbers of examples, so it can write, sort, predict, and handle steps that used to need a person doing them by hand. You've used it for years without noticing, every time your phone finished a sentence or your email caught spam.",
     },
     {
       id: "all-three",
-      question: "Do I have to attend all three?",
+      question: "I missed the first two sessions. Does Session 3 still make sense?",
       answer:
-        "No. Each session stands on its own, but they build on each other, and Session 3 is built from what the group writes down in Session 2. If you can only make one, come to the one that fits.",
+        "For registered attendees, yes. Session 3 makes sense on its own. Registration for Session 3 is closed. If you signed up, we will see you there.",
     },
     {
       id: "not-technical",
@@ -384,27 +365,38 @@ export const workshop = {
       id: "bring",
       question: "Do I need to bring anything?",
       answer:
-        "A pen. Session 2 uses a printed worksheet we provide. No laptop required.",
+        "Nothing required. A pen is handy for notes, and no laptop is needed.",
     },
     {
       id: "free",
       question: "Is it really free?",
       answer:
-        "Yes. Free to attend. Owen and Liam are running it because this is their community, and the Chamber is hosting it for its members.",
+        "Free for registered attendees. Nothing is sold at the workshops, and attendee information stays with Vaelro. Owen and Liam run it because this is their community, and the Chamber is hosting it for its members.",
     },
     {
       id: "who-for",
-      question: "Who is this for?",
+      question: "Who is it for?",
       answer:
-        "Local business owners and the people who run the day-to-day: restaurants, contractors, salons, dental and medical offices, real estate, landscaping, auto shops, retail, and professional practices. If repetitive work eats your week, this is for you.",
+        "Local business owners and the people who run the day to day: restaurants, contractors, salons, dental and medical offices, real estate, landscaping, auto shops, retail, and professional practices.",
+    },
+    {
+      id: "gameplan",
+      question: "What is a Gameplan call?",
+      answer:
+        "A free call offered to each business that attends Session 3, a chance to talk through where to start.",
+    },
+    {
+      id: "privacy",
+      question: "What happens to what I share?",
+      answer: "Attendee information stays with Vaelro.",
     },
     {
       // The second sentence is replaced by venue.address and venue.parkingNote
       // once those are filled in. See resolveFaqAnswer in src/lib/workshop.ts.
       id: "where",
-      question: "Where is it, and where do I park?",
+      question: "Where is it?",
       answer:
-        "The Waupaca Business Center, inside the Waupaca Recreation Center. We'll add the room and parking details here before Session 1.",
+        "The Waupaca Business Center, inside the Waupaca Recreation Center. Same room as Session 2.",
     },
   ] as Faq[],
 };

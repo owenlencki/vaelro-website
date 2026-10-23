@@ -230,8 +230,33 @@ console.log("\nSession 2 page");
 check("no upload, summary, deadline, or em dash copy on the Session 2 page", () => {
   const text = JSON.stringify(session2);
   assert.ok(!/upload|summary|October 14|\u2014/i.test(text), "stale copy");
-  assert.ok(!/running on its own/i.test(text), "old demo wording");
-  assert.match(text, /live demos built from what the room wrote down/);
+  assert.match(
+    text,
+    /On November 6 we share what the room wrote down and show practical ways to start getting that time back\./,
+  );
+});
+
+console.log("\nSession 3 copy promises no specific deliverables");
+const PROMISES = /\bdemos?\b|\bfix(es)?\b|done-for-you|do-it-yourself|two (ways|versions)|running on its own|live example/i;
+check("no demo, fix, or version promises in workshop or Session 2 copy", () => {
+  assert.ok(!PROMISES.test(JSON.stringify(workshop)), "workshop.ts");
+  assert.ok(!PROMISES.test(JSON.stringify(session2)), "session2.ts");
+});
+check("meta, OG, pill, and schema never say demos, solutions, or fixes", () => {
+  const graph = buildEventGraph(workshop, AT.betweenSessions);
+  const text = JSON.stringify([workshop.meta, workshop.pill, graph]);
+  assert.ok(!/demo|solution|\bfix/i.test(text), "promise in metadata");
+});
+check("the approved hero, meta, and Session 3 copy is in place", () => {
+  assert.deepEqual(workshop.hero.headingLines, ["What We Heard,", "and What Comes Next"]);
+  assert.equal(workshop.meta.title, "Session 3: What We Heard and What Comes Next | Vaelro");
+  assert.equal(workshop.meta.ogTitle, "Session 3: What We Heard and What Comes Next");
+  assert.equal(workshop.sessions[2].title, "Solutions");
+  assert.match(workshop.sessions[2].blurb, /^We share what the room told us and show practical ways to start getting that time back\. Nothing is sold at any session\.$/);
+  assert.equal(
+    workshop.whatWeHeard.body,
+    "Across Sessions 1 and 2, owners described the same kinds of daily drags. Three came up most.",
+  );
 });
 
 console.log(

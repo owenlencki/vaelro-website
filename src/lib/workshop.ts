@@ -218,7 +218,7 @@ export function buildEventGraph(
     .filter((session) => getSessionStatus(session, now) !== "completed")
     .map((session) => ({
       "@type": "Event",
-      name: `${data.title}: Session ${session.number}, ${session.title}`,
+      name: `${data.title}: Session ${session.number}`,
       description: session.blurb,
       startDate: session.start,
       endDate: getSessionEnd(session),

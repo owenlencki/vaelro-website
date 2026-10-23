@@ -35,10 +35,10 @@ export const session2 = {
 
   next: {
     eyebrow: "What happens next",
-    heading: "November 6 is built from what the room wrote down",
+    heading: "November 6 starts from what the room wrote down",
     steps: [
       "We looked for the problems that showed up across the room.",
-      "On November 6 we bring live demos built from what the room wrote down: a free do-it-yourself option and a done-for-you version for each of the top three problems.",
+      "On November 6 we share what the room wrote down and show practical ways to start getting that time back.",
     ],
   },
 

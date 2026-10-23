@@ -112,12 +112,12 @@ export const workshop = {
 
   meta: {
     // Search snippet: title under 60 characters, description 120 to 158.
-    title: "Session 3: Solutions for Waupaca Businesses | Vaelro",
+    title: "Session 3: What We Heard and What Comes Next | Vaelro",
     description:
-      "Session 3 is Friday, November 6: live demos for the top three problems local businesses shared, with a free do-it-yourself option. Registration is closed.",
-    ogTitle: "Session 3: Live Demos for the Top Three Problems",
+      "Session 3 is Friday, November 6: what local businesses told us, and practical ways to start getting time back. Registration is closed.",
+    ogTitle: "Session 3: What We Heard and What Comes Next",
     ogDescription:
-      "Hosted with the Waupaca Area Chamber of Commerce. Friday, November 6 at 8:00 AM. A free do-it-yourself option and a done-for-you version of each. Registration is closed.",
+      "Hosted with the Waupaca Area Chamber of Commerce. Friday, November 6 at 8:00 AM. Registration is closed.",
     canonical: "https://vaelro.co/workshop",
     // The site's own OG image until a workshop-specific card exists.
     ogImage: "https://vaelro.co/og-image.jpg",
@@ -126,9 +126,9 @@ export const workshop = {
   hero: {
     eyebrow:
       "SESSION 3 · FRIDAY, NOVEMBER 6 · WITH THE WAUPACA AREA CHAMBER OF COMMERCE",
-    headingLines: ["Three Problems From the Room,", "Two Ways to Fix Each"],
+    headingLines: ["What We Heard,", "and What Comes Next"],
     subhead:
-      "In Sessions 1 and 2, local business owners told us where their time goes. On Friday, November 6, we show live demos for the top three problems: a free do-it-yourself option and a done-for-you version of each.",
+      "In Sessions 1 and 2, local business owners told us where their time goes. On Friday, November 6, we share what we heard and show practical ways to start getting that time back.",
     /** Sits under the subhead. Registration is closed; the page asks for nothing. */
     registrationLine:
       "Registration for Session 3 is closed. If you signed up, we will see you there.",
@@ -141,7 +141,7 @@ export const workshop = {
   whatWeHeard: {
     eyebrow: "WHAT WE HEARD FROM LOCAL BUSINESSES",
     heading: "The same few problems kept coming up.",
-    body: "Across Sessions 1 and 2, owners described the same kinds of daily drags. Three came up most, and those are the three we built live demos for.",
+    body: "Across Sessions 1 and 2, owners described the same kinds of daily drags. Three came up most.",
     items: [
       {
         tag: "01",
@@ -297,12 +297,12 @@ export const workshop = {
     },
     {
       number: 3,
-      slug: "solutions-and-demos",
-      title: "Solutions and Demos",
+      slug: "solutions",
+      title: "Solutions",
       start: "2026-11-06T08:00:00-06:00",
       durationMinutes: 60,
       blurb:
-        "We are bringing live demos built from what the room wrote down. Each of the top three problems gets a free do-it-yourself option and a done-for-you version. Nothing is sold at any session.",
+        "We share what the room told us and show practical ways to start getting that time back. Nothing is sold at any session.",
       leaders: "Owen and Liam",
     },
   ] as WorkshopSession[],

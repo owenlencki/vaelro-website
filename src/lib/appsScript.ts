@@ -1,6 +1,7 @@
 /**
  * The Google Apps Script web app behind every form on the site: the Contact
- * page's lead flow and the Session 1 feedback form. Its source of truth is
+ * page's lead flow. (The Session 1 feedback form is retired; its handler
+ * stays in Code.gs.) Its source of truth is
  * backend/apps-script/Code.gs, which is deployed by hand; an update is a new
  * version of the same deployment, so this URL does not change.
  */

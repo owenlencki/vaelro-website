@@ -1,5 +1,4 @@
 import SessionHeader from "../components/workshop/session2/SessionHeader";
-import Upload from "../components/workshop/session2/Upload";
 import WhatsNext from "../components/workshop/session2/WhatsNext";
 import Resources from "../components/workshop/session2/Resources";
 import SessionFooter from "../components/workshop/session1/SessionFooter";
@@ -7,12 +6,12 @@ import { session2 } from "../data/session2";
 import Seo from "../seo/Seo";
 
 /**
- * The Session 2 resource page, for the people in the room on October 9 and
- * the ones who take their packet home. The card at the top of /workshop links
- * here. Uploading comes first because it is why the page exists; the free
- * prompts follow. Like the Session 1 page it stays out of search (noindex, so
- * the build also leaves it out of the sitemap), and it sells nothing: the
- * series is education until Session 3.
+ * The Session 2 resource page, for the people who were in the room on October
+ * 9 and the ones who took their packet home. The card under the timeline on
+ * /workshop links here. Packet uploads are closed, so it says what comes next
+ * (Session 3) and offers the free prompts. Like the Session 1 page it stays
+ * out of search (noindex, so the build also leaves it out of the sitemap), and
+ * it sells nothing.
  */
 export default function Session2Page() {
   return (
@@ -27,7 +26,6 @@ export default function Session2Page() {
       />
 
       <SessionHeader />
-      <Upload />
       <WhatsNext />
       <Resources />
       <SessionFooter footer={session2.footer} />

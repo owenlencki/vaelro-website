@@ -108,7 +108,7 @@ export const session1 = {
   meta: {
     title: "Session 1: AI Education | Vaelro Workshop",
     description:
-      "Resources from Session 1 of the free AI workshop series with the Waupaca Area Chamber of Commerce: one prompt to try this week, five honest cautions, and your homework for October 9.",
+      "Resources from Session 1 of the AI workshop series with the Waupaca Area Chamber of Commerce: one prompt to try, five honest cautions, and the homework from Session 1.",
     canonical: "https://vaelro.co/workshop/session-1",
     ogImage: "https://vaelro.co/og-image.jpg",
   },
@@ -246,7 +246,7 @@ export const session1 = {
   },
 
   homework: {
-    eyebrow: "Homework for October 9",
+    eyebrow: "The Session 1 homework",
     heading: "Where does your week leak?",
     pillars: [
       {
@@ -276,7 +276,7 @@ export const session1 = {
       },
     ] as Pillar[],
     instruction:
-      "Write down the one to three (or 50) things you wish took less time. Bring the list.",
+      "The homework was to write down the one to three (or 50) things you wish took less time, and bring the list.",
   },
 
   built: {
@@ -333,34 +333,9 @@ export const session1 = {
     ] as WebsiteItem[],
   },
 
-  feedback: {
-    eyebrow: "Feedback",
-    heading: "How did we do?",
-    intro: "Only the first question is required.",
-    rating: {
-      legend: "Was this worth your morning?",
-      low: "Not really",
-      high: "Absolutely",
-      error: "Pick a number from 1 to 5.",
-    },
-    octoberWish: "What would make October 9 worth coming back for?",
-    referral: {
-      label: "Know anyone else who should be at these?",
-      helper: "Their name and business.",
-    },
-    name: "Name",
-    business: "Business",
-    submitLabel: "Send my feedback",
-    sendingLabel: "Sending…",
-    privacy: "We never share your information.",
-    success: "Thanks. See you October 9.",
-    failure:
-      "That didn't go through. Try again in a moment, or email hello@vaelro.co.",
-  },
-
   footer: {
     eyebrow: "Next session",
-    line: "Friday, October 9, 8:00 AM, same room. Bring your list.",
+    line: "Session 3 is Friday, November 6, 8:00 AM. Registration for Session 3 is closed. If you signed up, we will see you there.",
     email: "hello@vaelro.co",
   },
 };

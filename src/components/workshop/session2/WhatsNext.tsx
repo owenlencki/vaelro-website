@@ -1,11 +1,9 @@
 import SplitText from "../../ui/SplitText";
-import Reveal from "../../ui/Reveal";
 import { session2 } from "../../../data/session2";
 
 /**
- * The page's dark band, where Session 1's had the Super Bowl test: what
- * becomes of the pages once they are sent in. The line about the summary
- * shows only while its string in the data file is non-empty.
+ * The page's dark band, where Session 1's had the Super Bowl test: what the
+ * room's answers became, and what Session 3 brings.
  */
 export default function WhatsNext() {
   const { next } = session2;
@@ -27,7 +25,7 @@ export default function WhatsNext() {
           <SplitText text={next.heading} />
         </h2>
 
-        <ol className="mt-10 grid gap-8 md:mt-14 md:grid-cols-3 md:gap-10">
+        <ol className="mt-10 grid gap-8 md:mt-14 md:grid-cols-2 md:gap-10">
           {next.steps.map((step, i) => (
             <li key={step} className="border-t border-cream-100/15 pt-5">
               <span
@@ -41,13 +39,6 @@ export default function WhatsNext() {
           ))}
         </ol>
 
-        {next.summaryLine && (
-          <Reveal delay={0.1}>
-            <p className="mt-10 max-w-2xl border-l-2 border-orange-500 pl-5 leading-relaxed text-cream-100/85 md:mt-14">
-              {next.summaryLine}
-            </p>
-          </Reveal>
-        )}
       </div>
     </section>
   );

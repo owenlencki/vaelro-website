@@ -2,7 +2,9 @@ import { useMemo } from "react";
 import { useNow } from "../hooks/useNow";
 import Seo from "../seo/Seo";
 import WorkshopHero from "../components/workshop/WorkshopHero";
-import Outcomes from "../components/workshop/Outcomes";
+import WhatWeHeard from "../components/workshop/WhatWeHeard";
+import GameplanBand from "../components/workshop/GameplanBand";
+import AttendeeCard from "../components/workshop/AttendeeCard";
 import SessionTimeline from "../components/workshop/SessionTimeline";
 import Speakers from "../components/workshop/Speakers";
 import WhyBand from "../components/workshop/WhyBand";
@@ -14,26 +16,21 @@ import { workshop } from "../data/workshop";
 import {
   buildEventGraph,
   getNextSession,
-  getSeriesClock,
   getSeriesPhase,
   getSessionStatuses,
 } from "../lib/workshop";
 
 /**
  * The public home of the Chamber workshop series. Chamber registration has
- * closed, so the page asks for nothing: while the series runs it is the
- * attendee resource (the card at the top, statuses, the next session), and
+ * closed, so the page asks for nothing: while the series runs it names the
+ * next session, says what the room told us, and links the resources for
+ * Sessions 1 and 2 (the card under the timeline), and
  * after November 6 it becomes the record of what happened. Which of those you
  * get is decided here, once, from the data file.
  */
 export default function WorkshopPage() {
-  // Pinned for the life of the page so every section agrees on "now", and
-  // moved forward to forcedNextSession when that is set.
-  const now = getSeriesClock(
-    workshop.sessions,
-    useNow(),
-    workshop.forcedNextSession,
-  );
+  // Pinned for the life of the page so every section agrees on "now".
+  const now = useNow();
 
   const phase = getSeriesPhase(
     workshop.sessions,
@@ -42,7 +39,7 @@ export default function WorkshopPage() {
   );
   const statuses = getSessionStatuses(workshop.sessions, now);
   const nextSession = getNextSession(workshop.sessions, now);
-  const eventGraph = useMemo(() => buildEventGraph(workshop), []);
+  const eventGraph = useMemo(() => buildEventGraph(workshop, now), [now]);
 
   return (
     <>
@@ -50,15 +47,17 @@ export default function WorkshopPage() {
         title={workshop.meta.title}
         description={workshop.meta.description}
         path={new URL(workshop.meta.canonical).pathname}
-        schema={eventGraph}
+        schema={eventGraph ?? undefined}
         socialTitle={workshop.meta.ogTitle}
         socialDescription={workshop.meta.ogDescription}
         image={{ url: workshop.meta.ogImage, alt: workshop.meta.ogTitle }}
       />
 
       <WorkshopHero phase={phase} nextSession={nextSession} />
-      <Outcomes />
+      <WhatWeHeard />
+      <GameplanBand />
       <SessionTimeline statuses={statuses} />
+      <AttendeeCard />
       <Speakers />
       <WhyBand />
       <Prompts />

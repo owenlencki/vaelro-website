@@ -25,12 +25,60 @@ const Session2Page = lazy(() => import("./pages/Session2Page"));
 
 const NAV_OFFSET = -88;
 
+/**
+ * Deep links into the Session 3 block on /workshop (#session-3, #prompt-1 to
+ * #prompt-12). These are the only anchors that get the patient scroll below;
+ * every other anchor keeps the plain one in ScrollManager.
+ */
+function isSession3Anchor(hash: string): boolean {
+  return hash === "#session-3" || hash.startsWith("#prompt-");
+}
+
+/**
+ * /workshop is lazy, so on a cold load the target may not exist at 500ms, and
+ * Lenis may still hold the shorter page height it measured first. Keep looking
+ * for the target for a few seconds, re-measure before scrolling, then correct
+ * once if layout shifted it while the smooth scroll ran. Returns the cleanup.
+ */
+function scrollToSession3Anchor(
+  hash: string,
+  scrollTo: ReturnType<typeof useLenisContext>["scrollTo"],
+): () => void {
+  const id = decodeURIComponent(hash.slice(1));
+  const timers: number[] = [];
+  let tries = 0;
+  const find = () => {
+    const el = document.getElementById(id);
+    if (el) {
+      scrollTo(el, { offset: NAV_OFFSET, resize: true });
+      timers.push(
+        window.setTimeout(() => {
+          // Look it up again: hydrating a lazy page can swap the node.
+          const now = document.getElementById(id);
+          if (!now) return;
+          const drift = now.getBoundingClientRect().top + NAV_OFFSET;
+          if (Math.abs(drift) > 4) {
+            scrollTo(now, { offset: NAV_OFFSET, immediate: true, resize: true });
+          }
+        }, 1500),
+      );
+    } else if (++tries < 30) {
+      timers.push(window.setTimeout(find, 100));
+    }
+  };
+  timers.push(window.setTimeout(find, 500));
+  return () => timers.forEach((t) => clearTimeout(t));
+}
+
 /** Scrolls to top on route change, or to the anchor when a hash is present. */
 function ScrollManager() {
   const { pathname, hash } = useLocation();
   const { scrollTo } = useLenisContext();
 
   useEffect(() => {
+    if (hash && isSession3Anchor(hash)) {
+      return scrollToSession3Anchor(hash, scrollTo);
+    }
     if (hash) {
       // Wait for the page transition so the target exists and has settled
       const timer = setTimeout(() => {

@@ -3,8 +3,9 @@ import { useNow } from "../hooks/useNow";
 import Seo from "../seo/Seo";
 import WorkshopHero from "../components/workshop/WorkshopHero";
 import WhatWeHeard from "../components/workshop/WhatWeHeard";
-import GameplanBand from "../components/workshop/GameplanBand";
+import AfterSession3 from "../components/workshop/AfterSession3";
 import AttendeeCard from "../components/workshop/AttendeeCard";
+import Session3 from "../components/workshop/Session3";
 import SessionTimeline from "../components/workshop/SessionTimeline";
 import Speakers from "../components/workshop/Speakers";
 import WhyBand from "../components/workshop/WhyBand";
@@ -24,7 +25,8 @@ import {
  * The public home of the Chamber workshop series. Chamber registration has
  * closed, so the page asks for nothing: while the series runs it names the
  * next session, says what the room told us, and links the resources for
- * Sessions 1 and 2 (the card under the timeline), and
+ * Sessions 1 and 2 (the card under the timeline), carries the Session 3
+ * fixes, free prompts and cards (Session3, right under that card), and
  * after November 6 it becomes the record of what happened. Which of those you
  * get is decided here, once, from the data file.
  */
@@ -55,9 +57,10 @@ export default function WorkshopPage() {
 
       <WorkshopHero phase={phase} nextSession={nextSession} />
       <WhatWeHeard />
-      <GameplanBand />
+      <AfterSession3 />
       <SessionTimeline statuses={statuses} />
       <AttendeeCard />
+      <Session3 />
       <Speakers />
       <WhyBand />
       <Prompts />

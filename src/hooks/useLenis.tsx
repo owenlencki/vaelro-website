@@ -13,7 +13,12 @@ interface LenisContextValue {
   /** Smooth-scroll to a target (element, selector, or pixel offset). */
   scrollTo: (
     target: HTMLElement | string | number,
-    options?: { offset?: number; immediate?: boolean },
+    options?: {
+      offset?: number;
+      immediate?: boolean;
+      /** Re-measure the page first, for a page that grew after Lenis started. */
+      resize?: boolean;
+    },
   ) => void;
   stop: () => void;
   start: () => void;
@@ -69,6 +74,7 @@ export function LenisProvider({ children }: { children: ReactNode }) {
     scrollTo: (target, options) => {
       const lenis = lenisRef.current;
       if (lenis) {
+        if (options?.resize) lenis.resize();
         lenis.scrollTo(target, {
           offset: options?.offset ?? 0,
           immediate: options?.immediate ?? false,

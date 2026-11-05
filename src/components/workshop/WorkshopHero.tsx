@@ -3,7 +3,9 @@ import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
 import Portrait from "./Portrait";
 import VenueLink from "./VenueLink";
+import { Link } from "react-router-dom";
 import { workshop } from "../../data/workshop";
+import { SERIES_FINISHED, session3 } from "../../data/session3";
 import type { SeriesPhase, WorkshopSession } from "../../data/workshop";
 import { formatLongDate } from "../../lib/workshop";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
@@ -88,12 +90,41 @@ export default function WorkshopHero({
                 ))}
               </div>
 
-              {/* No button here: Chamber registration has closed. */}
-              {!wrapped && (
+              {/* No button here: Chamber registration has closed. Once
+                  SERIES_FINISHED is set, the line says so instead. */}
+              {SERIES_FINISHED ? (
                 <p className="mt-6 max-w-xl font-semibold text-ink-900">
-                  {hero.registrationLine}
+                  {session3.finishedLine}
                 </p>
+              ) : (
+                !wrapped && (
+                  <p className="mt-6 max-w-xl font-semibold text-ink-900">
+                    {hero.registrationLine}
+                  </p>
+                )
               )}
+
+              {/* A real link (/workshop#session-3), so it also works with
+                  JavaScript off; with it on, ScrollManager does the scroll. */}
+              <Link
+                to={{ hash: "#session-3" }}
+                className="mt-3 inline-flex min-h-11 items-center gap-1.5 text-base font-semibold text-ink-900 underline decoration-orange-500 underline-offset-4 transition-colors duration-200 hover:text-orange-700"
+              >
+                {session3.heroLink}
+                <svg
+                  viewBox="0 0 16 16"
+                  className="h-3.5 w-3.5 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M8 3v10" />
+                  <path d="m4 9 4 4 4-4" />
+                </svg>
+              </Link>
             </Reveal>
           </div>
 

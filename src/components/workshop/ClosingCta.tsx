@@ -2,6 +2,7 @@ import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
 import VenueLink from "./VenueLink";
 import { workshop } from "../../data/workshop";
+import { SERIES_FINISHED, session3 } from "../../data/session3";
 import type { SeriesPhase, WorkshopSession } from "../../data/workshop";
 import { formatNextSessionLine } from "../../lib/workshop";
 
@@ -17,9 +18,12 @@ interface ClosingCtaProps {
  */
 export default function ClosingCta({ phase, nextSession }: ClosingCtaProps) {
   const running = phase !== "complete" && nextSession !== undefined;
-  const heading = running
-    ? formatNextSessionLine(nextSession, workshop.time)
-    : workshop.postSeries.closingHeading;
+  // SERIES_FINISHED swaps only the heading; the rest of the card stays.
+  const heading = SERIES_FINISHED
+    ? session3.finishedLine
+    : running
+      ? formatNextSessionLine(nextSession, workshop.time)
+      : workshop.postSeries.closingHeading;
   const detailLine = running
     ? workshop.closing.detailLine
     : workshop.postSeries.closingBody;

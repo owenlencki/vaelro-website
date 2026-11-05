@@ -1,0 +1,277 @@
+{
+  "version": "2.1",
+  "title": "Free AI, real work: twelve prompts you can run tonight",
+  "subtitle": "Copy, paste, fill in the brackets. Works on the free plans of ChatGPT, Claude, Gemini and Microsoft Copilot.",
+  "settings_checked_on": "2026-11-03",
+  "rule": "Never paste a customer's name, phone number, address or payment details into a free AI tool.",
+  "rule_detail": "Use [first name] or describe the job instead. The settings below stop each company from using your chats to improve its AI. They do not make the tool a safe place for private information. The rule above still applies.",
+  "how_to_use": "Fill in everything in [square brackets], then delete the brackets. Run prompt 1 first and paste its summary at the top of every chat after that. Check every fact and number before it leaves your hands. The AI drafts. You decide.",
+  "tools": [
+    {
+      "id": "chatgpt",
+      "name": "ChatGPT",
+      "plan": "Free",
+      "steps": [
+        {
+          "label": "Computer",
+          "text": "Account menu, then Settings, then Data controls. Turn off \"Improve the model for everyone.\" Click Done."
+        },
+        {
+          "label": "Phone",
+          "text": "Open the side menu, then Settings, then Data controls. Turn off the same switch."
+        },
+        {
+          "label": "",
+          "text": "Your old chats stay saved."
+        },
+        {
+          "label": "One-off private question",
+          "text": "Start a Temporary chat. It is not saved to your history. OpenAI may keep a copy for up to 30 days for safety."
+        }
+      ]
+    },
+    {
+      "id": "claude",
+      "name": "Claude",
+      "plan": "Free",
+      "steps": [
+        {
+          "label": "Computer",
+          "text": "Click your name, then Settings, then Privacy. Turn off \"Help improve our AI models.\""
+        },
+        {
+          "label": "Phone",
+          "text": "Tap your name, then Settings, then Privacy. Same switch."
+        },
+        {
+          "label": "",
+          "text": "New accounts pick this at sign-up. Check it anyway."
+        },
+        {
+          "label": "One-off private question",
+          "text": "Tap the ghost icon at the top right of a new chat (Incognito). It works on the free plan."
+        }
+      ]
+    },
+    {
+      "id": "gemini",
+      "name": "Gemini",
+      "plan": "Personal Google account",
+      "steps": [
+        {
+          "label": "Computer",
+          "text": "gemini.google.com, then Settings & help, then Activity. Near the top, click \"On,\" then \"Turn off.\" Pick \"Turn off and delete activity\" to erase old chats too."
+        },
+        {
+          "label": "Phone app",
+          "text": "Menu, then your profile picture, then Gemini Apps Activity. Tap \"On,\" then turn it off."
+        },
+        {
+          "label": "",
+          "text": "This is on by default for adults. Google still keeps chats for up to 72 hours after you turn it off."
+        },
+        {
+          "label": "One-off private question",
+          "text": "Temporary chat, next to \"New chat.\""
+        }
+      ]
+    },
+    {
+      "id": "copilot",
+      "name": "Microsoft Copilot",
+      "plan": "Personal account",
+      "steps": [
+        {
+          "label": "New Copilot app (August 2026 and later)",
+          "text": "No training switch. Microsoft says your chats are not used to train its core AI models."
+        },
+        {
+          "label": "To limit what it remembers",
+          "text": "Settings, then Personalization. Turn off \"Saved memories,\" \"One shared experience\" and \"Allow ads personalization.\""
+        },
+        {
+          "label": "Older Copilot app",
+          "text": "Profile icon, then your name, then Privacy. Turn off \"Training on conversation activity\" and \"Training on voice conversations.\" Phone: Menu, profile icon, Account, Privacy."
+        },
+        {
+          "label": "",
+          "text": "No temporary chat that we could find."
+        }
+      ]
+    }
+  ],
+  "limits_note": "Free plans have limits. Claude and Gemini make you wait a few hours once you use up your allowance. If one tool says you have hit a limit, paste the same prompt into another. Screens change. These steps were checked against each company's own help pages on November 3, 2026. If a step does not match what you see, look for the same words.",
+  "groups": [
+    {
+      "id": "start",
+      "label": "Start here, any business",
+      "blurb": "Two prompts that make every other prompt better."
+    },
+    {
+      "id": "p1",
+      "label": "Catch it once at the front door",
+      "blurb": "A call or booking arrives once and gets retyped into the calendar, a spreadsheet and a text. These three give you the questions, the text-back and the script."
+    },
+    {
+      "id": "p2",
+      "label": "One log, every form",
+      "blurb": "The accountant, the state and a funder each want the same facts in a different shape. These four design the log, hand you the formula, and turn the log into the summary everyone keeps asking for."
+    },
+    {
+      "id": "p3",
+      "label": "Never drop a follow-up",
+      "blurb": "Quotes, review asks and posts only happen when someone remembers. These three write the follow-ups, the review ask and a month of posts. Your calendar does the remembering."
+    }
+  ],
+  "prompts": [
+    {
+      "id": 1,
+      "group": "start",
+      "title": "Let the AI interview you",
+      "solves": "The AI gives generic answers because it knows nothing about your business.",
+      "prompt": "I own [your business name], a [type of business] in [your town]. Interview me about my business before you write anything for me. Ask one short question at a time and wait for my answer. Cover: what I sell, who my customers are, how new jobs reach me, my busy and slow seasons, how I like to sound, and which office tasks eat my time. After about 10 questions, write a plain-English summary of my business, under 150 words, that I can paste at the top of future chats. No advice yet.",
+      "fill_in": "Your business name, type of business, your town.",
+      "you_get": "About ten questions, one at a time, then a short summary.",
+      "then": "Save the summary in a phone note called \"My business for AI.\" Paste it at the top of every prompt below."
+    },
+    {
+      "id": 2,
+      "group": "start",
+      "title": "Rough notes to a clean message",
+      "solves": "You know what to say, but writing it up takes 20 minutes.",
+      "prompt": "Turn my rough notes into a short message I can send to [who it is for: a customer, my crew, my board]. Keep it under [number] sentences, friendly and plain, the way a small-town business owner talks. Keep my own words where you can. Do not add facts, dates or promises that are not in my notes; where something is unclear, write ??? so I can fix it. Give me one draft, then ask me what to change. Plain text, no headings, no emojis. My notes: [paste your rough notes]",
+      "fill_in": "Who it is for, how many sentences, your notes (no customer details).",
+      "you_get": "One short draft, with ??? wherever it needs you.",
+      "then": "Reply with one change, like \"shorter\" or \"warmer.\" Fix the ??? spots and send it yourself."
+    },
+    {
+      "id": 3,
+      "group": "p1",
+      "title": "The \"ask every new caller\" list",
+      "solves": "A call comes in once, then gets retyped into your calendar, a spreadsheet and a text to the crew.",
+      "prompt": "I run [your business name], a [type of business]. New customers reach me by [phone, text, email, website form]. Right now the details get retyped into my calendar, a spreadsheet and a text to my crew. Write the list of questions to ask every new caller so I collect everything once. Must-have questions first, eight or fewer, each worded so a part-time helper can read it out loud. Then, in two short lists, tell me which answers my crew needs and which my calendar needs. If you need to know something about my business first, ask.",
+      "fill_in": "Your business name and type, how customers reach you.",
+      "you_get": "A numbered question list, plus which answers go to the crew and which to the calendar.",
+      "then": "Print it and tape it by the phone. Use the same questions in prompts 4 and 5."
+    },
+    {
+      "id": 4,
+      "group": "p1",
+      "title": "Missed-call text-back",
+      "solves": "Missed calls go to the next company on the list.",
+      "prompt": "Write 3 versions of a text I can send when I miss a call at [your business name]. Each one: thank them, say I will call back [your usual call-back time], and ask them to reply with [your top 3 questions from prompt 3]. Under 40 words each, warm, plain words, no emojis, no prices, no promised dates. Use [first name] where their name goes. Label them A, B and C.",
+      "fill_in": "Your business name, your usual call-back time, your top three questions from prompt 3.",
+      "you_get": "Three short texts to choose from.",
+      "then": "Save your favorite as a text shortcut or saved reply on your phone. Send it every time you miss a call."
+    },
+    {
+      "id": 5,
+      "group": "p1",
+      "title": "Phone script for whoever answers",
+      "solves": "Your spouse, kid or helper answers and forgets to ask the key questions.",
+      "prompt": "Write a one-page phone script for whoever answers at [your business name], a [type of business]. They are [who answers: my spouse, a part-time helper] and not an expert. Include: a friendly greeting, these questions in this order [paste your must-have questions], what to say when they cannot answer something, and how to end the call with a clear next step. Plain spoken words, the questions in bold, and a last line reminding them to write the answers in [the one place you keep jobs]. Before writing, ask me anything you need to know.",
+      "fill_in": "Your business, who answers, your questions, where you record jobs.",
+      "you_get": "A one-page script: greeting, questions, a fallback line, a closing.",
+      "then": "Print it, practice it once out loud with whoever answers, keep it next to the phone."
+    },
+    {
+      "id": 6,
+      "group": "p2",
+      "title": "Design your one log",
+      "solves": "The accountant, the state and a funder each want the same facts in a different shape.",
+      "prompt": "I run [your business name], a [type of business]. My accountant, the state and [a funder or board, if any] each ask me for the same facts in a different shape. Design one simple log I can keep in a spreadsheet, one row per [job, shift or visit]. Give me a table with three columns: the column name, what goes in it, and an example using made-up data. Twelve columns or fewer. No columns for customer phone, address or payment details; use a job number instead of a name. Then list which columns each of those people needs.",
+      "fill_in": "Your business, who asks you for reports, what one row stands for.",
+      "you_get": "A table of column headers with notes and made-up examples, plus who needs which columns.",
+      "then": "Type the headers into row 1 of a new Google Sheet or Excel file. Log this week's jobs in it starting today."
+    },
+    {
+      "id": 7,
+      "group": "p2",
+      "title": "Get the formula, not the answer",
+      "solves": "AI tools can get math wrong. Your spreadsheet won't.",
+      "prompt": "I keep a log in [Google Sheets or Excel]. The columns are: [paste your headers with their letters, like A Date, B Job type, C Hours, D Materials]. I want to know [what: total hours per month, count of jobs by type]. Do not calculate anything and do not ask me to paste my data. Give me: 1) the exact formula to type, 2) which cell to put it in, 3) one plain-English sentence on what it does. If a different layout would make this easier, say so in one line.",
+      "fill_in": "Which spreadsheet you use, your column headers with letters, what you want to know.",
+      "you_get": "A formula, where to put it, and a plain explanation.",
+      "then": "Paste the formula into your sheet. Check it once against a few rows you can add up by hand."
+    },
+    {
+      "id": 8,
+      "group": "p2",
+      "title": "The week in one clean summary",
+      "solves": "Your week lives in your head, in texts and on scraps of paper.",
+      "prompt": "Turn my notes from this week at [your business name] into a clean weekly summary for [who reads it: my accountant, my partner, my own records]. Use these headings: Work done, Problems, Coming up, Questions to ask. Use only what is in my notes; copy every number exactly as I wrote it, no totals or averages. First names only, or none. Under one page, plain text. My notes: [paste your bullet list]",
+      "fill_in": "Your business, who reads it, your bullet list for the week.",
+      "you_get": "A one-page summary under four headings.",
+      "then": "Check every number against your log. Save it in one folder called \"Weekly summaries.\""
+    },
+    {
+      "id": 9,
+      "group": "p2",
+      "title": "Quarterly update for a funder or board",
+      "solves": "The same facts have to be rewritten as a story every quarter.",
+      "prompt": "Write a quarterly update for [a funder or my board] about [your organization]. My plain notes on what happened, who we served in general terms, problems and plans: [paste notes]. The numbers, already counted by me: [paste numbers]. Their required questions, if any: [paste questions]. Use only these facts and numbers, exactly as given; do not calculate, round or invent. Where they would expect something I did not give you, write NEED and say what is missing. Tone: honest, warm, specific. Length: [number] short paragraphs.",
+      "fill_in": "Who it is for, your notes (no client names), your numbers from your log, their questions.",
+      "you_get": "A draft with NEED marked wherever a fact is missing.",
+      "then": "Fill in every NEED, check each number against your log, and have one other person read it before you send it."
+    },
+    {
+      "id": 10,
+      "group": "p3",
+      "title": "Three-message quote follow-up",
+      "solves": "Quotes go out, then nobody follows up.",
+      "prompt": "I sent a quote for [type of job] and have not heard back. Write 3 short follow-up messages to send by [text or email]: day 3, day 7 and day 21. Each one friendly, never pushy, under 60 words, with an easy way to say yes, ask a question or say no thanks. Match my voice from these messages I have sent before: [paste 2 or 3, names removed]. Use [first name] for the customer. No prices, no discounts, no emojis. Label each with its day.",
+      "fill_in": "The type of job, text or email, two or three of your own past messages with names removed.",
+      "you_get": "Three messages, in your voice, labeled day 3, day 7 and day 21.",
+      "then": "The day you send a quote, put three reminders in your phone calendar with each message pasted in."
+    },
+    {
+      "id": 11,
+      "group": "p3",
+      "title": "Review request that sounds like you",
+      "solves": "Happy customers never leave reviews because nobody asks.",
+      "prompt": "Write 3 versions of a short text asking a happy customer for a review of [your business name], sent the day we finish a [type of job]. It should sound like me, not a company; here is how I write: [paste 2 or 3 texts you have sent, names removed]. Thank them for something specific [what you did], keep it under 40 words, and end with [your review link]. Use [first name]. No pressure, no offers or rewards for reviews, no emojis.",
+      "fill_in": "Your business, the job type, your own sample texts, what you did, your review link.",
+      "you_get": "Three short review-request texts in your voice.",
+      "then": "Save your favorite as a phone shortcut. Send it before you leave the job site."
+    },
+    {
+      "id": 12,
+      "group": "p3",
+      "title": "A month of posts from jobs you already did",
+      "solves": "Social media only happens when someone remembers.",
+      "prompt": "Here are jobs we finished recently at [your business name], a [type of business] in [your town]: [paste a list of jobs, no customer names or addresses]. Turn them into 12 short social posts for [Facebook or Instagram], about three a week for a month. Each post 2 to 4 sentences, plain and friendly, with one simple call to action like [call us, book online, stop in]. Match my voice from this sample: [paste one or two posts you wrote]. Do not invent details, prices or customer quotes. No hashtags, no emojis unless I ask. Number the posts.",
+      "fill_in": "Your business, your town, a list of jobs, Facebook or Instagram, your call to action, one or two of your own posts.",
+      "you_get": "Twelve numbered posts.",
+      "then": "Schedule all twelve in one sitting with Facebook's or Instagram's free scheduling tool. Never post a customer's photo or result without written permission."
+    }
+  ],
+  "habits": [
+    {
+      "title": "Tell it about your business first.",
+      "text": "Let it interview you once (prompt 1), then paste that summary at the top of every chat. Generic in, generic out."
+    },
+    {
+      "title": "Say who it's for.",
+      "text": "\"For my crew,\" \"for my accountant,\" or \"for a first-time customer\" changes everything about the draft."
+    },
+    {
+      "title": "Paste a sample of your own writing.",
+      "text": "Two or three texts you have actually sent, names removed. It will copy your voice instead of sounding like a company."
+    },
+    {
+      "title": "Ask for a short draft or three options, then react.",
+      "text": "\"Shorter,\" \"warmer,\" \"less salesy\" works better than starting over."
+    },
+    {
+      "title": "Say the length and the shape.",
+      "text": "\"One text,\" \"three bullets,\" \"a table,\" or \"under one page.\" It will not guess well."
+    }
+  ],
+  "always": "And always: check every fact and number before it leaves your hands. The AI drafts. You decide.",
+  "closing": {
+    "heading": "Thank you for three Friday mornings.",
+    "text": "Everything on this card you can do yourself, starting this afternoon.",
+    "cta": "If you would like help building any of this for your own business, we are easy to find: hello@vaelro.co. Every step from all three sessions, with a copy button on every prompt, is at vaelro.co/workshop."
+  },
+  "fine_print": "Menu paths and privacy settings were checked against each company's official help pages on November 3, 2026. Companies change these screens often; the words stay more stable than the taps. Prompts are written to run on any of the four tools. Results will differ, so read what comes back."
+}

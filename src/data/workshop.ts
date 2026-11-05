@@ -159,12 +159,11 @@ export const workshop = {
     footer: "No business or person is named here. Attendee details stay with Vaelro.",
   },
 
-  // Text only, by design: the call is offered to people who attend, so there is
-  // no button and no link here.
-  gameplan: {
-    eyebrow: "FOR SESSION 3 ATTENDEES",
-    heading: "After Session 3: a free Gameplan call.",
-    body: "Each business that attends Session 3 is offered a free Gameplan call afterward, a chance to talk through what would give you your time back. Nothing is sold at any session.",
+  // A short text block after the "what we heard" band. Text only: the email
+  // address is plain text, not a link or a button.
+  afterSession3: {
+    heading: "After Session 3",
+    body: "Everything from the three sessions stays on this page: the steps, the templates and the prompt card. If you want help building any of it for your own business, email hello@vaelro.co.",
   },
 
   series: {
@@ -380,10 +379,10 @@ export const workshop = {
         "Local business owners and the people who run the day to day: restaurants, contractors, salons, dental and medical offices, real estate, landscaping, auto shops, retail, and professional practices.",
     },
     {
-      id: "gameplan",
-      question: "What is a Gameplan call?",
+      id: "help-building",
+      question: "What if I want help building one of these?",
       answer:
-        "A free call offered to each business that attends Session 3, a chance to talk through where to start.",
+        "Email hello@vaelro.co and we will talk through where to start. There is no charge for that conversation.",
     },
     {
       id: "privacy",

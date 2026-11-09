@@ -1,72 +1,37 @@
-import { useMemo } from "react";
-import { useNow } from "../hooks/useNow";
 import Seo from "../seo/Seo";
 import WorkshopHero from "../components/workshop/WorkshopHero";
-import WhatWeHeard from "../components/workshop/WhatWeHeard";
-import AfterSession3 from "../components/workshop/AfterSession3";
-import AttendeeCard from "../components/workshop/AttendeeCard";
 import Session3 from "../components/workshop/Session3";
-import SessionTimeline from "../components/workshop/SessionTimeline";
-import Speakers from "../components/workshop/Speakers";
-import WhyBand from "../components/workshop/WhyBand";
-import Prompts from "../components/workshop/Prompts";
-import Faq from "../components/workshop/Faq";
-import ChamberBand from "../components/workshop/ChamberBand";
+import AttendeeCard from "../components/workshop/AttendeeCard";
 import ClosingCta from "../components/workshop/ClosingCta";
 import { workshop } from "../data/workshop";
-import {
-  buildEventGraph,
-  getNextSession,
-  getSeriesPhase,
-  getSessionStatuses,
-} from "../lib/workshop";
+import { buildWorkshopSchema } from "../lib/workshop";
+
+const SCHEMA = buildWorkshopSchema(workshop);
 
 /**
- * The public home of the Chamber workshop series. Chamber registration has
- * closed, so the page asks for nothing: while the series runs it names the
- * next session, says what the room told us, and links the resources for
- * Sessions 1 and 2 (the card under the timeline), carries the Session 3
- * fixes, free prompts and cards (Session3, right under that card), and
- * after November 6 it becomes the record of what happened. Which of those you
- * get is decided here, once, from the data file.
+ * The public home of the Chamber workshop series, which wrapped on November 6.
+ * The URL is printed on the table cards, so it stays /workshop. The page asks
+ * for nothing: a thank you, then everything that was promised, free to copy
+ * (the three free versions, the Tall Pines build, the prompts and the prompt
+ * card, the Session 1 and 2 pages), and an email address for questions.
  */
 export default function WorkshopPage() {
-  // Pinned for the life of the page so every section agrees on "now".
-  const now = useNow();
-
-  const phase = getSeriesPhase(
-    workshop.sessions,
-    now,
-    workshop.stageOverride,
-  );
-  const statuses = getSessionStatuses(workshop.sessions, now);
-  const nextSession = getNextSession(workshop.sessions, now);
-  const eventGraph = useMemo(() => buildEventGraph(workshop, now), [now]);
-
   return (
     <>
       <Seo
         title={workshop.meta.title}
         description={workshop.meta.description}
         path={new URL(workshop.meta.canonical).pathname}
-        schema={eventGraph ?? undefined}
+        schema={SCHEMA}
         socialTitle={workshop.meta.ogTitle}
         socialDescription={workshop.meta.ogDescription}
         image={{ url: workshop.meta.ogImage, alt: workshop.meta.ogTitle }}
       />
 
-      <WorkshopHero phase={phase} nextSession={nextSession} />
-      <WhatWeHeard />
-      <AfterSession3 />
-      <SessionTimeline statuses={statuses} />
-      <AttendeeCard />
+      <WorkshopHero />
       <Session3 />
-      <Speakers />
-      <WhyBand />
-      <Prompts />
-      <Faq />
-      <ChamberBand />
-      <ClosingCta phase={phase} nextSession={nextSession} />
+      <AttendeeCard />
+      <ClosingCta />
     </>
   );
 }

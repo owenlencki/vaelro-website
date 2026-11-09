@@ -1,7 +1,9 @@
 // ---------------------------------------------------------------------------
 // test-workshop.ts
-// Pins the /workshop date logic at fixed moments so the page's behaviour
-// across the three sessions can be checked today instead of in November.
+// Pins the /workshop date logic at fixed moments (the Home pill and the nav
+// dot still read it, and both must disappear once the series is over), and
+// checks the wrapped page's copy and links against the rules it was approved
+// under.
 //
 // Run:  npm run test:workshop
 //
@@ -15,16 +17,20 @@ import assert from "node:assert/strict";
 import { workshop } from "../src/data/workshop";
 import { session2 } from "../src/data/session2";
 import {
+  CATCH_IT_ONCE_COPY_URL,
+  ONE_LOG_COPY_URL,
+  TALL_PINES_COPY_URL,
+  session3,
+} from "../src/data/session3";
+import {
+  buildWorkshopSchema,
   formatLongDate,
-  formatSessionDateLine,
   formatShortDate,
   getNextSession,
-  buildEventGraph,
   getPillCopy,
   getSeriesPhase,
   getSessionEnd,
   getSessionStatuses,
-  resolveFaqAnswer,
 } from "../src/lib/workshop";
 
 const sessions = workshop.sessions;
@@ -136,94 +142,113 @@ check("short dates are Central too", () => {
   assert.equal(formatShortDate(sessions[1].start), "Oct 9");
   assert.equal(formatShortDate(sessions[2].start), "Nov 6");
 });
-check("session date lines match the copy deck", () => {
-  assert.equal(
-    formatSessionDateLine(sessions[0], workshop.time),
-    "Friday, September 25 · 8:00 AM",
-  );
-});
 check("end times keep the session's own offset across the DST change", () => {
   assert.equal(getSessionEnd(sessions[0]), "2026-09-25T09:00:00-05:00");
   assert.equal(getSessionEnd(sessions[2]), "2026-11-06T09:00:00-06:00");
-});
-
-console.log("\nVenue-dependent FAQ");
-check("placeholder sentence holds while the address is empty", () => {
-  const faq = workshop.faqs.find((f) => f.id === "where")!;
-  const answer = resolveFaqAnswer(faq, { address: "", parkingNote: "" });
-  assert.match(answer, /Same room as Session 2\.$/);
-});
-check("the committed venue answers with its real address", () => {
-  const faq = workshop.faqs.find((f) => f.id === "where")!;
-  assert.equal(
-    resolveFaqAnswer(faq, workshop.venue),
-    "The Waupaca Business Center, inside the Waupaca Recreation Center. 407 School St, Waupaca, WI 54981",
-  );
-});
-check("a parking note joins the address once it is filled in", () => {
-  const faq = workshop.faqs.find((f) => f.id === "where")!;
-  const answer = resolveFaqAnswer(faq, {
-    address: workshop.venue.address,
-    parkingNote: "Park in the north lot.",
-  });
-  assert.match(answer, /54981 Park in the north lot\.$/);
-});
-check("the venue name the map link keys on is present in the answer", () => {
-  const faq = workshop.faqs.find((f) => f.id === "where")!;
-  assert.ok(
-    resolveFaqAnswer(faq, workshop.venue).includes(workshop.venue.name),
-    "VenueLink splits on venue.name; the answer must contain it verbatim",
-  );
-});
-check("the closing detail line carries the venue name too", () => {
-  assert.ok(workshop.closing.detailLine.includes(workshop.venue.name));
-});
-check("venue has a map URL for the links to point at", () => {
-  assert.match(workshop.venue.mapUrl, /^https:\/\//);
-});
-
-console.log("\nSession 3 is the only event advertised, and nothing invites sign-ups");
-check("the schema holds one Event, Session 3, while sessions 1 and 2 are past", () => {
-  const graph = buildEventGraph(workshop, AT.betweenSessions) as {
-    "@graph": Array<Record<string, unknown>>;
-  };
-  assert.equal(graph["@graph"].length, 1);
-  assert.match(String(graph["@graph"][0].name), /Session 3/);
-  assert.equal(graph["@graph"][0].startDate, "2026-11-06T08:00:00-06:00");
-});
-check("the Event has no Offer, capacity, or free flag", () => {
-  const graph = buildEventGraph(workshop, AT.betweenSessions) as {
-    "@graph": Array<Record<string, unknown>>;
-  };
-  const event = graph["@graph"][0];
-  assert.equal(event.offers, undefined);
-  assert.equal(event.maximumAttendeeCapacity, undefined);
-  assert.equal(event.isAccessibleForFree, undefined);
-});
-check("no schema at all once the series is over", () => {
-  assert.equal(buildEventGraph(workshop, AT.afterSeries), undefined);
 });
 check("the pill names the next session and its date", () => {
   const copy = getPillCopy(workshop.pill, sessions[2]);
   assert.equal(copy.full, "Session 3 · Friday, November 6");
   assert.equal(copy.short, "Session 3 · Nov 6");
 });
-check("the hero carries the registration-closed line", () => {
+
+console.log("\nThe page's schema describes the finished series");
+const schema = buildWorkshopSchema(workshop) as {
+  "@type": string;
+  url: string;
+  about: { "@type": string; startDate: string; endDate: string; location: { hasMap?: string } };
+};
+check("one WebPage at the canonical URL", () => {
+  assert.equal(schema["@type"], "WebPage");
+  assert.equal(schema.url, "https://vaelro.co/workshop");
+});
+check("about the series, with its real first and last dates", () => {
+  assert.equal(schema.about["@type"], "EventSeries");
+  assert.equal(schema.about.startDate, "2026-09-25T08:00:00-05:00");
+  assert.equal(schema.about.endDate, "2026-11-06T09:00:00-06:00");
+  assert.match(schema.about.location.hasMap ?? "", /^https:\/\//);
+});
+check("nothing reads as an open invitation: no status, Offer, or capacity", () => {
+  const text = JSON.stringify(schema);
+  assert.ok(!/EventScheduled|eventStatus|offers|maximumAttendeeCapacity|isAccessibleForFree/.test(text), text);
+});
+
+console.log("\nThe approved copy is in place");
+check("the top section", () => {
+  assert.equal(workshop.hero.heading, "The workshop series is a wrap.");
   assert.equal(
-    workshop.hero.registrationLine,
-    "Registration for Session 3 is closed. If you signed up, we will see you there.",
+    workshop.hero.body,
+    "Thank you to everyone who came out to the Waupaca Area Chamber AI workshops this fall, and to the Waupaca Area Chamber of Commerce for the room, the coffee and the invitation. Everything we promised is below, free to copy and use in your own business. Questions about any of it? Email us at hello@vaelro.co.",
   );
 });
-check("no em dashes, sign-up language, retainer, or prices", () => {
-  const text = JSON.stringify(workshop);
-  assert.ok(!text.includes("\u2014"), "em dash in workshop copy");
-  assert.ok(!/sign.?up|register now|rsvp/i.test(text.replace(/Registration for Session 3 is closed/g, "").replace(/If you signed up/g, "").replace(/registered attendees/g, "")), "sign-up language");
-  assert.ok(!/retainer/i.test(text), "retainer");
-  assert.ok(!/\$\d/.test(text), "a price");
+check("the bottom line", () => {
+  assert.equal(
+    `${workshop.closing.heading} ${workshop.closing.body}`,
+    "Questions about anything from the series? Email hello@vaelro.co.",
+  );
 });
-check("the closing card has no button, only the email link", () => {
-  assert.equal(workshop.closing.links.length, 1);
-  assert.match(workshop.closing.links[0].href, /^mailto:/);
+check("the Tall Pines build", () => {
+  const t = session3.tallPines;
+  assert.equal(t.heading, "The Tall Pines build, as-is");
+  assert.equal(
+    t.intro,
+    "This is a copy of the system we demoed on November 6: the sheet, the forms and the scripts behind them, built for Tall Pines Lawn & Landscape, a made-up company. It's here so you can see how it works under the hood.",
+  );
+  assert.equal(t.notesLabel, "A few honest notes:");
+  assert.deepEqual(t.notes, [
+    "It won't run on its own. The automatic emails and reminders need to be switched on and pointed at your own accounts, and Google will show a warning the first time you allow the scripts. That's normal for a custom tool.",
+    "It's built for a landscaper. Your business will need different questions, columns and messages.",
+    "It's provided as-is, with no support. Free to use in your own business. Please don't resell it.",
+  ]);
+  assert.equal(
+    t.closing,
+    "If you'd rather have it set up and running for your business, in your own Google account, that's what we do. Email hello@vaelro.co.",
+  );
+  assert.equal(t.buttonLabel, "Make a copy of the Tall Pines build");
+  assert.equal(t.href, TALL_PINES_COPY_URL);
+});
+check("Make a copy buttons on Catch it once and One log, none on Never drop a follow-up", () => {
+  const links = session3.freeVersions.fixes.map((f) => [f.title, f.link?.label, f.link?.href]);
+  assert.deepEqual(links, [
+    ["Catch it once", "Make a copy", CATCH_IT_ONCE_COPY_URL],
+    ["One log, every form", "Make a copy", ONE_LOG_COPY_URL],
+    ["Never drop a follow-up", undefined, undefined],
+  ]);
+});
+check("search title and description fit the snippet", () => {
+  assert.equal(workshop.meta.title, "AI Workshop Series: Free Templates and Prompts | Vaelro");
+  assert.ok(workshop.meta.title.length < 60, `title is ${workshop.meta.title.length}`);
+  const n = workshop.meta.description.length;
+  assert.ok(n >= 120 && n <= 158, `description is ${n}`);
+  assert.equal(workshop.meta.ogTitle, workshop.hero.heading);
+});
+
+console.log("\nPage rules");
+const pageCopy = JSON.stringify([workshop, session3]);
+check("no em dashes", () => {
+  assert.ok(!pageCopy.includes("\u2014"), "em dash in the page copy");
+});
+check("no prices, retainers, or sign-up language", () => {
+  assert.ok(!/\$\d/.test(pageCopy), "a price");
+  assert.ok(!/retainer/i.test(pageCopy), "retainer");
+  assert.ok(!/sign.?up|register|registration|rsvp/i.test(pageCopy), "sign-up language");
+});
+check("nothing about sessions still to come", () => {
+  assert.ok(!/next session|upcoming|see you there|is closed/i.test(pageCopy), "upcoming-session copy");
+});
+check("no app, script, API or token links, and no email address but hello@vaelro.co", () => {
+  assert.ok(
+    !/workers\.dev|script\.google|googleusercontent|\/exec\b|\/macros\/|token/i.test(pageCopy),
+    "something that must never be on the page",
+  );
+  const emails = pageCopy.match(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g) ?? [];
+  assert.deepEqual([...new Set(emails)], ["hello@vaelro.co"]);
+});
+check("the three Make a copy links are Google /copy links", () => {
+  assert.match(CATCH_IT_ONCE_COPY_URL, /^https:\/\/docs\.google\.com\/forms\/d\/[\w-]{25,}\/copy$/);
+  assert.match(ONE_LOG_COPY_URL, /^https:\/\/docs\.google\.com\/spreadsheets\/d\/[\w-]{25,}\/copy$/);
+  assert.ok(!TALL_PINES_COPY_URL.includes("TALL_PINES_COPY_ID"), "TALL_PINES_COPY_URL is still the placeholder");
+  assert.match(TALL_PINES_COPY_URL, /^https:\/\/docs\.google\.com\/spreadsheets\/d\/[\w-]{25,}\/copy$/);
 });
 
 console.log("\nSession 2 page");
@@ -235,33 +260,14 @@ check("no upload, summary, deadline, or em dash copy on the Session 2 page", () 
     /On November 6 we share what the room wrote down and show practical ways to start getting that time back\./,
   );
 });
-
-console.log("\nSession 3 copy promises no specific deliverables");
-const PROMISES = /\bdemos?\b|\bfix(es)?\b|done-for-you|do-it-yourself|two (ways|versions)|running on its own|live example/i;
-check("no demo, fix, or version promises in workshop or Session 2 copy", () => {
-  assert.ok(!PROMISES.test(JSON.stringify(workshop)), "workshop.ts");
+check("no demo, fix, or version promises in the Session 2 copy", () => {
+  const PROMISES = /\bdemos?\b|\bfix(es)?\b|done-for-you|do-it-yourself|two (ways|versions)|running on its own|live example/i;
   assert.ok(!PROMISES.test(JSON.stringify(session2)), "session2.ts");
-});
-check("meta, OG, pill, and schema never say demos, solutions, or fixes", () => {
-  const graph = buildEventGraph(workshop, AT.betweenSessions);
-  const text = JSON.stringify([workshop.meta, workshop.pill, graph]);
-  assert.ok(!/demo|solution|\bfix/i.test(text), "promise in metadata");
-});
-check("the approved hero, meta, and Session 3 copy is in place", () => {
-  assert.deepEqual(workshop.hero.headingLines, ["What We Heard,", "and What Comes Next"]);
-  assert.equal(workshop.meta.title, "Session 3: What We Heard and What Comes Next | Vaelro");
-  assert.equal(workshop.meta.ogTitle, "Session 3: What We Heard and What Comes Next");
-  assert.equal(workshop.sessions[2].title, "Solutions");
-  assert.match(workshop.sessions[2].blurb, /^We share what the room told us and show practical ways to start getting that time back\. Nothing is sold at any session\.$/);
-  assert.equal(
-    workshop.whatWeHeard.body,
-    "Across Sessions 1 and 2, owners described the same kinds of daily drags. Three came up most.",
-  );
 });
 
 console.log(
   failures === 0
-    ? "\nAll workshop date logic passing.\n"
+    ? "\nAll workshop checks passing.\n"
     : `\n${failures} failing.\n`,
 );
 process.exit(failures === 0 ? 0 : 1);

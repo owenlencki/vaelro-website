@@ -10,7 +10,6 @@
 // ---------------------------------------------------------------------------
 
 import type {
-  Faq,
   SeriesPhase,
   SessionStatus,
   WorkshopSession,
@@ -111,14 +110,6 @@ export function formatShortDate(iso: string): string {
   return format(Date.parse(iso), { month: "short", day: "numeric" });
 }
 
-/** "Friday, September 25 · 8:00 AM" */
-export function formatSessionDateLine(
-  session: WorkshopSession,
-  time: string,
-): string {
-  return `${formatLongDate(session.start)} · ${time}`;
-}
-
 /**
  * End of a session as an ISO string carrying the same offset as its start, for
  * schema.org endDate.
@@ -136,30 +127,6 @@ export function getSessionEnd(session: WorkshopSession): string {
 }
 
 // --- Derived copy ---------------------------------------------------------
-
-/**
- * FAQ answers are verbatim from the copy deck, except the venue question:
- * once the address and parking note are filled in, they replace the
- * placeholder second sentence.
- */
-export function resolveFaqAnswer(
-  faq: Faq,
-  venue: { address: string; parkingNote: string },
-): string {
-  if (faq.id !== "where") return faq.answer;
-  const details = [venue.address, venue.parkingNote].filter(Boolean);
-  if (details.length === 0) return faq.answer;
-  const [firstSentence] = faq.answer.split(". ");
-  return `${firstSentence}. ${details.join(" ")}`;
-}
-
-/** "Next session: Friday, October 9 at 8:00 AM" */
-export function formatNextSessionLine(
-  session: WorkshopSession,
-  time: string,
-): string {
-  return `Next session: ${formatLongDate(session.start)} at ${time}`;
-}
 
 /**
  * The Home hero pill's two strings for the next session: {number},
@@ -185,54 +152,49 @@ interface SchemaShape {
   title: string;
   partner: string;
   partnerUrl: string;
-  venue: { name: string; address: string; city: string; mapUrl?: string };
-  meta: { ogImage: string };
+  venue: { name: string; address: string; mapUrl?: string };
+  meta: { canonical: string; description: string; ogTitle: string; ogImage: string };
   sessions: WorkshopSession[];
-  speakers: Array<{ id: string; name: string }>;
 }
 
 /**
- * schema.org Event objects for the sessions that have not happened yet, for
- * the /workshop page's <head> (prerendered, so crawlers read it without
- * running JavaScript). A session in the past is never described as scheduled,
- * so today that is Session 3 alone. Returns undefined once the series is over.
+ * schema.org JSON-LD for /workshop's <head> (prerendered, so crawlers read it
+ * without running JavaScript): the page, and the finished series it is about,
+ * with its real dates. The series is over, so nothing here may read as an open
+ * invitation: no Event with a status, no Offer, no capacity.
  */
-export function buildEventGraph(
-  data: SchemaShape,
-  now: number = Date.now(),
-): Record<string, unknown> | undefined {
-  const organizer = [
-    { "@type": "Organization", name: "Vaelro", url: "https://vaelro.co" },
-    { "@type": "Organization", name: data.partner, url: data.partnerUrl },
-  ];
-
-  const person = (id: string) => {
-    const match = data.speakers.find((s) => s.id === id);
-    return match ? { "@type": "Person", name: match.name } : undefined;
-  };
-
+export function buildWorkshopSchema(data: SchemaShape): Record<string, unknown> {
+  // venue.address is one display string ("407 School St, Waupaca, WI 54981");
+  // locality, region, and postal code are their own fields here, so only the
+  // street part belongs in streetAddress.
   const street = data.venue.address.split(",")[0].trim();
   const postalCode = data.venue.address.match(/\b\d{5}\b/)?.[0] ?? "";
+  const first = data.sessions[0];
+  const last = data.sessions[data.sessions.length - 1];
 
-  const graph = data.sessions
-    .filter((session) => getSessionStatus(session, now) !== "completed")
-    .map((session) => ({
-      "@type": "Event",
-      name: `${data.title}: Session ${session.number}`,
-      description: session.blurb,
-      startDate: session.start,
-      endDate: getSessionEnd(session),
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${data.meta.canonical}#webpage`,
+    url: data.meta.canonical,
+    name: data.meta.ogTitle,
+    description: data.meta.description,
+    inLanguage: "en-US",
+    image: data.meta.ogImage,
+    isPartOf: { "@id": "https://vaelro.co/#website" },
+    publisher: { "@id": "https://vaelro.co/#business" },
+    about: {
+      "@type": "EventSeries",
+      name: data.title,
+      startDate: first.start,
+      endDate: getSessionEnd(last),
       eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-      eventStatus: "https://schema.org/EventScheduled",
       location: {
         "@type": "Place",
         name: data.venue.name,
         ...(data.venue.mapUrl ? { hasMap: data.venue.mapUrl } : {}),
         address: {
           "@type": "PostalAddress",
-          // venue.address is one display string ("407 School St, Waupaca, WI
-          // 54981"); locality, region, and postal code are their own fields
-          // here, so only the street part belongs in streetAddress.
           ...(street ? { streetAddress: street } : {}),
           addressLocality: "Waupaca",
           addressRegion: "WI",
@@ -240,13 +202,10 @@ export function buildEventGraph(
           addressCountry: "US",
         },
       },
-      image: data.meta.ogImage,
-      organizer,
-      performer: [person("owen"), person("liam")].filter(Boolean),
-      // No Offer, no capacity, and no isAccessibleForFree: registration has
-      // closed, so nothing here should read as an open invitation.
-    }));
-
-  if (graph.length === 0) return undefined;
-  return { "@context": "https://schema.org", "@graph": graph };
+      organizer: [
+        { "@type": "Organization", name: "Vaelro", url: "https://vaelro.co" },
+        { "@type": "Organization", name: data.partner, url: data.partnerUrl },
+      ],
+    },
+  };
 }

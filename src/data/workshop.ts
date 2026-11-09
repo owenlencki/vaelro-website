@@ -4,10 +4,12 @@
 // and scripts/test-workshop.ts (which imports this file under tsx, so keep it
 // free of JSX, asset imports, and import.meta.* -- plain data only).
 //
-// Everything on the page reads from here. No copy lives in components. The
-// page moves itself through the three dates from Date.now(); recaps, the venue
-// address, and the Chamber logo are edits to this file and nothing else.
-// (Chamber registration has closed, so the page carries no register buttons.)
+// The series wrapped on November 6, so /workshop is now the record of it: a
+// thank you, then everything that was promised, free to copy. The Session 3
+// material (the free versions, the Tall Pines build, the prompts) lives in
+// session3.ts. The sessions stay here because the Home pill and the nav dot
+// still read their dates (both hide once the series is over) and the page's
+// schema describes the series from them.
 //
 // Image paths are plain public-root strings ("/workshop/..."); components
 // prefix them with Vite's BASE_URL via src/lib/paths.ts.
@@ -24,14 +26,6 @@ export const PACKET_UPLOAD_URL = "https://vaelro-packet-upload.netlify.app";
 export type SessionStatus = "upcoming" | "next" | "today" | "completed";
 export type SeriesPhase = "upcoming" | "in-progress" | "complete";
 
-export interface SessionRecap {
-  /** 2 to 4 short lines. The recap block stays hidden until this exists. */
-  lines: string[];
-  photo?: string;
-  photoAlt?: string;
-  link?: { label: string; href: string };
-}
-
 export interface WorkshopSession {
   number: 1 | 2 | 3;
   slug: string;
@@ -39,9 +33,6 @@ export interface WorkshopSession {
   /** ISO with an explicit Central offset. Nov 6 is after the Nov 1 DST change. */
   start: string;
   durationMinutes: number;
-  blurb: string;
-  leaders: string;
-  recap?: SessionRecap;
 }
 
 /** One rendition of a portrait. Widths are real pixel widths, never upscaled. */
@@ -60,28 +51,7 @@ export interface Speaker {
   photoAlt: string;
 }
 
-export interface HeardItem {
-  tag: string;
-  text: string;
-}
-
-export interface Faq {
-  id: string;
-  question: string;
-  answer: string;
-}
-
-/** A prompt card in the "free to use today" band. */
-export interface PromptCard {
-  /** Stable id, sent to GA as prompt_id. */
-  id: string;
-  label: string;
-  title: string;
-  /** The prompt itself. This is what the copy button puts on the clipboard. */
-  prompt: string;
-}
-
-/** A text link on the resources card under the timeline on /workshop. */
+/** A text link on the Session 1 and 2 card on /workshop. */
 export interface AttendeeCardLink {
   label: string;
   to: string;
@@ -93,171 +63,51 @@ export const workshop = {
   title: "AI for Your Business, Without the Overwhelm",
   partner: "Waupaca Area Chamber of Commerce",
   partnerUrl: "https://www.waupacachamber.com",
-  // Asset is committed at /workshop/chamber-logo.webp. Set this string once
-  // Jeff confirms co-branding and the logo slot renders itself.
-  partnerLogo: undefined as string | undefined,
 
+  /** Where the sessions were held. Only the page's schema reads this now. */
   venue: {
     name: "Waupaca Business Center",
-    detail: "Inside the Waupaca Recreation Center on School Street",
     address: "407 School St, Waupaca, WI 54981",
-    city: "Waupaca, WI",
-    parkingNote: "", // fill later; renders only when non-empty
-    /** Wherever the venue is named on the page, it links here. */
     mapUrl: "https://www.google.com/maps/search/?api=1&query=Waupaca%20Recreation%20Center%2C%20407%20School%20St%2C%20Waupaca%2C%20WI%2054981&query_place_id=ChIJhx3a3Nh0AYgR0U06VZP9CH8",
   },
 
-  time: "8:00 AM",
-  contactEmail: "hello@vaelro.co",
-
   meta: {
     // Search snippet: title under 60 characters, description 120 to 158.
-    title: "Session 3: What We Heard and What Comes Next | Vaelro",
+    title: "AI Workshop Series: Free Templates and Prompts | Vaelro",
     description:
-      "Session 3 is Friday, November 6: what local businesses told us, and practical ways to start getting time back. Registration is closed.",
-    ogTitle: "Session 3: What We Heard and What Comes Next",
+      "The Waupaca Area Chamber AI workshop series is a wrap. Copy the free intake form, the One Log, twelve prompts and the full Tall Pines build.",
+    ogTitle: "The workshop series is a wrap.",
     ogDescription:
-      "Hosted with the Waupaca Area Chamber of Commerce. Friday, November 6 at 8:00 AM. Registration is closed.",
+      "Everything from the Waupaca Area Chamber AI workshops, free to copy and use in your own business.",
     canonical: "https://vaelro.co/workshop",
     // The site's own OG image until a workshop-specific card exists.
     ogImage: "https://vaelro.co/og-image.jpg",
   },
 
+  // The top of the page. The email address in the body becomes a mailto link.
   hero: {
-    eyebrow:
-      "SESSION 3 · FRIDAY, NOVEMBER 6 · WITH THE WAUPACA AREA CHAMBER OF COMMERCE",
-    headingLines: ["What We Heard,", "and What Comes Next"],
-    subhead:
-      "In Sessions 1 and 2, local business owners told us where their time goes. On Friday, November 6, we share what we heard and show practical ways to start getting that time back.",
-    /** Sits under the subhead. Registration is closed; the page asks for nothing. */
-    registrationLine:
-      "Registration for Session 3 is closed. If you signed up, we will see you there.",
-    /** Rendered as one plain mono row: the featured session's date, then these. */
-    detailVenue: "Waupaca Business Center, inside the Rec Center",
+    heading: "The workshop series is a wrap.",
+    body: "Thank you to everyone who came out to the Waupaca Area Chamber AI workshops this fall, and to the Waupaca Area Chamber of Commerce for the room, the coffee and the invitation. Everything we promised is below, free to copy and use in your own business. Questions about any of it? Email us at hello@vaelro.co.",
   },
 
-  // What the room told us, in general terms only. No business or person is
-  // named here, and nothing is quoted from the slides or packets.
-  whatWeHeard: {
-    eyebrow: "WHAT WE HEARD FROM LOCAL BUSINESSES",
-    heading: "The same few problems kept coming up.",
-    body: "Across Sessions 1 and 2, owners described the same kinds of daily drags. Three came up most.",
-    items: [
-      {
-        tag: "01",
-        text: "Typing the same information into more than one place, and getting it wrong a little more each time.",
-      },
-      {
-        tag: "02",
-        text: "Marketing and follow-ups slipping when the day gets busy.",
-      },
-      {
-        tag: "03",
-        text: "Paperwork that every office asks for in a different shape.",
-      },
-    ] as HeardItem[],
-    footer: "No business or person is named here. Attendee details stay with Vaelro.",
-  },
-
-  // A short text block after the "what we heard" band. Text only: the email
-  // address is plain text, not a link or a button.
-  afterSession3: {
-    heading: "After Session 3",
-    body: "Everything from the three sessions stays on this page: the steps, the templates and the prompt card. If you want help building any of it for your own business, email hello@vaelro.co.",
-  },
-
-  series: {
-    eyebrow: "THE SERIES",
-    heading: "Two sessions done. One to go.",
-    recapLabel: "WHAT HAPPENED",
-    badges: {
-      next: "Next up",
-      upcoming: "Upcoming",
-      today: "Today at 8:00 AM",
-      completed: "Completed",
-    },
-  },
-
-  speakersSection: {
-    eyebrow: "WHO'S LEADING IT",
-    heading: "Two local founders and one experienced expert.",
-  },
-
-  faqSection: {
-    eyebrow: "STRAIGHT ANSWERS",
-    heading: "Questions you're probably asking.",
-  },
-
-  chamberBand: {
-    text: "Hosted in partnership with the Waupaca Area Chamber of Commerce.",
-    smallText:
-      "Questions about Session 3 go to Owen and Liam at hello@vaelro.co.",
-  },
-
-  // The sign-off card at the bottom of the page. Its heading is the next
-  // session line (formatNextSessionLine), the same one the hero shows. No
-  // button: registration is closed.
+  // The page's last card. The email address is the link.
   closing: {
-    detailLine: "Session 3 · Waupaca Business Center",
-    links: [
-      {
-        label: "Questions? Email hello@vaelro.co",
-        href: "mailto:hello@vaelro.co?subject=Session%203%20question",
-      },
-    ],
-  },
-
-  // -------------------------------------------------------------------------
-  // Wrapped state: what the page swaps to once Session 3 is completed. There is
-  // no call to action here by design. The page becomes the record of what
-  // happened: the closing card says thanks and the Home pill disappears.
-  // -------------------------------------------------------------------------
-  postSeries: {
-    heroSubhead: "The series wrapped on November 6. Here's what we covered.",
-    closingHeading: "Thanks for coming.",
-    closingBody: "The series wrapped on November 6. Questions? Email hello@vaelro.co.",
+    heading: "Questions about anything from the series?",
+    body: "Email hello@vaelro.co.",
   },
 
   // The Home hero pill. {number}, {longDate}, and {date} are the next
-  // session's number, "Friday, November 6", and "Nov 6".
+  // session's number, "Friday, November 6", and "Nov 6". It hides once the
+  // series is over.
   pill: {
     full: "Session {number} · {longDate}",
     short: "Session {number} · {date}",
   },
 
-  // -------------------------------------------------------------------------
-  // OWEN: paste the copy deck's three prompt cards and the note line here.
-  // The section renders itself as soon as `items` is non-empty and stays
-  // hidden until then. Nothing in the component needs to change.
-  // -------------------------------------------------------------------------
-  prompts: {
-    eyebrow: "FREE TO USE TODAY",
-    heading: "Free to use today",
-    items: [] as PromptCard[],
-    note: "",
-    copyLabel: "Copy prompt",
-    copiedLabel: "Copied",
-  },
-
-  // -------------------------------------------------------------------------
-  // OWEN: paste the "Why we're doing this" block here. Renders when non-empty.
-  // -------------------------------------------------------------------------
-  whyBand: {
-    eyebrow: "WHY WE'RE DOING THIS",
-    heading: "From people who live here.",
-    body: [
-      "Vaelro is a web and automation agency in Waupaca. Owen and Liam grew up here and build websites and systems that give local business owners their time back. This series is education, start to finish: plain English, real examples, and honest answers to the questions you actually have. If you leave with a clearer head and one thing to try, it did its job.",
-    ] as string[],
-  },
-
   /** Testing only. Must be undefined in commits. */
   stageOverride: undefined as SeriesPhase | undefined,
 
-  /**
-  * The resources card under the timeline on /workshop. It is for people who
-  * were in the room: text links to the Session 1 and Session 2 pages. It has
-  * no upload button; the packet deadline has passed.
-  */
+  /** The card near the bottom of /workshop: text links to the Session 1 and Session 2 pages. */
   attendeeCard: {
     heading: "Were you at Session 1 or Session 2?",
     links: [
@@ -280,9 +130,6 @@ export const workshop = {
       title: "AI Education",
       start: "2026-09-25T08:00:00-05:00",
       durationMinutes: 60,
-      blurb:
-        "Pure education. We covered how to think of AI as a fast, confident intern, why the way you ask matters, and why most businesses are still early. The homework was to bring one to three things that eat your week.",
-      leaders: "Casey Plunkett with Owen and Liam",
     },
     {
       number: 2,
@@ -290,9 +137,6 @@ export const workshop = {
       title: "Pain Point Workshop",
       start: "2026-10-09T08:00:00-05:00",
       durationMinutes: 60,
-      blurb:
-        "Hands-on. Owners worked through a six-part packet: where their hours go, which tools they use, what is actually painful, and what they would do with the time back.",
-      leaders: "Owen and Liam",
     },
     {
       number: 3,
@@ -300,12 +144,10 @@ export const workshop = {
       title: "Solutions",
       start: "2026-11-06T08:00:00-06:00",
       durationMinutes: 60,
-      blurb:
-        "We share what the room told us and show practical ways to start getting that time back. Nothing is sold at any session.",
-      leaders: "Owen and Liam",
     },
   ] as WorkshopSession[],
 
+  // The hero's portrait strip and the Session 1 page read these.
   speakers: [
     {
       id: "owen",
@@ -340,64 +182,6 @@ export const workshop = {
       photoAlt: "Casey Plunkett, CEO of Secure AI",
     },
   ] as Speaker[],
-
-  faqs: [
-    {
-      id: "what-is-ai",
-      question: "What is AI, in one sentence?",
-      answer:
-        "Session 1 covered this, and here is the short version: software that has learned from huge numbers of examples, so it can write, sort, predict, and handle steps that used to need a person doing them by hand. You've used it for years without noticing, every time your phone finished a sentence or your email caught spam.",
-    },
-    {
-      id: "all-three",
-      question: "I missed the first two sessions. Does Session 3 still make sense?",
-      answer:
-        "For registered attendees, yes. Session 3 makes sense on its own. Registration for Session 3 is closed. If you signed up, we will see you there.",
-    },
-    {
-      id: "not-technical",
-      question: "I'm not technical. Will I be lost?",
-      answer:
-        "That's exactly who this is for. No technical background needed. If you can use your phone, you'll be fine.",
-    },
-    {
-      id: "bring",
-      question: "Do I need to bring anything?",
-      answer:
-        "Nothing required. A pen is handy for notes, and no laptop is needed.",
-    },
-    {
-      id: "free",
-      question: "Is it really free?",
-      answer:
-        "Free for registered attendees. Nothing is sold at the workshops, and attendee information stays with Vaelro. Owen and Liam run it because this is their community, and the Chamber is hosting it for its members.",
-    },
-    {
-      id: "who-for",
-      question: "Who is it for?",
-      answer:
-        "Local business owners and the people who run the day to day: restaurants, contractors, salons, dental and medical offices, real estate, landscaping, auto shops, retail, and professional practices.",
-    },
-    {
-      id: "help-building",
-      question: "What if I want help building one of these?",
-      answer:
-        "Email hello@vaelro.co and we will talk through where to start. There is no charge for that conversation.",
-    },
-    {
-      id: "privacy",
-      question: "What happens to what I share?",
-      answer: "Attendee information stays with Vaelro.",
-    },
-    {
-      // The second sentence is replaced by venue.address and venue.parkingNote
-      // once those are filled in. See resolveFaqAnswer in src/lib/workshop.ts.
-      id: "where",
-      question: "Where is it?",
-      answer:
-        "The Waupaca Business Center, inside the Waupaca Recreation Center. Same room as Session 2.",
-    },
-  ] as Faq[],
 };
 
 export type Workshop = typeof workshop;

@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // SESSION 3 DATA
-// The Session 3 block on /workshop: the three free fixes, the twelve free
-// prompts, the printable prompt card, and the closing line.
+// The Session 3 block on /workshop: the three free fixes, the Tall Pines
+// build, the twelve free prompts, and the printable prompt card.
 //
 // The prompts, the privacy rule, the per-tool settings, the habits and the
 // closing text all come from vaelro-free-prompts.json, untouched. Edit that
@@ -14,11 +14,20 @@
 import freePromptsJson from "./vaelro-free-prompts.json";
 
 // ---------------------------------------------------------------------------
-// OWEN: paste the two Google template links here. Each link appears under its
-// fix on its own once its string is set; until then the steps show without it.
+// The "Make a copy" links. Each opens Google's copy page for a file the demo
+// account shares as "Anyone with the link: Viewer"; a visitor who is signed
+// out is asked to sign in to Google first. Never link the Tall Pines app,
+// the script, or anything with a token in it.
+//
+// TALL_PINES_COPY_URL is "Tall Pines Ops, Workshop Copy", which
+// makeWorkshopCopy() in the Tall Pines Apps Script project made on Nov 8, 2026.
 // ---------------------------------------------------------------------------
-export const CATCH_IT_ONCE_FORM_URL = undefined as string | undefined;
-export const ONE_LOG_TEMPLATE_URL = undefined as string | undefined;
+export const CATCH_IT_ONCE_COPY_URL =
+  "https://docs.google.com/forms/d/1lQWLdCqhk_JTDMr1_KYoEIYa0lCAooxHiOmIko1_2DQ/copy";
+export const ONE_LOG_COPY_URL =
+  "https://docs.google.com/spreadsheets/d/1cYO6jGjj_NJX9pXGMVXZsYdlHZx8PHI0owIu3afLeSA/copy";
+export const TALL_PINES_COPY_URL =
+  "https://docs.google.com/spreadsheets/d/1L-CTwXYGwaTXX6KIXOKFUR7fncZ-6_cv3tmiVSJZLJ0/copy";
 
 // ---------------------------------------------------------------------------
 // The printable prompt card, served from public/. The build fails if this
@@ -100,18 +109,8 @@ export interface FreeFix {
   link?: { label: string; href: string | undefined; event: string };
 }
 
-// ---------------------------------------------------------------------------
-// OWEN: flip to true once the series is over. The "Next session" card at the
-// bottom of /workshop and the hero's registration line both become
-// `finishedLine`. Nothing else on the page changes.
-// ---------------------------------------------------------------------------
-export const SERIES_FINISHED = false as boolean;
-
 export const session3 = {
-  finishedLine:
-    "The series has finished. Everything from all three sessions is on this page.",
-
-  /** The text link under the hero's registration line, to #session-3. */
+  /** The text link under the hero's body, to #session-3. */
   heroLink: "Session 3: the free versions and the prompts",
 
   eyebrow: "Session 3 · Friday, November 6",
@@ -143,9 +142,9 @@ export const session3 = {
           "In the form's Responses tab, link it to one Google Sheet. Every call lands there in the same columns.",
         ],
         link: {
-          label: "Open the form template",
-          href: CATCH_IT_ONCE_FORM_URL,
-          event: "session3_form_template",
+          label: "Make a copy",
+          href: CATCH_IT_ONCE_COPY_URL,
+          event: "session3_copy_form",
         },
       },
       {
@@ -169,9 +168,9 @@ export const session3 = {
           "Photograph every receipt into one folder, and paste each photo's link in the receipt column.",
         ],
         link: {
-          label: "Open the One Log Template",
-          href: ONE_LOG_TEMPLATE_URL,
-          event: "session3_log_template",
+          label: "Make a copy",
+          href: ONE_LOG_COPY_URL,
+          event: "session3_copy_one_log",
         },
       },
       {
@@ -186,6 +185,26 @@ export const session3 = {
         ],
       },
     ] as FreeFix[],
+  },
+
+  // The whole demo system, right under the three free versions. The email
+  // address in `closing` becomes a mailto link.
+  tallPines: {
+    eyebrow: "The full system",
+    heading: "The Tall Pines build, as-is",
+    intro:
+      "This is a copy of the system we demoed on November 6: the sheet, the forms and the scripts behind them, built for Tall Pines Lawn & Landscape, a made-up company. It's here so you can see how it works under the hood.",
+    notesLabel: "A few honest notes:",
+    notes: [
+      "It won't run on its own. The automatic emails and reminders need to be switched on and pointed at your own accounts, and Google will show a warning the first time you allow the scripts. That's normal for a custom tool.",
+      "It's built for a landscaper. Your business will need different questions, columns and messages.",
+      "It's provided as-is, with no support. Free to use in your own business. Please don't resell it.",
+    ],
+    closing:
+      "If you'd rather have it set up and running for your business, in your own Google account, that's what we do. Email hello@vaelro.co.",
+    buttonLabel: "Make a copy of the Tall Pines build",
+    href: TALL_PINES_COPY_URL,
+    event: "session3_copy_tall_pines",
   },
 
   prompts: {

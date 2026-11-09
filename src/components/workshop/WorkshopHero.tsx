@@ -1,114 +1,53 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
 import Portrait from "./Portrait";
-import VenueLink from "./VenueLink";
-import { Link } from "react-router-dom";
+import EmailText from "./EmailText";
 import { workshop } from "../../data/workshop";
-import { SERIES_FINISHED, session3 } from "../../data/session3";
-import type { SeriesPhase, WorkshopSession } from "../../data/workshop";
-import { formatLongDate } from "../../lib/workshop";
+import { session3 } from "../../data/session3";
 import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
-
-interface WorkshopHeroProps {
-  phase: SeriesPhase;
-  nextSession?: WorkshopSession;
-}
 
 /** Vertical offsets for the portrait strip, so it reads as a stagger. */
 const PORTRAIT_STAGGER = ["mt-0", "mt-6 md:mt-10", "mt-12 md:mt-20"];
 
-export default function WorkshopHero({
-  phase,
-  nextSession,
-}: WorkshopHeroProps) {
+/**
+ * The top of /workshop now that the series has wrapped: the thank you, the one
+ * way to ask a question, and a jump down to the free versions. No dates, no
+ * venue, and nothing to sign up for.
+ */
+export default function WorkshopHero() {
   const reducedMotion = usePrefersReducedMotion();
   const { hero } = workshop;
-
-  // The featured session: the next one, or the last one once the series is over.
-  const featured =
-    nextSession ?? workshop.sessions[workshop.sessions.length - 1];
-  const wrapped = phase === "complete";
-
-  const detailRow = [
-    { text: formatLongDate(featured.start), muted: wrapped },
-    { text: workshop.time },
-    { text: hero.detailVenue, mapped: true },
-  ];
-
-  const subhead = wrapped ? workshop.postSeries.heroSubhead : hero.subhead;
 
   return (
     <section className="bg-cream-100 pt-32 pb-14 md:pt-40 md:pb-20">
       <div className="container-site">
-        {/* The headline spans the full container so it breaks on the two lines
-            the copy deck sets, rather than wherever a column edge lands. */}
         <p className="mb-4 max-w-md font-mono text-xs tracking-[0.2em] text-orange-600 uppercase md:text-sm">
-          {hero.eyebrow}
+          {workshop.title}
         </p>
-        <h1 className="font-serif text-display font-bold text-ink-900">
-          {hero.headingLines.map((line, i) => (
-            <span key={line} className="block">
-              <SplitText text={line} delay={i * 0.14} />
-            </span>
-          ))}
+        <h1 className="max-w-4xl font-serif text-display font-bold text-balance text-ink-900">
+          <SplitText text={hero.heading} />
         </h1>
 
         <div className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:gap-14">
           {/* Text column */}
           <div>
             <Reveal delay={0.3}>
-              {/* One sentence. The portraits below carry who is leading it. */}
-              <p className="max-w-xl text-lead text-ink-600">{subhead}</p>
+              <p className="max-w-xl text-lead text-ink-600">
+                <EmailText
+                  text={hero.body}
+                  className="nav-link font-semibold text-ink-900 hover:text-orange-600"
+                />
+              </p>
             </Reveal>
 
             <Reveal delay={0.4}>
-              {/* The event details as one plain mono row */}
-              {/* Each separator travels with the item after it, so a wrap
-                  never strands a slash at the end of a line. */}
-              <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[0.7rem] tracking-[0.14em] text-ink-600 uppercase md:text-xs">
-                {detailRow.map((item, i) => (
-                  <span
-                    key={item.text}
-                    className={`inline-flex items-center gap-3 ${
-                      item.muted ? "text-muted" : ""
-                    }`}
-                  >
-                    {i > 0 && (
-                      <span aria-hidden="true" className="text-cream-400">
-                        /
-                      </span>
-                    )}
-                    {item.mapped ? (
-                      <VenueLink className="underline decoration-cream-400 underline-offset-4 transition-colors duration-200 hover:text-orange-600 hover:decoration-orange-500">
-                        {item.text}
-                      </VenueLink>
-                    ) : (
-                      item.text
-                    )}
-                  </span>
-                ))}
-              </div>
-
-              {/* No button here: Chamber registration has closed. Once
-                  SERIES_FINISHED is set, the line says so instead. */}
-              {SERIES_FINISHED ? (
-                <p className="mt-6 max-w-xl font-semibold text-ink-900">
-                  {session3.finishedLine}
-                </p>
-              ) : (
-                !wrapped && (
-                  <p className="mt-6 max-w-xl font-semibold text-ink-900">
-                    {hero.registrationLine}
-                  </p>
-                )
-              )}
-
               {/* A real link (/workshop#session-3), so it also works with
                   JavaScript off; with it on, ScrollManager does the scroll. */}
               <Link
                 to={{ hash: "#session-3" }}
-                className="mt-3 inline-flex min-h-11 items-center gap-1.5 text-base font-semibold text-ink-900 underline decoration-orange-500 underline-offset-4 transition-colors duration-200 hover:text-orange-700"
+                className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-base font-semibold text-ink-900 underline decoration-orange-500 underline-offset-4 transition-colors duration-200 hover:text-orange-700"
               >
                 {session3.heroLink}
                 <svg
@@ -128,7 +67,7 @@ export default function WorkshopHero({
             </Reveal>
           </div>
 
-          {/* Portrait strip: the three people leading the series */}
+          {/* Portrait strip: the three people who led the series */}
           <div
             className="grid grid-cols-3 gap-3 self-start md:gap-4"
             aria-hidden="true"

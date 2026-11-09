@@ -10,11 +10,12 @@ import type { FreeFix, FreePrompt, ToolSettings } from "../../data/session3";
 import { copyText } from "../../lib/clipboard";
 import { trackEvent } from "../../lib/analytics";
 import { withBase } from "../../lib/paths";
+import EmailText from "./EmailText";
 
 /*
  * The Session 3 block on /workshop. Four parts, in order: the free versions of
- * the three fixes, the twelve free prompts (all from the JSON), the two
- * printable prompt card, and the closing text.
+ * the three fixes, the Tall Pines build, the twelve free prompts (all from the
+ * JSON), and the printable prompt card.
  *
  * Built to read with JavaScript off: no scroll reveals (they prerender at
  * opacity 0), accordions are native <details>, and the copy buttons render
@@ -192,17 +193,19 @@ function FixCard({ fix, index }: { fix: FreeFix; index: number }) {
       </ol>
 
       {fix.link?.href && (
-        <a
-          href={fix.link.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => trackEvent(fix.link!.event)}
-          className="mt-auto inline-flex min-h-12 items-center gap-1.5 self-start pt-5 text-base font-semibold text-ink-900 underline decoration-orange-500 underline-offset-4 hover:text-orange-700"
-        >
-          {fix.link.label}
-          <span className="sr-only"> (opens in a new tab)</span>
-          <ArrowMark />
-        </a>
+        <div className="mt-auto pt-6">
+          <a
+            href={fix.link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackEvent(fix.link!.event)}
+            className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-ink-900 px-6 text-base font-semibold text-cream-50 transition-colors duration-200 hover:bg-ink-800 sm:w-auto"
+          >
+            {fix.link.label}
+            <span className="sr-only">: {fix.title} (opens in a new tab)</span>
+            <ArrowMark />
+          </a>
+        </div>
       )}
     </li>
   );
@@ -237,7 +240,78 @@ function FreeVersions() {
 }
 
 // ---------------------------------------------------------------------------
-// 2. Free prompts
+// 2. The Tall Pines build
+// ---------------------------------------------------------------------------
+
+/** The whole demo system, as-is, in the dark tone so it reads as the big one. */
+function TallPinesBuild() {
+  const { tallPines } = session3;
+  return (
+    <section
+      id="tall-pines"
+      aria-labelledby="tall-pines-heading"
+      className="bg-cream-100 pb-10 md:pb-14"
+    >
+      <div className="container-site">
+        <div className="relative overflow-hidden rounded-2xl bg-ink-900 bg-noise p-5 text-cream-100 sm:p-7 md:p-10 lg:p-12">
+          <div className="relative">
+            <p className="mb-3 font-mono text-base tracking-[0.08em] text-orange-300 uppercase">
+              {tallPines.eyebrow}
+            </p>
+            <h2
+              id="tall-pines-heading"
+              className="max-w-2xl font-serif text-title font-bold text-cream-100"
+            >
+              {tallPines.heading}
+            </h2>
+            <p className="mt-5 max-w-2xl text-lead text-cream-100/85">{tallPines.intro}</p>
+
+            <div className="mt-8 grid gap-8 lg:mt-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-12">
+              <div className="max-w-2xl">
+                <p className="text-base font-semibold text-cream-50">{tallPines.notesLabel}</p>
+                <ul className="mt-3 space-y-3">
+                  {tallPines.notes.map((note) => (
+                    <li
+                      key={note}
+                      className="flex gap-3 text-base leading-relaxed text-cream-100/85"
+                    >
+                      <span
+                        className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-orange-400"
+                        aria-hidden="true"
+                      />
+                      <span>{note}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-6 text-base leading-relaxed text-cream-100/85">
+                  <EmailText
+                    text={tallPines.closing}
+                    className="nav-link font-semibold text-orange-300 hover:text-orange-200"
+                  />
+                </p>
+              </div>
+
+              <a
+                href={tallPines.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent(tallPines.event)}
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-orange-500 px-8 py-3.5 text-center text-base leading-snug font-bold text-white shadow-[0_8px_30px_rgba(212,116,59,0.35)] transition-colors duration-200 hover:bg-orange-600 sm:w-auto"
+              >
+                {tallPines.buttonLabel}
+                <span className="sr-only"> (opens in a new tab)</span>
+                <ArrowMark />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 3. Free prompts
 // ---------------------------------------------------------------------------
 
 /**
@@ -510,6 +584,9 @@ function FreePromptsSection() {
         <p className="mt-4 max-w-3xl text-base leading-relaxed text-ink-600">
           {freePrompts.limits_note}
         </p>
+        <p className="mt-2 max-w-3xl text-base text-ink-500">
+          {session3.smallPrint.replace("{date}", longDate(freePrompts.settings_checked_on))}
+        </p>
 
         <div className="mt-12 max-w-3xl md:mt-16">
           <p className="text-base font-semibold text-ink-900">{labels.howToUseLabel}</p>
@@ -577,7 +654,7 @@ function FreePromptsSection() {
 }
 
 // ---------------------------------------------------------------------------
-// 3. Downloads
+// 4. Downloads
 // ---------------------------------------------------------------------------
 
 function DownloadLink({
@@ -642,46 +719,13 @@ function Downloads() {
   );
 }
 
-// ---------------------------------------------------------------------------
-// 4. Closing, then the small print
-// ---------------------------------------------------------------------------
-
-function Closing() {
-  const { closing, settings_checked_on } = freePrompts;
-  return (
-    <section
-      aria-labelledby="session3-closing-heading"
-      className="bg-cream-100 pt-10 pb-14 md:pt-14 md:pb-24"
-    >
-      <div className="container-site">
-        <div className="max-w-3xl border-t border-cream-300 pt-10">
-          <h2
-            id="session3-closing-heading"
-            className="font-serif text-heading font-bold text-ink-900"
-          >
-            {closing.heading}
-          </h2>
-          <p className="mt-3 text-lead text-ink-600">{closing.text}</p>
-          {/* Plain text on purpose: the address is there to read and copy, not tap. */}
-          <p className="mt-4 text-base leading-relaxed text-ink-900 select-text">
-            {closing.cta}
-          </p>
-          <p className="mt-10 text-base text-ink-500">
-            {session3.smallPrint.replace("{date}", longDate(settings_checked_on))}
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export default function Session3() {
   return (
     <div id="session-3">
       <FreeVersions />
+      <TallPinesBuild />
       <FreePromptsSection />
       <Downloads />
-      <Closing />
     </div>
   );
 }

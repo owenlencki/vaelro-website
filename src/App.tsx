@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { LenisProvider, useLenisContext } from "./hooks/useLenis";
+import { isSession3Anchor } from "./lib/workshop";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import PageTransition from "./components/layout/PageTransition";
@@ -32,15 +33,11 @@ const MarshfieldSession1Page = lazy(
 
 const NAV_OFFSET = -88;
 
-/**
- * Deep links into the Session 3 block on /workshop/waupaca (#session-3,
- * #prompt-1 to #prompt-12). /workshop forwards the same links made while it
- * was the Waupaca page. These are the only anchors that get the patient
- * scroll below; every other anchor keeps the plain one in ScrollManager.
- */
-function isSession3Anchor(hash: string): boolean {
-  return hash === "#session-3" || hash.startsWith("#prompt-");
-}
+// Deep links into the Session 3 block on /workshop/waupaca (#session-3,
+// #prompt-1 to #prompt-12, #tall-pines and the rest; see isSession3Anchor).
+// /workshop forwards the same links made while it was the Waupaca page.
+// These are the only anchors that get the patient scroll below; every other
+// anchor keeps the plain one in ScrollManager.
 
 /**
  * The workshop pages are lazy, so on a cold load the target may not exist at

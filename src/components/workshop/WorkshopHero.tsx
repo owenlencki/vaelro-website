@@ -46,7 +46,7 @@ export default function WorkshopHero({
   return (
     <section className="bg-cream-100 pt-32 pb-14 md:pt-40 md:pb-20">
       <div className="container-site">
-        <p className="mb-4 max-w-md font-mono text-xs tracking-[0.2em] text-orange-600 uppercase md:text-sm">
+        <p className="mb-4 max-w-2xl font-mono text-xs tracking-[0.2em] text-balance text-orange-600 uppercase md:text-sm">
           {eyebrow}
         </p>
         <h1 className="max-w-4xl font-serif text-display font-bold text-balance text-ink-900">

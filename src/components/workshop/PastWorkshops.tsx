@@ -45,13 +45,14 @@ export default function PastWorkshops({ heading, series }: PastWorkshopsProps) {
                 <p className="font-mono text-sm leading-relaxed tracking-[0.08em] text-orange-700 uppercase">
                   {archiveCard.label}
                 </p>
-                <p className="mt-3 inline-flex items-center gap-2 font-serif text-xl leading-snug font-bold text-ink-900 md:text-2xl">
+                <p className="mt-3 font-serif text-xl leading-snug font-bold text-balance text-ink-900 md:text-2xl">
                   <span className="underline decoration-orange-500/50 underline-offset-4 transition-colors duration-200 group-hover:decoration-orange-500">
                     {archiveCard.linkLabel}
                   </span>
+                  {/* Inline, so it follows the last word when the label wraps. */}
                   <svg
                     viewBox="0 0 16 16"
-                    className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+                    className="ml-2 inline-block h-4 w-4 align-[-0.1em] transition-transform duration-200 group-hover:translate-x-0.5"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="1.75"

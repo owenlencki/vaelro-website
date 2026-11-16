@@ -28,6 +28,7 @@ import {
   CATCH_IT_ONCE_COPY_URL,
   ONE_LOG_COPY_URL,
   TALL_PINES_COPY_URL,
+  freePrompts,
   session3,
 } from "../src/data/session3";
 import {
@@ -42,6 +43,7 @@ import {
   getSeriesPhase,
   getSessionEnd,
   getSessionStatuses,
+  isSession3Anchor,
 } from "../src/lib/workshop";
 
 let failures = 0;
@@ -464,7 +466,7 @@ console.log("\nMarshfield page rules (/workshop and the recap)");
 {
   const marshfieldCopy = JSON.stringify([currentSeries, marshfieldSession1]);
   check("no em dashes or en dashes", () => {
-    assert.ok(!/[—–]/.test(marshfieldCopy), "a dash in the Marshfield copy");
+    assert.ok(!/[\u2014\u2013]/.test(marshfieldCopy), "a dash in the Marshfield copy");
   });
   check("nothing about Tall Pines, Part 3, or the Waupaca sessions", () => {
     assert.ok(!/Tall Pines|Part\s*3|Session 3|November 6/i.test(marshfieldCopy));
@@ -532,6 +534,24 @@ check("the Session 1 and 2 card still links both session pages", () => {
     ],
   );
 });
+check("old /workshop links into the Session 3 block forward to the archive", () => {
+  // Every id Session3.tsx renders, from the data it renders them from.
+  const ids = [
+    "session-3",
+    "free-versions",
+    ...session3.freeVersions.fixes.map((f) => f.id),
+    "tall-pines",
+    "free-prompts",
+    ...freePrompts.groups.map((g) => `prompts-${g.id}`),
+    ...freePrompts.prompts.map((p) => `prompt-${p.id}`),
+    "downloads",
+  ];
+  assert.deepEqual(ids.filter((id) => !isSession3Anchor(`#${id}`)), []);
+  // The Marshfield page's own anchors stay put.
+  for (const own of ["#sessions", "#leader", "#past-workshops", "#attendee-card-heading", ""]) {
+    assert.ok(!isSession3Anchor(own), own);
+  }
+});
 check("both session pages link back to the archive, not to /workshop", () => {
   assert.equal(session1.backLink.to, "/workshop/waupaca");
   assert.equal(session2.backLink.to, "/workshop/waupaca");
@@ -598,7 +618,7 @@ console.log("\nWaupaca archive page rules");
 {
   const pageCopy = JSON.stringify([waupaca, session3]);
   check("no em dashes", () => {
-    assert.ok(!pageCopy.includes("—"), "em dash in the page copy");
+    assert.ok(!pageCopy.includes("\u2014"), "em dash in the page copy");
   });
   check("no prices, retainers, or sign-up language", () => {
     assert.ok(!/\$\d/.test(pageCopy), "a price");
@@ -622,7 +642,7 @@ console.log("\nWaupaca archive page rules");
 console.log("\nSession 2 page");
 check("no upload, summary, deadline, or em dash copy on the Session 2 page", () => {
   const text = JSON.stringify(session2);
-  assert.ok(!/upload|summary|October 14|—/i.test(text), "stale copy");
+  assert.ok(!/upload|summary|October 14|\u2014/i.test(text), "stale copy");
   assert.match(
     text,
     /On November 6 we share what the room wrote down and show practical ways to start getting that time back\./,
@@ -639,7 +659,7 @@ check("names the Marshfield series and the Waupaca archive", () => {
   const llms = readFileSync(new URL("../public/llms.txt", import.meta.url), "utf8");
   assert.match(llms, /\(https:\/\/vaelro\.co\/workshop\): .*Marshfield/);
   assert.match(llms, /\(https:\/\/vaelro\.co\/workshop\/waupaca\)/);
-  assert.ok(!/—/.test(llms), "em dash in llms.txt");
+  assert.ok(!/\u2014/.test(llms), "em dash in llms.txt");
 });
 
 console.log(

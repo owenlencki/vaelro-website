@@ -140,6 +140,23 @@ export function getSessionEnd(session: WorkshopSession): string {
   return `${wallClock}${match ? match[0] : "Z"}`;
 }
 
+// --- Deep links -----------------------------------------------------------
+
+/**
+ * Anchors in the Session 3 block of the Waupaca archive (/workshop/waupaca):
+ * the block itself, its sections, the three fixes, and the prompts. Links to
+ * them were shared while that page was /workshop, so /workshop forwards them
+ * to the archive, and ScrollManager in App.tsx keeps looking for the target
+ * while the lazy page loads. scripts/test-workshop.ts checks that this covers
+ * every id the block renders.
+ */
+const SESSION3_ANCHOR =
+  /^#(session-3|free-versions|catch-it-once|one-log|never-drop-a-follow-up|tall-pines|free-prompts|prompts?-[\w-]+|downloads)$/;
+
+export function isSession3Anchor(hash: string): boolean {
+  return SESSION3_ANCHOR.test(hash);
+}
+
 // --- Derived copy ---------------------------------------------------------
 
 /**

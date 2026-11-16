@@ -10,18 +10,13 @@ import ClosingCta from "../components/workshop/ClosingCta";
 import { currentSeries, pastSeries } from "../data/workshops";
 import { waupaca } from "../data/workshops/waupaca";
 import { useNow } from "../hooks/useNow";
-import { buildSessionEventsSchema, getSessionStatuses } from "../lib/workshop";
+import {
+  buildSessionEventsSchema,
+  getSessionStatuses,
+  isSession3Anchor,
+} from "../lib/workshop";
 
 const SCHEMA = buildSessionEventsSchema(currentSeries);
-
-/**
- * Anchors that exist only on the Waupaca page, from links shared while it
- * was /workshop (#session-3, #prompt-1 to #prompt-12, and the section ids in
- * Session3.tsx). A visitor who opens one of those old links lands on the same
- * spot of /workshop/waupaca instead of the top of this page.
- */
-const WAUPACA_ANCHOR =
-  /^#(session-3|free-versions|catch-it-once|one-log|never-drop-a-follow-up|tall-pines|free-prompts|prompts?-[\w-]+|downloads)$/;
 
 /**
  * The Workshops tab. The URL is printed on the table cards, so it stays
@@ -41,10 +36,13 @@ export default function WorkshopPage() {
     [series.sessions, now],
   );
 
+  // Links into the Session 3 block (#session-3, #prompt-3, #tall-pines...)
+  // were shared while the Waupaca page was /workshop. Send them to the same
+  // spot on /workshop/waupaca instead of the top of this page.
   const { hash } = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
-    if (WAUPACA_ANCHOR.test(hash)) {
+    if (isSession3Anchor(hash)) {
       navigate({ pathname: waupaca.path, hash }, { replace: true });
     }
   }, [hash, navigate]);
@@ -70,7 +68,7 @@ export default function WorkshopPage() {
             {series.waupacaNote.text}{" "}
             <Link
               to={waupaca.path}
-              className="inline-flex min-h-11 items-center font-semibold text-ink-900 underline decoration-orange-500 underline-offset-4 transition-colors duration-200 hover:text-orange-700"
+              className="font-semibold whitespace-nowrap text-ink-900 underline decoration-orange-500 underline-offset-4 transition-colors duration-200 hover:text-orange-700"
             >
               {series.waupacaNote.linkLabel}
             </Link>

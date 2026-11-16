@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------
 // WORKSHOP HELPERS
-// Pure functions over src/data/workshop.ts. Every one of them takes `now` so
-// the page can be tested at a fixed date (scripts/test-workshop.ts) instead of
-// waiting for September. Kept out of the data file so that file stays plain
-// data and can be imported under tsx.
+// Pure functions over the series files in src/data/workshops/. Every one of
+// them takes `now` so the pages can be tested at a fixed date
+// (scripts/test-workshop.ts) instead of waiting for it. Kept out of the data
+// files so those stay plain data and can be imported under tsx.
 //
 // All display dates are formatted in America/Chicago, so a visitor in another
-// timezone still reads "Friday, September 25 at 8:00 AM".
+// timezone still reads "Tuesday, November 17".
 // ---------------------------------------------------------------------------
 
 import type {
@@ -63,8 +63,9 @@ export function getSessionStatuses(
 }
 
 /**
- * upcoming until Session 1 starts, in-progress until Session 3 is completed,
- * complete after that. `override` (the data file's stageOverride) wins.
+ * upcoming until the first session starts, in-progress until the last one is
+ * completed, complete after that. `override` (the data file's stageOverride)
+ * wins.
  */
 export function getSeriesPhase(
   sessions: WorkshopSession[],
@@ -96,7 +97,7 @@ function format(ms: number, options: Intl.DateTimeFormatOptions): string {
   );
 }
 
-/** "Friday, September 25" */
+/** "Tuesday, November 17" */
 export function formatLongDate(iso: string): string {
   return format(Date.parse(iso), {
     weekday: "long",
@@ -105,9 +106,22 @@ export function formatLongDate(iso: string): string {
   });
 }
 
-/** "Sep 25" */
+/** "Nov 17" */
 export function formatShortDate(iso: string): string {
   return format(Date.parse(iso), { month: "short", day: "numeric" });
+}
+
+/** "10:30 AM", in Central time. For checking a series' written-out time. */
+export function formatClockTime(ms: number): string {
+  return format(ms, { hour: "numeric", minute: "2-digit" });
+}
+
+/** "Tuesday, November 17 · 10:30 a.m. to noon" */
+export function formatSessionDateLine(
+  session: WorkshopSession,
+  time: string,
+): string {
+  return `${formatLongDate(session.start)} · ${time}`;
 }
 
 /**
@@ -130,9 +144,9 @@ export function getSessionEnd(session: WorkshopSession): string {
 
 /**
  * The Home hero pill's two strings for the next session: {number},
- * {longDate} ("Friday, November 6"), and {date} ("Nov 6") are filled in from
- * it. The wrapped state has no pill, so callers stop rendering it rather than
- * asking for copy that does not exist.
+ * {longDate} ("Tuesday, November 17"), and {date} ("Nov 17") are filled in
+ * from it. The wrapped state has no pill, so callers stop rendering it rather
+ * than asking for copy that does not exist.
  */
 export function getPillCopy(
   pill: { full: string; short: string },
@@ -148,22 +162,52 @@ export function getPillCopy(
 
 // --- Structured data ------------------------------------------------------
 
-interface SchemaShape {
+const VAELRO_ORGANIZATION = {
+  "@type": "Organization",
+  name: "Vaelro",
+  url: "https://vaelro.co",
+};
+
+interface PageMeta {
+  canonical: string;
+  description: string;
+  ogTitle: string;
+  ogImage: string;
+}
+
+function webPageNode(meta: PageMeta): Record<string, unknown> {
+  return {
+    "@type": "WebPage",
+    "@id": `${meta.canonical}#webpage`,
+    url: meta.canonical,
+    name: meta.ogTitle,
+    description: meta.description,
+    inLanguage: "en-US",
+    image: meta.ogImage,
+    isPartOf: { "@id": "https://vaelro.co/#website" },
+    publisher: { "@id": "https://vaelro.co/#business" },
+  };
+}
+
+interface ArchiveSchemaShape {
   title: string;
   partner: string;
   partnerUrl: string;
   venue: { name: string; address: string; mapUrl?: string };
-  meta: { canonical: string; description: string; ogTitle: string; ogImage: string };
+  meta: PageMeta;
   sessions: WorkshopSession[];
 }
 
 /**
- * schema.org JSON-LD for /workshop's <head> (prerendered, so crawlers read it
- * without running JavaScript): the page, and the finished series it is about,
- * with its real dates. The series is over, so nothing here may read as an open
- * invitation: no Event with a status, no Offer, no capacity.
+ * schema.org JSON-LD for a finished series' archive page (/workshop/waupaca),
+ * prerendered, so crawlers read it without running JavaScript: the page, and
+ * the series it is about, with its real dates. The series is over, so nothing
+ * here may read as an open invitation: no Event with a status, no Offer, no
+ * capacity.
  */
-export function buildWorkshopSchema(data: SchemaShape): Record<string, unknown> {
+export function buildWorkshopSchema(
+  data: ArchiveSchemaShape,
+): Record<string, unknown> {
   // venue.address is one display string ("407 School St, Waupaca, WI 54981");
   // locality, region, and postal code are their own fields here, so only the
   // street part belongs in streetAddress.
@@ -174,15 +218,7 @@ export function buildWorkshopSchema(data: SchemaShape): Record<string, unknown> 
 
   return {
     "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": `${data.meta.canonical}#webpage`,
-    url: data.meta.canonical,
-    name: data.meta.ogTitle,
-    description: data.meta.description,
-    inLanguage: "en-US",
-    image: data.meta.ogImage,
-    isPartOf: { "@id": "https://vaelro.co/#website" },
-    publisher: { "@id": "https://vaelro.co/#business" },
+    ...webPageNode(data.meta),
     about: {
       "@type": "EventSeries",
       name: data.title,
@@ -203,9 +239,81 @@ export function buildWorkshopSchema(data: SchemaShape): Record<string, unknown> 
         },
       },
       organizer: [
-        { "@type": "Organization", name: "Vaelro", url: "https://vaelro.co" },
+        VAELRO_ORGANIZATION,
         { "@type": "Organization", name: data.partner, url: data.partnerUrl },
       ],
     },
+  };
+}
+
+interface EventsSchemaShape {
+  title: string;
+  partner: string;
+  partnerUrl: string;
+  venue: {
+    name: string;
+    /** Left out of the schema when unset, e.g. while it is unconfirmed. */
+    streetAddress?: string;
+    locality: string;
+    region: string;
+    postalCode?: string;
+  };
+  meta: PageMeta;
+  sessions: WorkshopSession[];
+  leader: { speaker: { name: string } };
+}
+
+/**
+ * schema.org JSON-LD for /workshop while it leads with a running series: the
+ * page, and one Event per session with its Central start and end (the offsets
+ * in the data are America/Chicago's for each date). Past sessions stay in, as
+ * events that took place as scheduled. Registration runs through the Chamber,
+ * so there is no Offer and no capacity.
+ */
+export function buildSessionEventsSchema(
+  data: EventsSchemaShape,
+): Record<string, unknown> {
+  const { venue } = data;
+  const location = {
+    "@type": "Place",
+    name: venue.name,
+    address: {
+      "@type": "PostalAddress",
+      ...(venue.streetAddress ? { streetAddress: venue.streetAddress } : {}),
+      addressLocality: venue.locality,
+      addressRegion: venue.region,
+      ...(venue.postalCode ? { postalCode: venue.postalCode } : {}),
+      addressCountry: "US",
+    },
+  };
+  const organizer = [
+    VAELRO_ORGANIZATION,
+    { "@type": "Organization", name: data.partner, url: data.partnerUrl },
+  ];
+  const eventId = (session: WorkshopSession) =>
+    `${data.meta.canonical}#session-${session.number}`;
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        ...webPageNode(data.meta),
+        about: data.sessions.map((session) => ({ "@id": eventId(session) })),
+      },
+      ...data.sessions.map((session) => ({
+        "@type": "Event",
+        "@id": eventId(session),
+        name: `${data.title}: Session ${session.number}, ${session.title}`,
+        ...(session.blurb ? { description: session.blurb } : {}),
+        startDate: session.start,
+        endDate: getSessionEnd(session),
+        eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+        eventStatus: "https://schema.org/EventScheduled",
+        location,
+        image: data.meta.ogImage,
+        organizer,
+        performer: { "@type": "Person", name: data.leader.speaker.name },
+      })),
+    ],
   };
 }

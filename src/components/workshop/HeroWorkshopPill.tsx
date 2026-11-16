@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { workshop } from "../../data/workshop";
+import { currentSeries } from "../../data/workshops";
 import {
   getNextSession,
   getPillCopy,
@@ -12,10 +12,10 @@ import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 import { useNow } from "../../hooks/useNow";
 
 /**
- * The tease that lives above the Home hero's eyebrow line. It is a link, not a
- * second button: it must not compete with the hero's primary CTA or push that
- * CTA out of the first viewport on a phone, which is why the short string takes
- * over under 640px.
+ * The tease that lives above the Home hero's eyebrow line, for the current
+ * series' next session. It is a link, not a second button: it must not
+ * compete with the hero's primary CTA or push that CTA out of the first
+ * viewport on a phone, which is why the short string takes over under 640px.
  */
 export default function HeroWorkshopPill() {
   const reducedMotion = usePrefersReducedMotion();
@@ -25,13 +25,13 @@ export default function HeroWorkshopPill() {
   // pill leaves the Home hero rather than pointing at an ended event.
   const copy = useMemo(() => {
     const phase = getSeriesPhase(
-      workshop.sessions,
+      currentSeries.sessions,
       now,
-      workshop.stageOverride,
+      currentSeries.stageOverride,
     );
     if (phase === "complete") return null;
-    const next = getNextSession(workshop.sessions, now);
-    return next ? getPillCopy(workshop.pill, next) : null;
+    const next = getNextSession(currentSeries.sessions, now);
+    return next ? getPillCopy(currentSeries.pill, next) : null;
   }, [now]);
 
   if (!copy) return null;

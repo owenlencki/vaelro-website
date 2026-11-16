@@ -1,16 +1,19 @@
 import SplitText from "../../ui/SplitText";
+import BackLink from "../BackLink";
 import { session2 } from "../../../data/session2";
 
 /**
  * Thinner than Session 1's header: it says where you are and stops, with
- * tighter padding, no portrait, and no reveal.
+ * tighter padding, no portrait, and no reveal. The link above the date goes
+ * back to the series page.
  */
 export default function SessionHeader() {
-  const { header } = session2;
+  const { header, backLink } = session2;
 
   return (
     <header className="bg-cream-100 pt-24 pb-6 md:pt-36 md:pb-10">
       <div className="container-site">
+        <BackLink {...backLink} className="mb-2 md:mb-5" />
         <p className="font-mono text-xs tracking-[0.2em] text-orange-700 uppercase md:text-sm">
           {header.date}
         </p>

@@ -18,7 +18,7 @@ Read `VAELRO_BUILD_PROMPT_FINAL.md` for the complete build spec. It has everythi
 - Deploy: GitHub → Netlify
 
 ## Nav structure
-6 items, all real routes: Home, Web Design, Automation, Workshop, About, Contact, plus the "Book a Call" CTA (opens the Google Calendar booking page). No scroll-anchor nav items.
+6 items, all real routes: Home, Web Design, Automation, Workshops, About, Contact, plus the "Book a Call" CTA (opens the Google Calendar booking page). No scroll-anchor nav items.
 
 ## Rules
 - Do not spawn subagents. Work sequentially.

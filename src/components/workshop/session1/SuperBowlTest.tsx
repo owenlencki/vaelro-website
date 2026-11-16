@@ -8,6 +8,29 @@ import { trackEvent } from "../../../lib/analytics";
 /** Taller than this (height over width), a capture is cropped to its answer. */
 const TALL_RATIO = 1.6;
 
+/** One question put to the tool, and what came back. */
+interface SuperBowlCase {
+  label: string;
+  question: string;
+  /** What each try answered, in order, when they differed. */
+  tries?: string[];
+  answer: string;
+}
+
+interface SuperBowlCopy {
+  eyebrow: string;
+  heading: string;
+  /** A line under the heading. */
+  line?: string;
+  /** The questions side by side, between the heading and the screenshots. */
+  cases?: SuperBowlCase[];
+  /** The point of it all, under the screenshots. */
+  takeaway?: string;
+  pendingLabel: string;
+  enlargeLabel: string;
+  shots: SuperBowlShot[];
+}
+
 /**
  * The three screenshots are real captures of whole conversations, and their
  * aspect ratios run from nearly square to very tall. Each renders at full card
@@ -19,8 +42,15 @@ const TALL_RATIO = 1.6;
  * with the cut-off standings fading out above it. The frame links to the
  * full-size file, which shows the whole conversation.
  */
-function ShotCard({ shot }: { shot: SuperBowlShot }) {
-  const { superBowl } = session1;
+function ShotCard({
+  shot,
+  copy,
+  event,
+}: {
+  shot: SuperBowlShot;
+  copy: SuperBowlCopy;
+  event: string;
+}) {
   const tall = shot.height / shot.width > TALL_RATIO;
 
   return (
@@ -34,7 +64,7 @@ function ShotCard({ shot }: { shot: SuperBowlShot }) {
           href={withBase(shot.image)}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={() => trackEvent("session1_superbowl_enlarge", { shot_id: shot.id })}
+          onClick={() => trackEvent(event, { shot_id: shot.id })}
           className="group block"
         >
           {/* The border hugs each capture rather than boxing it, so the one
@@ -63,7 +93,7 @@ function ShotCard({ shot }: { shot: SuperBowlShot }) {
             )}
           </div>
           <p className="mt-2.5 inline-flex items-center gap-1.5 font-mono text-[0.65rem] tracking-[0.14em] text-cream-100/45 uppercase transition-colors duration-200 group-hover:text-orange-400">
-            {superBowl.enlargeLabel}
+            {copy.enlargeLabel}
             <svg
               viewBox="0 0 16 16"
               className="h-3 w-3 shrink-0"
@@ -83,7 +113,7 @@ function ShotCard({ shot }: { shot: SuperBowlShot }) {
       ) : (
         <div className="flex aspect-[3/5] items-center justify-center rounded-2xl border border-dashed border-ink-600 bg-ink-950">
           <span className="px-4 text-center font-mono text-[0.7rem] tracking-[0.14em] text-cream-100/40 uppercase">
-            {superBowl.pendingLabel}
+            {copy.pendingLabel}
           </span>
         </div>
       )}
@@ -95,10 +125,16 @@ function ShotCard({ shot }: { shot: SuperBowlShot }) {
  * The dark band right after the one idea, and its proof: three answers to one
  * question, side by side. On a phone they swipe horizontally rather than
  * stacking, so the "three answers" point lands in one screen instead of three.
+ * The Waupaca Session 1 page renders it with no props; the Marshfield recap
+ * hands it its own copy, with the questions laid out above the screenshots.
  */
-export default function SuperBowlTest() {
-  const { superBowl } = session1;
-
+export default function SuperBowlTest({
+  superBowl = session1.superBowl,
+  enlargeEvent = "session1_superbowl_enlarge",
+}: {
+  superBowl?: SuperBowlCopy;
+  enlargeEvent?: string;
+}) {
   return (
     <section
       id="super-bowl-test"
@@ -112,11 +148,38 @@ export default function SuperBowlTest() {
         <h2 className="max-w-2xl font-serif text-title font-bold text-cream-100">
           <SplitText text={superBowl.heading} />
         </h2>
-        <Reveal delay={0.15}>
-          <p className="mt-5 max-w-2xl text-lead text-cream-100/85">
-            {superBowl.line}
-          </p>
-        </Reveal>
+        {superBowl.line && (
+          <Reveal delay={0.15}>
+            <p className="mt-5 max-w-2xl text-lead text-cream-100/85">
+              {superBowl.line}
+            </p>
+          </Reveal>
+        )}
+
+        {superBowl.cases && (
+          <ul className="mt-10 grid gap-8 md:mt-14 md:grid-cols-2 md:gap-10">
+            {superBowl.cases.map((c) => (
+              <li key={c.label} className="border-t border-cream-100/15 pt-5">
+                <p className="font-mono text-xs tracking-[0.18em] text-orange-400 uppercase md:text-sm">
+                  {c.label}
+                </p>
+                <p className="mt-3 font-serif text-xl leading-snug font-bold text-cream-100 md:text-2xl">
+                  &ldquo;{c.question}&rdquo;
+                </p>
+                {c.tries && (
+                  <ul className="mt-4 space-y-1.5">
+                    {c.tries.map((answer) => (
+                      <li key={answer} className="text-lead text-cream-100/90">
+                        {answer}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <p className="mt-3 text-lead text-cream-100/85">{c.answer}</p>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       {/* Bleeds to the screen edge on a phone so the row reads as swipeable,
@@ -125,9 +188,24 @@ export default function SuperBowlTest() {
           @layer components has no md: variant to apply. */}
       <ul className="mt-10 flex snap-x snap-mandatory items-start gap-4 overflow-x-auto px-6 pb-2 md:mx-auto md:mt-14 md:grid md:max-w-[1200px] md:grid-cols-3 md:gap-8 md:overflow-visible md:px-10">
         {superBowl.shots.map((shot) => (
-          <ShotCard key={shot.id} shot={shot} />
+          <ShotCard
+            key={shot.id}
+            shot={shot}
+            copy={superBowl}
+            event={enlargeEvent}
+          />
         ))}
       </ul>
+
+      {superBowl.takeaway && (
+        <div className="container-site relative">
+          <Reveal delay={0.1}>
+            <p className="mt-10 max-w-3xl border-l-2 border-orange-500 pl-5 font-serif text-heading font-bold text-cream-100 md:mt-14">
+              {superBowl.takeaway}
+            </p>
+          </Reveal>
+        </div>
+      )}
     </section>
   );
 }

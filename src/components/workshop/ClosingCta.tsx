@@ -1,15 +1,20 @@
 import SplitText from "../ui/SplitText";
 import Reveal from "../ui/Reveal";
 import EmailText from "./EmailText";
-import { workshop } from "../../data/workshop";
+
+interface ClosingCtaProps {
+  closing: {
+    heading: string;
+    /** The email address in it becomes the link. */
+    body: string;
+  };
+}
 
 /**
- * The page's sign-off: one question and the one way to ask it. No button and
- * no dates; the series is over.
+ * A workshop page's sign-off: one question and the one way to ask it. No
+ * button and no dates.
  */
-export default function ClosingCta() {
-  const { closing } = workshop;
-
+export default function ClosingCta({ closing }: ClosingCtaProps) {
   return (
     <section
       className="bg-cream-100 pb-16 md:pb-24"

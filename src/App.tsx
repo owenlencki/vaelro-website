@@ -15,30 +15,39 @@ import NotFoundPage from "./pages/NotFoundPage";
 
 // Lazy so Home's bundle doesn't grow with the case-study pages.
 const WorkDetailPage = lazy(() => import("./pages/WorkDetailPage"));
-// Same reason: /workshop is a standalone landing page for the Chamber series.
+// Same reason: /workshop is the Workshops tab, a standalone page for the
+// current Chamber series, and each finished series has its own archive page.
 const WorkshopPage = lazy(() => import("./pages/WorkshopPage"));
-// The Session 1 attendee page, opened from the card on /workshop. Only people
-// who were in the room need it, so it stays out of the main bundle.
+const WaupacaWorkshopPage = lazy(() => import("./pages/WaupacaWorkshopPage"));
+// The Waupaca Session 1 attendee page, opened from the card on
+// /workshop/waupaca. Only people who were in the room need it, so it stays
+// out of the main bundle.
 const Session1Page = lazy(() => import("./pages/Session1Page"));
-// The Session 2 attendee page, lazy for the same reason.
+// The Waupaca Session 2 attendee page, lazy for the same reason.
 const Session2Page = lazy(() => import("./pages/Session2Page"));
+// The Marshfield Session 1 recap, opened from the card on /workshop.
+const MarshfieldSession1Page = lazy(
+  () => import("./pages/MarshfieldSession1Page"),
+);
 
 const NAV_OFFSET = -88;
 
 /**
- * Deep links into the Session 3 block on /workshop (#session-3, #prompt-1 to
- * #prompt-12). These are the only anchors that get the patient scroll below;
- * every other anchor keeps the plain one in ScrollManager.
+ * Deep links into the Session 3 block on /workshop/waupaca (#session-3,
+ * #prompt-1 to #prompt-12). /workshop forwards the same links made while it
+ * was the Waupaca page. These are the only anchors that get the patient
+ * scroll below; every other anchor keeps the plain one in ScrollManager.
  */
 function isSession3Anchor(hash: string): boolean {
   return hash === "#session-3" || hash.startsWith("#prompt-");
 }
 
 /**
- * /workshop is lazy, so on a cold load the target may not exist at 500ms, and
- * Lenis may still hold the shorter page height it measured first. Keep looking
- * for the target for a few seconds, re-measure before scrolling, then correct
- * once if layout shifted it while the smooth scroll ran. Returns the cleanup.
+ * The workshop pages are lazy, so on a cold load the target may not exist at
+ * 500ms, and Lenis may still hold the shorter page height it measured first.
+ * Keep looking for the target for a few seconds, re-measure before scrolling,
+ * then correct once if layout shifted it while the smooth scroll ran. Returns
+ * the cleanup.
  */
 function scrollToSession3Anchor(
   hash: string,
@@ -155,6 +164,26 @@ function AnimatedRoutes() {
               {/* Full-viewport hold in the page background, no spinner */}
               <Suspense fallback={<div className="min-h-svh bg-cream-100" />}>
                 <WorkshopPage />
+              </Suspense>
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/workshop/waupaca"
+          element={
+            <PageTransition>
+              <Suspense fallback={<div className="min-h-svh bg-cream-100" />}>
+                <WaupacaWorkshopPage />
+              </Suspense>
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/workshop/marshfield/session-1"
+          element={
+            <PageTransition>
+              <Suspense fallback={<div className="min-h-svh bg-cream-100" />}>
+                <MarshfieldSession1Page />
               </Suspense>
             </PageTransition>
           }

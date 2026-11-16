@@ -1,8 +1,9 @@
 // ---------------------------------------------------------------------------
 // SESSION 2 RESOURCE PAGE DATA
-// Single source of truth for /workshop/session-2, the attendee page linked
-// from the resources card on /workshop. Packet uploads are closed, so the page
-// carries what Session 2 led to (Session 3) and the free prompts.
+// Single source of truth for /workshop/session-2, the Waupaca series' Session 2
+// attendee page, linked from the card on /workshop/waupaca. Packet uploads for
+// this series are closed, so the page carries what Session 2 led to (Session
+// 3) and the free prompts.
 //
 // Plain data only, like session1.ts: no JSX, no asset imports, and no
 // import.meta.*.
@@ -31,6 +32,12 @@ export const session2 = {
     date: "Friday, October 9",
     title: "Session 2: Pain Point Workshop",
     line: "With Owen and Liam.",
+  },
+
+  /** Above the date: the way back to the series page. */
+  backLink: {
+    label: "Waupaca workshop materials",
+    to: "/workshop/waupaca",
   },
 
   next: {

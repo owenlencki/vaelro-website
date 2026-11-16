@@ -47,9 +47,10 @@ function PromptText({ item }: { item: PromptItem }) {
 
 /**
  * One tap puts the prompt on the clipboard. Every button reads the same, so
- * the prompt's name rides along for screen readers.
+ * the prompt's name rides along for screen readers. The Marshfield Session 1
+ * recap uses it too, under its own event.
  */
-function CopyButton({
+export function CopyButton({
   item,
   event = COPY_EVENT,
 }: {

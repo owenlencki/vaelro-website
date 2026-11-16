@@ -1,15 +1,25 @@
 import { Link } from "react-router-dom";
-import { workshop } from "../../data/workshop";
+import { PACKET_UPLOAD_URL } from "../../data/workshop";
+import type { AttendeeCardLink } from "../../data/workshop";
 import { trackEvent } from "../../lib/analytics";
 
-/**
- * Sits under the timeline on /workshop. It is for people who were in the
- * room: text links to the Session 1 and Session 2 pages. There is no upload
- * button here any more, because the packet deadline has passed.
- */
-export default function AttendeeCard() {
-  const card = workshop.attendeeCard;
+interface AttendeeCardProps {
+  card: {
+    heading: string;
+    /** A line and a button to the packet upload form, while uploads are open. */
+    upload?: { text: string; label: string };
+    /** A plain line under the upload button. */
+    summary?: string;
+    links: AttendeeCardLink[];
+  };
+}
 
+/**
+ * The dark card for people who were in the room: on /workshop, the upload
+ * button and the Session 1 recap; on /workshop/waupaca, text links to the
+ * Session 1 and Session 2 pages (uploads there closed long ago).
+ */
+export default function AttendeeCard({ card }: AttendeeCardProps) {
   return (
     <section
       aria-labelledby="attendee-card-heading"
@@ -24,7 +34,37 @@ export default function AttendeeCard() {
             {card.heading}
           </h2>
 
-          <ul className="mt-3 flex flex-col sm:flex-row sm:flex-wrap sm:gap-x-8">
+          {card.upload && (
+            <>
+              <p className="mt-3 text-base leading-relaxed text-cream-100/85">
+                {card.upload.text}
+              </p>
+              {/* The biggest tap target on the card. Dark text on the orange,
+                  so the label clears 4.5:1. */}
+              <a
+                href={PACKET_UPLOAD_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent("packet_upload_click", { location: "workshop_card" })
+                }
+                className="mt-4 flex min-h-14 items-center justify-center rounded-full bg-orange-500 px-4 py-3 text-center text-lg leading-tight font-bold text-ink-950 transition-colors duration-200 hover:bg-orange-400 sm:inline-flex sm:px-8"
+              >
+                {card.upload.label}
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            </>
+          )}
+
+          {card.summary && (
+            <p className="mt-4 text-base leading-relaxed text-cream-100/85">
+              {card.summary}
+            </p>
+          )}
+
+          <ul
+            className={`${card.upload || card.summary ? "mt-2" : "mt-3"} flex flex-col sm:flex-row sm:flex-wrap sm:gap-x-8`}
+          >
             {card.links.map(({ label, to, event }) => (
               <li key={to}>
                 <Link

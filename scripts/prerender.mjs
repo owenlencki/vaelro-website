@@ -208,7 +208,18 @@ const PAGE_SOURCES = [
   [/^\/about$/, ["src/pages/AboutPage.tsx", "src/components/sections"]],
   [/^\/contact$/, ["src/pages/ContactPage.tsx", "src/components/sections", "src/data/faqs.ts"]],
   [/^\/privacy$/, ["src/pages/PrivacyPage.tsx"]],
-  [/^\/workshop$/, ["src/pages/WorkshopPage.tsx", "src/components/workshop", "src/data/workshop.ts"]],
+  [/^\/workshop$/, ["src/pages/WorkshopPage.tsx", "src/components/workshop", "src/data/workshop.ts", "src/data/workshops"]],
+  [
+    /^\/workshop\/waupaca$/,
+    [
+      "src/pages/WaupacaWorkshopPage.tsx",
+      "src/components/workshop",
+      "src/data/workshop.ts",
+      "src/data/workshops/waupaca.ts",
+      "src/data/session3.ts",
+      "src/data/vaelro-free-prompts.json",
+    ],
+  ],
   [/^\/work\//, ["src/pages/WorkDetailPage.tsx", "src/data/projects.ts"]],
 ];
 

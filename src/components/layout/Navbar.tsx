@@ -11,23 +11,25 @@ import { usePrefersReducedMotion } from "../../hooks/useReducedMotion";
 import { useNow } from "../../hooks/useNow";
 import { BOOKING_URL } from "../../lib/booking";
 import { trackEvent } from "../../lib/analytics";
-import { workshop } from "../../data/workshop";
+import { currentSeries } from "../../data/workshops";
 import { getSeriesPhase } from "../../lib/workshop";
 import logoCream from "../../assets/logos/logo-horizontal-cream.png";
 import logoDark from "../../assets/logos/logo-horizontal-dark.png";
 
 /**
- * Pages with no "Book a Call" button. The Chamber workshop is education only,
- * and the NFC tags on the tables open these pages, so they carry no sales
- * button. Every other page keeps it.
+ * Pages with no "Book a Call" button. The Chamber workshops are education
+ * only, and the NFC tags on the tables open these pages, so they carry no
+ * sales button. Every other page keeps it. A new workshop page goes here too.
  */
 const NO_BOOKING_BUTTON = new Set([
   "/workshop",
+  "/workshop/waupaca",
   "/workshop/session-1",
   "/workshop/session-2",
+  "/workshop/marshfield/session-1",
 ]);
 
-/** Decorative marker on the Workshop item while the series is running. */
+/** Decorative marker on the Workshops item while the current series runs. */
 function LiveDot() {
   return (
     <span
@@ -75,21 +77,26 @@ export default function Navbar() {
     ? "text-cream-100 hover:text-white"
     : "text-ink-900 hover:text-orange-600";
 
-  // The dot marks the series as live. It disappears on its own once Session 3
-  // is done; dropping it early is deleting the `dot` line below.
+  // The dot marks the current series as live. It disappears on its own once
+  // that series' last session is done; dropping it early is deleting the
+  // `dot` line below.
   const now = useNow();
   const seriesRunning = useMemo(
     () =>
-      getSeriesPhase(workshop.sessions, now, workshop.stageOverride) !==
-      "complete",
+      getSeriesPhase(
+        currentSeries.sessions,
+        now,
+        currentSeries.stageOverride,
+      ) !== "complete",
     [now],
   );
-  // Real pages only, so every item is a crawlable link to its own URL.
+  // Real pages only, so every item is a crawlable link to its own URL. The
+  // Workshops tab stays at /workshop: the URL is printed on the table cards.
   const links: Array<{ label: string; to: string; dot?: boolean }> = [
     { label: "Home", to: "/" },
     { label: "Web Design", to: "/web-design" },
     { label: "Automation", to: "/automation" },
-    { label: "Workshop", to: "/workshop", dot: seriesRunning },
+    { label: "Workshops", to: "/workshop", dot: seriesRunning },
     { label: "About", to: "/about" },
     { label: "Contact", to: "/contact" },
   ];

@@ -1,8 +1,9 @@
 // ---------------------------------------------------------------------------
 // SESSION 1 RESOURCE PAGE DATA
-// Single source of truth for /workshop/session-1, the attendee page behind the
-// card at the top of /workshop. (The NFC tags and QR codes on the tables open
-// /workshop, and that card is the way in.)
+// Single source of truth for /workshop/session-1, the Waupaca series' Session 1
+// attendee page, behind the card on /workshop/waupaca. (Waupaca's NFC tags and
+// QR codes opened /workshop, which was that series' page until November 16;
+// the emails sent people straight here, so the URL stays.)
 //
 // scripts/capture-session1.ts imports this file under tsx, so keep it free of
 // JSX, asset imports, and import.meta.* -- plain data only. Image paths are
@@ -119,6 +120,12 @@ export const session1 = {
     speaker:
       "With guest speaker Casey Plunkett, CEO of Secure AI, former IBM and Oracle.",
     slidesLabel: "Download the slides (PDF)",
+  },
+
+  /** Above the date: the way back to the series page. */
+  backLink: {
+    label: "Waupaca workshop materials",
+    to: "/workshop/waupaca",
   },
 
   idea: {

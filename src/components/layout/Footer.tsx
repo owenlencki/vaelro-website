@@ -9,7 +9,7 @@ const PAGES = [
   { label: "Home", to: "/" },
   { label: "Web Design", to: "/web-design" },
   { label: "Automation", to: "/automation" },
-  { label: "Workshop", to: "/workshop" },
+  { label: "Workshops", to: "/workshop" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
 ];
